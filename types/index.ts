@@ -7,9 +7,9 @@ export interface Member {
   email?: string;
   address?: string;
   consent: boolean;
-  status: 'PAID' | 'DELINQUENT';
+  status: "PAID" | "DELINQUENT";
   delinquencyDays: number;
-  eligibility: 'ELIGIBLE' | 'NOT_ELIGIBLE';
+  eligibility: "ELIGIBLE" | "NOT_ELIGIBLE";
   eligibilityReason?: string;
   createdAt: string;
   updatedAt: string;
@@ -20,11 +20,11 @@ export interface Vote {
   id: string;
   title: string;
   description?: string;
-  type: 'SINGLE_CHOICE' | 'YES_NO';
+  type: "SINGLE_CHOICE" | "YES_NO";
   options: string[];
   startAt: string;
   endAt: string;
-  status: 'SCHEDULED' | 'ACTIVE' | 'CLOSED';
+  status: "SCHEDULED" | "ACTIVE" | "CLOSED";
   anonymous: boolean;
   eligibleCount: number;
   participationCount?: number;
@@ -39,7 +39,13 @@ export interface Communication {
   id: string;
   _id?: string; // For backward compatibility with API responses
   name: string;
-  audience: 'ALL' | 'ELIGIBLE' | 'DELINQUENT_30' | 'DELINQUENT_60' | 'DELINQUENT_90' | 'CUSTOM';
+  audience:
+    | "ALL"
+    | "ELIGIBLE"
+    | "DELINQUENT_30"
+    | "DELINQUENT_60"
+    | "DELINQUENT_90"
+    | "CUSTOM";
   customAudience?: string[];
   body: string;
   scheduledAt?: string;
@@ -47,7 +53,7 @@ export interface Communication {
   sent: number;
   delivered: number;
   failed: number;
-  status: 'DRAFT' | 'SCHEDULED' | 'SENDING' | 'SENT' | 'FAILED';
+  status: "DRAFT" | "SCHEDULED" | "SENDING" | "SENT" | "FAILED";
   createdBy?: {
     _id: string;
     firstName: string;
@@ -67,7 +73,7 @@ export interface Recipient {
     email?: string;
   };
   phone: string;
-  status: 'PENDING' | 'SENT' | 'DELIVERED' | 'FAILED';
+  status: "PENDING" | "SENT" | "DELIVERED" | "FAILED";
   sentAt?: string;
   deliveredAt?: string;
   errorMessage?: string;
@@ -81,10 +87,11 @@ export interface Settings {
   consentText: string;
   smsFooter: string;
   twilioSenderId: string;
+  androidSenderId?: string;
   privacyPolicyUrl?: string;
 }
 
-export type UserRole = 'ADMIN' | 'MEMBER' | 'GUEST';
+export type UserRole = "ADMIN" | "MEMBER" | "GUEST";
 
 export interface User {
   id: string;

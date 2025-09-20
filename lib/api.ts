@@ -1,6 +1,6 @@
-import { Member, Vote, Communication, Settings, User } from '@/types';
+import { Member, Vote, Communication, Settings, User } from "@/types";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 interface ApiResponse<T> {
   success: boolean;
@@ -23,7 +23,7 @@ interface LoginResponse {
     lastName: string;
     email?: string;
     phone: string;
-    role: 'ADMIN' | 'MEMBER';
+    role: "ADMIN" | "MEMBER";
   };
 }
 
@@ -33,7 +33,8 @@ class ApiClient {
 
   constructor(baseURL: string) {
     this.baseURL = baseURL;
-    this.token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
+    this.token =
+      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
   }
 
   private async request<T>(
@@ -42,7 +43,7 @@ class ApiClient {
   ): Promise<ApiResponse<T>> {
     const url = `${this.baseURL}${endpoint}`;
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...(options.headers as Record<string, string>),
     };
 
@@ -51,52 +52,52 @@ class ApiClient {
     }
 
     try {
-      console.log('Making API request to:', url, 'with options:', options);
+      console.log("Making API request to:", url, "with options:", options);
       const response = await fetch(url, {
         ...options,
         headers,
       });
 
-      console.log('API response status:', response.status);
+      console.log("API response status:", response.status);
       const data = await response.json();
-      console.log('API response data:', data);
+      console.log("API response data:", data);
 
       if (!response.ok) {
-        throw new Error(data.message || 'Request failed');
+        throw new Error(data.message || "Request failed");
       }
 
       return data;
     } catch (error) {
-      console.error('API request failed:', error);
+      console.error("API request failed:", error);
       throw error;
     }
   }
 
   setToken(token: string) {
     this.token = token;
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('authToken', token);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("authToken", token);
     }
   }
 
   clearToken() {
     this.token = null;
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('authToken');
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("authToken");
     }
   }
 
   // Auth endpoints
   async login(email: string, password: string): Promise<LoginResponse> {
-    const response = await this.request<LoginResponse>('/api/auth/login', {
-      method: 'POST',
+    const response = await this.request<LoginResponse>("/api/auth/login", {
+      method: "POST",
       body: JSON.stringify({ email, password }),
     });
-    
+
     if (response.data) {
       this.setToken(response.data.token);
     }
-    
+
     return response.data!;
   }
 
@@ -109,21 +110,21 @@ class ApiClient {
     consent: boolean;
     password: string;
   }): Promise<LoginResponse> {
-    const response = await this.request<LoginResponse>('/api/auth/register', {
-      method: 'POST',
+    const response = await this.request<LoginResponse>("/api/auth/register", {
+      method: "POST",
       body: JSON.stringify(userData),
     });
-    
+
     if (response.data) {
       this.setToken(response.data.token);
     }
-    
+
     return response.data!;
   }
 
   async logout(): Promise<void> {
-    await this.request('/api/auth/logout', {
-      method: 'POST',
+    await this.request("/api/auth/logout", {
+      method: "POST",
     });
     this.clearToken();
   }
@@ -133,8 +134,8 @@ class ApiClient {
     page?: number;
     limit?: number;
     search?: string;
-    status?: 'PAID' | 'DELINQUENT';
-    eligibility?: 'ELIGIBLE' | 'NOT_ELIGIBLE';
+    status?: "PAID" | "DELINQUENT";
+    eligibility?: "ELIGIBLE" | "NOT_ELIGIBLE";
   }): Promise<{ members: Member[]; pagination: any }> {
     const searchParams = new URLSearchParams();
     if (params) {
@@ -144,41 +145,59 @@ class ApiClient {
         }
       });
     }
-    
+
     const queryString = searchParams.toString();
-    const endpoint = queryString ? `/api/members?${queryString}` : '/api/members';
-    
-    const response = await this.request<{ members: Member[]; pagination: any }>(endpoint);
+    const endpoint = queryString
+      ? `/api/members?${queryString}`
+      : "/api/members";
+
+    const response = await this.request<{ members: Member[]; pagination: any }>(
+      endpoint
+    );
     return {
       members: response.data?.members || [],
-      pagination: response.pagination || { page: 1, limit: 10, total: 0, pages: 1 }
+      pagination: response.pagination || {
+        page: 1,
+        limit: 10,
+        total: 0,
+        pages: 1,
+      },
     };
   }
 
   async getMember(id: string): Promise<Member> {
-    const response = await this.request<{ member: Member }>(`/api/members/${id}`);
+    const response = await this.request<{ member: Member }>(
+      `/api/members/${id}`
+    );
     return response.data!.member;
   }
 
-  async createMember(memberData: Omit<Member, 'id' | 'createdAt' | 'updatedAt'> & { password: string }): Promise<Member> {
-    const response = await this.request<{ member: Member }>('/api/members', {
-      method: 'POST',
+  async createMember(
+    memberData: Omit<Member, "id" | "createdAt" | "updatedAt"> & {
+      password: string;
+    }
+  ): Promise<Member> {
+    const response = await this.request<{ member: Member }>("/api/members", {
+      method: "POST",
       body: JSON.stringify(memberData),
     });
     return response.data!.member;
   }
 
   async updateMember(id: string, memberData: Partial<Member>): Promise<Member> {
-    const response = await this.request<{ member: Member }>(`/api/members/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(memberData),
-    });
+    const response = await this.request<{ member: Member }>(
+      `/api/members/${id}`,
+      {
+        method: "PUT",
+        body: JSON.stringify(memberData),
+      }
+    );
     return response.data!.member;
   }
 
   async deleteMember(id: string): Promise<void> {
     await this.request(`/api/members/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
   }
 
@@ -186,7 +205,7 @@ class ApiClient {
   async getVotes(params?: {
     page?: number;
     limit?: number;
-    status?: 'SCHEDULED' | 'ACTIVE' | 'CLOSED';
+    status?: "SCHEDULED" | "ACTIVE" | "CLOSED";
   }): Promise<{ votes: Vote[]; pagination: any }> {
     const searchParams = new URLSearchParams();
     if (params) {
@@ -196,11 +215,13 @@ class ApiClient {
         }
       });
     }
-    
+
     const queryString = searchParams.toString();
-    const endpoint = queryString ? `/api/votes?${queryString}` : '/api/votes';
-    
-    const response = await this.request<{ votes: Vote[]; pagination: any }>(endpoint);
+    const endpoint = queryString ? `/api/votes?${queryString}` : "/api/votes";
+
+    const response = await this.request<{ votes: Vote[]; pagination: any }>(
+      endpoint
+    );
     return response.data!;
   }
 
@@ -209,19 +230,28 @@ class ApiClient {
     return response.data!.vote;
   }
 
-  async createVote(voteData: Omit<Vote, 'id' | 'createdAt' | 'eligibleCount' | 'participationCount' | 'participationPercent'>): Promise<Vote> {
-    console.log('API Client: Creating vote with data:', voteData);
-    const response = await this.request<{ vote: Vote }>('/api/votes', {
-      method: 'POST',
+  async createVote(
+    voteData: Omit<
+      Vote,
+      | "id"
+      | "createdAt"
+      | "eligibleCount"
+      | "participationCount"
+      | "participationPercent"
+    >
+  ): Promise<Vote> {
+    console.log("API Client: Creating vote with data:", voteData);
+    const response = await this.request<{ vote: Vote }>("/api/votes", {
+      method: "POST",
       body: JSON.stringify(voteData),
     });
-    console.log('API Client: Received response:', response);
+    console.log("API Client: Received response:", response);
     return response.data!.vote;
   }
 
   async updateVote(id: string, voteData: Partial<Vote>): Promise<Vote> {
     const response = await this.request<{ vote: Vote }>(`/api/votes/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(voteData),
     });
     return response.data!.vote;
@@ -229,19 +259,21 @@ class ApiClient {
 
   async deleteVote(id: string): Promise<void> {
     await this.request(`/api/votes/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
   }
 
   async castVote(voteId: string, option: string): Promise<void> {
     await this.request(`/api/votes/${voteId}/vote`, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify({ option }),
     });
   }
 
   async getVoteResults(voteId: string): Promise<Record<string, number>> {
-    const response = await this.request<Record<string, number>>(`/api/votes/${voteId}/results`);
+    const response = await this.request<Record<string, number>>(
+      `/api/votes/${voteId}/results`
+    );
     return response.data!;
   }
 
@@ -249,119 +281,177 @@ class ApiClient {
   async getCommunications(params?: {
     page?: number;
     limit?: number;
-    status?: 'DRAFT' | 'SCHEDULED' | 'SENDING' | 'SENT' | 'FAILED';
+    status?: "DRAFT" | "SCHEDULED" | "SENDING" | "SENT" | "FAILED";
     cacheBust?: boolean;
   }): Promise<{ communications: Communication[]; pagination: any }> {
     const searchParams = new URLSearchParams();
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined && key !== 'cacheBust') {
+        if (value !== undefined && key !== "cacheBust") {
           searchParams.append(key, value.toString());
         }
       });
     }
-    
+
     // Add cache busting parameter
     if (params?.cacheBust) {
-      searchParams.append('_t', Date.now().toString());
+      searchParams.append("_t", Date.now().toString());
     }
-    
+
     const queryString = searchParams.toString();
-    const endpoint = queryString ? `/api/communications?${queryString}` : '/api/communications';
-    
-    const response = await this.request<{ communications: Communication[]; pagination: any }>(endpoint);
+    const endpoint = queryString
+      ? `/api/communications?${queryString}`
+      : "/api/communications";
+
+    const response = await this.request<{
+      communications: Communication[];
+      pagination: any;
+    }>(endpoint);
     return response.data!;
   }
 
   async getCommunication(id: string): Promise<Communication> {
-    const response = await this.request<{ communication: Communication }>(`/api/communications/${id}`);
+    const response = await this.request<{ communication: Communication }>(
+      `/api/communications/${id}`
+    );
     return response.data!.communication;
   }
 
-  async createCommunication(communicationData: Omit<Communication, 'id' | 'sent' | 'delivered' | 'failed' | 'status'>): Promise<Communication> {
-    const response = await this.request<{ communication: Communication }>('/api/communications', {
-      method: 'POST',
-      body: JSON.stringify(communicationData),
-    });
-    
+  async createCommunication(
+    communicationData: Omit<
+      Communication,
+      "id" | "sent" | "delivered" | "failed" | "status"
+    >
+  ): Promise<Communication> {
+    const response = await this.request<{ communication: Communication }>(
+      "/api/communications",
+      {
+        method: "POST",
+        body: JSON.stringify(communicationData),
+      }
+    );
+
     const communication = response.data!.communication;
-    
+
     // Ensure we have an id field for frontend compatibility
     if (!communication.id && communication._id) {
       communication.id = communication._id.toString();
     }
-    
+
     return communication;
   }
 
-  async updateCommunication(id: string, communicationData: Partial<Communication>): Promise<Communication> {
-    const response = await this.request<Communication>(`/api/communications/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(communicationData),
-    });
+  async updateCommunication(
+    id: string,
+    communicationData: Partial<Communication>
+  ): Promise<Communication> {
+    const response = await this.request<Communication>(
+      `/api/communications/${id}`,
+      {
+        method: "PUT",
+        body: JSON.stringify(communicationData),
+      }
+    );
     return response.data!;
   }
 
   async deleteCommunication(id: string): Promise<void> {
     await this.request(`/api/communications/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
   }
 
   async sendCommunication(id: string): Promise<void> {
     await this.request(`/api/communications/${id}/send`, {
-      method: 'POST',
+      method: "POST",
     });
   }
 
-  async scheduleCommunication(id: string, scheduledAt: string): Promise<Communication> {
-    const response = await this.request<Communication>(`/api/communications/${id}/schedule`, {
-      method: 'POST',
-      body: JSON.stringify({ scheduledAt }),
-    });
+  async scheduleCommunication(
+    id: string,
+    scheduledAt: string
+  ): Promise<Communication> {
+    const response = await this.request<Communication>(
+      `/api/communications/${id}/schedule`,
+      {
+        method: "POST",
+        body: JSON.stringify({ scheduledAt }),
+      }
+    );
     return response.data!;
   }
 
-  async getCommunicationRecipients(id: string): Promise<{ recipients: any[]; stats: any }> {
-    const response = await this.request<{ recipients: any[]; stats: any }>(`/api/communications/${id}/recipients`);
+  async getCommunicationRecipients(
+    id: string
+  ): Promise<{ recipients: any[]; stats: any }> {
+    const response = await this.request<{ recipients: any[]; stats: any }>(
+      `/api/communications/${id}/recipients`
+    );
     return response.data!;
   }
 
   async getCommunicationStats(): Promise<any> {
-    const response = await this.request<any>('/api/communications/stats');
+    const response = await this.request<any>("/api/communications/stats");
     return response.data!;
   }
 
   async testTwilio(phoneNumber: string, message: string): Promise<any> {
-    const response = await this.request<any>('/api/communications/test-twilio', {
-      method: 'POST',
-      body: JSON.stringify({ phoneNumber, message }),
-    });
+    const response = await this.request<any>(
+      "/api/communications/test-twilio",
+      {
+        method: "POST",
+        body: JSON.stringify({ phoneNumber, message }),
+      }
+    );
+    return response.data!;
+  }
+
+  async getTwilioStatus(): Promise<any> {
+    const response = await this.request<any>(
+      "/api/communications/twilio-status"
+    );
     return response.data!;
   }
 
   async getMemberStats(): Promise<any> {
-    const response = await this.request<any>('/api/members/stats');
+    const response = await this.request<any>("/api/members/stats");
     return response.data!;
   }
 
   // Settings endpoints
   async getSettings(): Promise<Settings> {
-    const response = await this.request<{ settings: Settings }>('/api/settings');
+    const response = await this.request<{ settings: Settings }>(
+      "/api/settings"
+    );
     return response.data!.settings;
   }
 
   async updateSettings(settingsData: Partial<Settings>): Promise<Settings> {
-    const response = await this.request<{ settings: Settings }>('/api/settings', {
-      method: 'PUT',
-      body: JSON.stringify(settingsData),
-    });
+    const response = await this.request<{ settings: Settings }>(
+      "/api/settings",
+      {
+        method: "PUT",
+        body: JSON.stringify(settingsData),
+      }
+    );
     return response.data!.settings;
   }
 
   // Health check
-  async healthCheck(): Promise<{ success: boolean; message: string; timestamp: string; uptime: number; environment: string }> {
-    const response = await this.request<{ success: boolean; message: string; timestamp: string; uptime: number; environment: string }>('/health');
+  async healthCheck(): Promise<{
+    success: boolean;
+    message: string;
+    timestamp: string;
+    uptime: number;
+    environment: string;
+  }> {
+    const response = await this.request<{
+      success: boolean;
+      message: string;
+      timestamp: string;
+      uptime: number;
+      environment: string;
+    }>("/health");
     return response.data!;
   }
 }

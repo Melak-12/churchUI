@@ -1,15 +1,29 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { AppShell } from '@/components/layout/app-shell';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { mockSettings } from '@/lib/mock-data';
-import { Save, Upload, Palette, MessageSquare, Shield, Phone } from 'lucide-react';
+import { useState } from "react";
+import { AppShell } from "@/components/layout/app-shell";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { mockSettings } from "@/lib/mock-data";
+import {
+  Save,
+  Upload,
+  Palette,
+  MessageSquare,
+  Shield,
+  Phone,
+  Smartphone,
+} from "lucide-react";
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState(mockSettings);
@@ -20,14 +34,17 @@ export default function SettingsPage() {
         {/* Header */}
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
-          <p className="text-gray-600">Configure your organization and platform settings</p>
+          <p className="text-gray-600">
+            Configure your organization and platform settings
+          </p>
         </div>
 
         <Tabs defaultValue="branding" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4">
+          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5">
             <TabsTrigger value="branding">Branding</TabsTrigger>
             <TabsTrigger value="communications">Communications</TabsTrigger>
             <TabsTrigger value="twilio">Twilio</TabsTrigger>
+            <TabsTrigger value="android-sms">Android SMS</TabsTrigger>
             <TabsTrigger value="legal">Legal</TabsTrigger>
           </TabsList>
 
@@ -48,7 +65,12 @@ export default function SettingsPage() {
                   <Input
                     id="orgName"
                     value={settings.organizationName}
-                    onChange={(e) => setSettings({ ...settings, organizationName: e.target.value })}
+                    onChange={(e) =>
+                      setSettings({
+                        ...settings,
+                        organizationName: e.target.value,
+                      })
+                    }
                   />
                 </div>
 
@@ -57,10 +79,10 @@ export default function SettingsPage() {
                   <div className="flex items-center space-x-4 mt-2">
                     <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
                       {settings.logoUrl ? (
-                        <img 
-                          src={settings.logoUrl} 
-                          alt="Logo" 
-                          className="w-full h-full object-contain rounded-lg" 
+                        <img
+                          src={settings.logoUrl}
+                          alt="Logo"
+                          className="w-full h-full object-contain rounded-lg"
                         />
                       ) : (
                         <Palette className="h-6 w-6 text-gray-400" />
@@ -80,12 +102,22 @@ export default function SettingsPage() {
                       id="primaryColor"
                       type="color"
                       value={settings.primaryColor}
-                      onChange={(e) => setSettings({ ...settings, primaryColor: e.target.value })}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings,
+                          primaryColor: e.target.value,
+                        })
+                      }
                       className="w-16 h-10"
                     />
                     <Input
                       value={settings.primaryColor}
-                      onChange={(e) => setSettings({ ...settings, primaryColor: e.target.value })}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings,
+                          primaryColor: e.target.value,
+                        })
+                      }
                       placeholder="#3B82F6"
                       className="font-mono"
                     />
@@ -117,7 +149,9 @@ export default function SettingsPage() {
                   <Textarea
                     id="consentText"
                     value={settings.consentText}
-                    onChange={(e) => setSettings({ ...settings, consentText: e.target.value })}
+                    onChange={(e) =>
+                      setSettings({ ...settings, consentText: e.target.value })
+                    }
                     rows={3}
                     placeholder="Text shown during registration to get SMS consent..."
                   />
@@ -128,7 +162,9 @@ export default function SettingsPage() {
                   <Textarea
                     id="smsFooter"
                     value={settings.smsFooter}
-                    onChange={(e) => setSettings({ ...settings, smsFooter: e.target.value })}
+                    onChange={(e) =>
+                      setSettings({ ...settings, smsFooter: e.target.value })
+                    }
                     rows={2}
                     placeholder="Text automatically added to all SMS messages..."
                   />
@@ -159,7 +195,12 @@ export default function SettingsPage() {
                   <Input
                     id="senderId"
                     value={settings.twilioSenderId}
-                    onChange={(e) => setSettings({ ...settings, twilioSenderId: e.target.value })}
+                    onChange={(e) =>
+                      setSettings({
+                        ...settings,
+                        twilioSenderId: e.target.value,
+                      })
+                    }
                     placeholder="+1234567890"
                   />
                 </div>
@@ -184,7 +225,9 @@ export default function SettingsPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor="rateLimit">Rate Limit (messages per minute)</Label>
+                  <Label htmlFor="rateLimit">
+                    Rate Limit (messages per minute)
+                  </Label>
                   <Input
                     id="rateLimit"
                     type="number"
@@ -197,6 +240,96 @@ export default function SettingsPage() {
                 <Button>
                   <Save className="h-4 w-4 mr-2" />
                   Save Twilio Settings
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="android-sms">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Smartphone className="h-5 w-5" />
+                  <span>Android SMS Configuration</span>
+                </CardTitle>
+                <CardDescription>
+                  Configure Android SMS settings for sending messages
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div>
+                  <Label htmlFor="androidSenderId">
+                    Sender ID / Phone Number
+                  </Label>
+                  <Input
+                    id="androidSenderId"
+                    value={settings.androidSenderId || ""}
+                    onChange={(e) =>
+                      setSettings({
+                        ...settings,
+                        androidSenderId: e.target.value,
+                      })
+                    }
+                    placeholder="+1234567890"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="androidApiKey">API Key</Label>
+                    <Input
+                      id="androidApiKey"
+                      type="password"
+                      placeholder="••••••••••••••••••••••••••••••••••••"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="androidSecret">Secret Key</Label>
+                    <Input
+                      id="androidSecret"
+                      type="password"
+                      placeholder="••••••••••••••••••••••••••••••••••••"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="androidRateLimit">
+                    Rate Limit (messages per minute)
+                  </Label>
+                  <Input
+                    id="androidRateLimit"
+                    type="number"
+                    defaultValue="60"
+                    min="1"
+                    max="1000"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="androidEndpoint">API Endpoint</Label>
+                  <Input
+                    id="androidEndpoint"
+                    placeholder="https://api.androidsms.com/v1/send"
+                    defaultValue="https://api.androidsms.com/v1/send"
+                  />
+                </div>
+
+                <div className="p-4 bg-green-50 rounded-lg">
+                  <h4 className="text-sm font-medium text-green-900 mb-2">
+                    Android SMS Features
+                  </h4>
+                  <ul className="text-sm text-green-800 space-y-1">
+                    <li>• Direct Android device integration</li>
+                    <li>• Lower cost per message</li>
+                    <li>• Real-time delivery status</li>
+                    <li>• Two-way messaging support</li>
+                  </ul>
+                </div>
+
+                <Button>
+                  <Save className="h-4 w-4 mr-2" />
+                  Save Android SMS Settings
                 </Button>
               </CardContent>
             </Card>
@@ -219,13 +352,20 @@ export default function SettingsPage() {
                   <Input
                     id="privacyPolicy"
                     value={settings.privacyPolicyUrl}
-                    onChange={(e) => setSettings({ ...settings, privacyPolicyUrl: e.target.value })}
+                    onChange={(e) =>
+                      setSettings({
+                        ...settings,
+                        privacyPolicyUrl: e.target.value,
+                      })
+                    }
                     placeholder="https://yourchurch.com/privacy"
                   />
                 </div>
 
                 <div className="p-4 bg-blue-50 rounded-lg">
-                  <h4 className="text-sm font-medium text-blue-900 mb-2">Compliance Notes</h4>
+                  <h4 className="text-sm font-medium text-blue-900 mb-2">
+                    Compliance Notes
+                  </h4>
                   <ul className="text-sm text-blue-800 space-y-1">
                     <li>• All SMS messages include opt-out instructions</li>
                     <li>• Member consent is required for communications</li>
