@@ -1,4 +1,19 @@
-import { Member, Vote, Communication, Settings, User } from "@/types";
+import {
+  Member,
+  Vote,
+  Communication,
+  Settings,
+  User,
+  Event,
+  EventRegistration,
+  Volunteer,
+  Resource,
+  CreateEventRequest,
+  RegisterEventRequest,
+  AssignVolunteerRequest,
+  CreateResourceRequest,
+  EventQuery,
+} from "@/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
@@ -435,6 +450,225 @@ class ApiClient {
       }
     );
     return response.data!.settings;
+  }
+
+  // Event Management endpoints
+  async getEvents(
+    params?: EventQuery
+  ): Promise<{ events: Event[]; pagination: any }> {
+    const searchParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined) {
+          searchParams.append(key, value.toString());
+        }
+      });
+    }
+
+    const queryString = searchParams.toString();
+    const endpoint = queryString ? `/api/events?${queryString}` : "/api/events";
+
+    const response = await this.request<{ events: Event[]; pagination: any }>(
+      endpoint
+    );
+    return response.data!;
+  }
+
+  async getUpcomingEvents(limit?: number): Promise<Event[]> {
+    const searchParams = new URLSearchParams();
+    if (limit) {
+      searchParams.append("limit", limit.toString());
+    }
+
+    const queryString = searchParams.toString();
+    const endpoint = queryString
+      ? `/api/events/upcoming?${queryString}`
+      : "/api/events/upcoming";
+
+    const response = await this.request<Event[]>(endpoint);
+    return response.data!;
+  }
+
+  async getCalendarEvents(start: string, end: string): Promise<Event[]> {
+    const searchParams = new URLSearchParams();
+    searchParams.append("start", start);
+    searchParams.append("end", end);
+
+    const response = await this.request<Event[]>(
+      `/api/events/calendar?${searchParams.toString()}`
+    );
+    return response.data!;
+  }
+
+  async getEvent(id: string): Promise<Event> {
+    const response = await this.request<Event>(`/api/events/${id}`);
+    return response.data!;
+  }
+
+  async createEvent(eventData: CreateEventRequest): Promise<Event> {
+    const response = await this.request<Event>("/api/events", {
+      method: "POST",
+      body: JSON.stringify(eventData),
+    });
+    return response.data!;
+  }
+
+  async updateEvent(
+    id: string,
+    eventData: Partial<CreateEventRequest>
+  ): Promise<Event> {
+    const response = await this.request<Event>(`/api/events/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(eventData),
+    });
+    return response.data!;
+  }
+
+  async deleteEvent(id: string): Promise<void> {
+    await this.request(`/api/events/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  // Event Registration endpoints
+  async registerForEvent(
+    eventId: string,
+    registrationData: RegisterEventRequest
+  ): Promise<EventRegistration> {
+    const response = await this.request<EventRegistration>(
+      `/api/events/${eventId}/register`,
+      {
+        method: "POST",
+        body: JSON.stringify(registrationData),
+      }
+    );
+    return response.data!;
+  }
+
+  async getEventRegistrations(eventId: string): Promise<EventRegistration[]> {
+    const response = await this.request<EventRegistration[]>(
+      `/api/events/${eventId}/registrations`
+    );
+    return response.data!;
+  }
+
+  async updateRegistrationStatus(
+    eventId: string,
+    registrationId: string,
+    status: string
+  ): Promise<EventRegistration> {
+    const response = await this.request<EventRegistration>(
+      `/api/events/${eventId}/registrations/${registrationId}`,
+      {
+        method: "PUT",
+        body: JSON.stringify({ status }),
+      }
+    );
+    return response.data!;
+  }
+
+  // Volunteer Management endpoints
+  async assignVolunteer(
+    eventId: string,
+    volunteerData: AssignVolunteerRequest
+  ): Promise<Volunteer> {
+    const response = await this.request<Volunteer>(
+      `/api/events/${eventId}/volunteers`,
+      {
+        method: "POST",
+        body: JSON.stringify(volunteerData),
+      }
+    );
+    return response.data!;
+  }
+
+  async getEventVolunteers(eventId: string): Promise<Volunteer[]> {
+    const response = await this.request<Volunteer[]>(
+      `/api/events/${eventId}/volunteers`
+    );
+    return response.data!;
+  }
+
+  async updateVolunteerStatus(
+    eventId: string,
+    volunteerId: string,
+    status: string
+  ): Promise<Volunteer> {
+    const response = await this.request<Volunteer>(
+      `/api/events/${eventId}/volunteers/${volunteerId}`,
+      {
+        method: "PUT",
+        body: JSON.stringify({ status }),
+      }
+    );
+    return response.data!;
+  }
+
+  async removeVolunteer(eventId: string, volunteerId: string): Promise<void> {
+    await this.request(`/api/events/${eventId}/volunteers/${volunteerId}`, {
+      method: "DELETE",
+    });
+  }
+
+  // Resource Management endpoints
+  async getResources(params?: {
+    type?: string;
+    available?: boolean;
+    startDate?: string;
+    endDate?: string;
+  }): Promise<Resource[]> {
+    const searchParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined) {
+          searchParams.append(key, value.toString());
+        }
+      });
+    }
+
+    const queryString = searchParams.toString();
+    const endpoint = queryString
+      ? `/api/events/resources?${queryString}`
+      : "/api/events/resources";
+
+    const response = await this.request<Resource[]>(endpoint);
+    return response.data!;
+  }
+
+  async createResource(resourceData: CreateResourceRequest): Promise<Resource> {
+    const response = await this.request<Resource>("/api/events/resources", {
+      method: "POST",
+      body: JSON.stringify(resourceData),
+    });
+    return response.data!;
+  }
+
+  async assignResourceToEvent(
+    eventId: string,
+    resourceData: {
+      resourceId: string;
+      startTime?: string;
+      endTime?: string;
+      notes?: string;
+    }
+  ): Promise<any> {
+    const response = await this.request<any>(
+      `/api/events/${eventId}/resources`,
+      {
+        method: "POST",
+        body: JSON.stringify(resourceData),
+      }
+    );
+    return response.data!;
+  }
+
+  async removeResourceFromEvent(
+    eventId: string,
+    resourceId: string
+  ): Promise<void> {
+    await this.request(`/api/events/${eventId}/resources/${resourceId}`, {
+      method: "DELETE",
+    });
   }
 
   // Health check

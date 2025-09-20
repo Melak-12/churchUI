@@ -1,47 +1,59 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { AppShell } from '@/components/layout/app-shell';
-import { DashboardCard } from '@/components/dashboard/dashboard-card';
-import { CommunicationStats } from '@/components/communications/communication-stats';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Member, Vote } from '@/types';
-import apiClient from '@/lib/api';
-import { 
-  Users, 
-  DollarSign, 
-  AlertCircle, 
-  Vote as VoteIcon, 
-  MessageSquare, 
+import { useState, useEffect } from "react";
+import { AppShell } from "@/components/layout/app-shell";
+import { DashboardCard } from "@/components/dashboard/dashboard-card";
+import { CommunicationStats } from "@/components/communications/communication-stats";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Member, Vote, Event } from "@/types";
+import apiClient from "@/lib/api";
+import {
+  Users,
+  DollarSign,
+  AlertCircle,
+  Vote as VoteIcon,
+  MessageSquare,
   UserPlus,
   Plus,
   Calendar,
-  Loader2
-} from 'lucide-react';
-import Link from 'next/link';
+  Loader2,
+  Clock,
+  MapPin,
+} from "lucide-react";
+import Link from "next/link";
 
 export default function Dashboard() {
   const [members, setMembers] = useState<Member[]>([]);
   const [votes, setVotes] = useState<Vote[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [membersResponse, votesResponse] = await Promise.all([
-          apiClient.getMembers(),
-          apiClient.getVotes()
-        ]);
-        
+        const [membersResponse, votesResponse, eventsResponse] =
+          await Promise.all([
+            apiClient.getMembers(),
+            apiClient.getVotes(),
+            apiClient.getUpcomingEvents(5),
+          ]);
+
         setMembers(membersResponse.members);
         setVotes(votesResponse.votes);
+        setEvents(eventsResponse);
       } catch (err: any) {
-        setError(err.message || 'Failed to load dashboard data');
-        console.error('Dashboard data fetch error:', err);
+        setError(err.message || "Failed to load dashboard data");
+        console.error("Dashboard data fetch error:", err);
       } finally {
         setLoading(false);
       }
@@ -50,10 +62,12 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
-  const paidMembers = members.filter(m => m.status === 'PAID').length;
-  const delinquentMembers = members.filter(m => m.status === 'DELINQUENT').length;
-  const criticalDelinquent = members.filter(m => m.delinquencyDays > 90);
-  const activeVotes = votes.filter(v => v.status === 'ACTIVE');
+  const paidMembers = members.filter((m) => m.status === "PAID").length;
+  const delinquentMembers = members.filter(
+    (m) => m.status === "DELINQUENT"
+  ).length;
+  const criticalDelinquent = members.filter((m) => m.delinquencyDays > 90);
+  const activeVotes = votes.filter((v) => v.status === "ACTIVE");
 
   if (loading) {
     return (
@@ -143,7 +157,72 @@ export default function Dashboard() {
         {/* Communication Statistics */}
         <CommunicationStats />
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          {/* Upcoming Events */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <Calendar className="h-5 w-5 text-blue-500" />
+                <span>Upcoming Events</span>
+              </CardTitle>
+              <CardDescription>Next 5 upcoming events</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {events.length > 0 ? (
+                <div className="space-y-3">
+                  {events.map((event) => (
+                    <div
+                      key={event.id}
+                      className="p-3 border rounded-lg hover:bg-gray-50"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="font-medium">{event.title}</div>
+                          <div className="text-sm text-gray-500 flex items-center space-x-4 mt-1">
+                            <span className="flex items-center space-x-1">
+                              <Clock className="h-3 w-3" />
+                              <span>
+                                {new Date(event.startDate).toLocaleDateString()}
+                              </span>
+                            </span>
+                            <span className="flex items-center space-x-1">
+                              <MapPin className="h-3 w-3" />
+                              <span>{event.location}</span>
+                            </span>
+                          </div>
+                        </div>
+                        <Button variant="outline" size="sm" asChild>
+                          <Link href={`/events/${event.id}`}>View</Link>
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                    asChild
+                  >
+                    <Link href="/events">View All Events</Link>
+                  </Button>
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <Calendar className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                  <p className="text-sm text-gray-600 mb-4">
+                    No upcoming events
+                  </p>
+                  <Button size="sm" asChild>
+                    <Link href="/events/new">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Create Event
+                    </Link>
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
           {/* Critical Delinquent Members */}
           <Card>
             <CardHeader>
@@ -159,10 +238,17 @@ export default function Dashboard() {
               {criticalDelinquent.length > 0 ? (
                 <div className="space-y-3">
                   {criticalDelinquent.map((member) => (
-                    <div key={member.id} className="flex items-center justify-between p-3 border rounded-lg">
+                    <div
+                      key={member.id}
+                      className="flex items-center justify-between p-3 border rounded-lg"
+                    >
                       <div>
-                        <div className="font-medium">{member.firstName} {member.lastName}</div>
-                        <div className="text-sm text-gray-500">{member.phone}</div>
+                        <div className="font-medium">
+                          {member.firstName} {member.lastName}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {member.phone}
+                        </div>
                       </div>
                       <Badge variant="destructive">
                         {member.delinquencyDays} days
@@ -176,7 +262,9 @@ export default function Dashboard() {
               ) : (
                 <div className="text-center py-8">
                   <DollarSign className="h-8 w-8 text-green-500 mx-auto mb-2" />
-                  <p className="text-sm text-gray-600">All members are current!</p>
+                  <p className="text-sm text-gray-600">
+                    All members are current!
+                  </p>
                 </div>
               )}
             </CardContent>
@@ -204,18 +292,20 @@ export default function Dashboard() {
                           <div className="text-sm text-gray-500 flex items-center space-x-4 mt-1">
                             <span className="flex items-center space-x-1">
                               <Users className="h-3 w-3" />
-                              <span>{vote.participationPercent}% participation</span>
+                              <span>
+                                {vote.participationPercent}% participation
+                              </span>
                             </span>
                             <span className="flex items-center space-x-1">
                               <Calendar className="h-3 w-3" />
-                              <span>Ends {new Date(vote.endAt).toLocaleDateString()}</span>
+                              <span>
+                                Ends {new Date(vote.endAt).toLocaleDateString()}
+                              </span>
                             </span>
                           </div>
                         </div>
                         <Button variant="outline" size="sm" asChild>
-                          <Link href={`/voting/${vote.id}`}>
-                            Manage
-                          </Link>
+                          <Link href={`/voting/${vote.id}`}>Manage</Link>
                         </Button>
                       </div>
                     </div>

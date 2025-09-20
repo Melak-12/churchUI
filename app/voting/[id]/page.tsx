@@ -1,34 +1,50 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { AppShell } from '@/components/layout/app-shell';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { useToast } from '@/hooks/use-toast';
-import { apiClient } from '@/lib/api';
-import { getDocumentId } from '@/lib/utils';
-import { 
-  ArrowLeft, 
-  Edit, 
-  Trash2, 
-  Play, 
-  Square, 
-  BarChart3, 
-  Users, 
-  Clock, 
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { AppShell } from "@/components/layout/app-shell";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
+import { apiClient } from "@/lib/api";
+import { getDocumentId } from "@/lib/utils";
+import {
+  ArrowLeft,
+  Edit,
+  Trash2,
+  Play,
+  Square,
+  BarChart3,
+  Users,
+  Clock,
   Calendar,
   Loader2,
   AlertCircle,
   CheckCircle,
   Eye,
   Download,
-} from 'lucide-react';
-import Link from 'next/link';
+} from "lucide-react";
+import Link from "next/link";
 
 export default function VoteManagementPage() {
   const params = useParams();
@@ -43,18 +59,18 @@ export default function VoteManagementPage() {
     const fetchVote = async () => {
       try {
         setLoading(true);
-        console.log('Fetching vote with ID:', params.id);
+        console.log("Fetching vote with ID:", params.id);
         const voteData = await apiClient.getVote(params.id as string);
-        console.log('Fetched vote data:', voteData);
-        console.log('Vote options:', voteData.options);
-        console.log('Vote results:', voteData.results);
-        console.log('Vote title:', voteData.title);
-        console.log('Vote status:', voteData.status);
+        console.log("Fetched vote data:", voteData);
+        console.log("Vote options:", voteData.options);
+        console.log("Vote results:", voteData.results);
+        console.log("Vote title:", voteData.title);
+        console.log("Vote status:", voteData.status);
         setVote(voteData);
       } catch (err: any) {
-        console.error('Failed to fetch vote:', err);
-        console.error('Error details:', err);
-        setError(err.message || 'Failed to load vote');
+        console.error("Failed to fetch vote:", err);
+        console.error("Error details:", err);
+        setError(err.message || "Failed to load vote");
       } finally {
         setLoading(false);
       }
@@ -67,11 +83,11 @@ export default function VoteManagementPage() {
 
   const handleStartVote = async () => {
     try {
-      setActionLoading('start');
+      setActionLoading("start");
       // Get the vote ID, handling both _id and id fields (MongoDB compatibility)
       const voteId = getDocumentId(vote);
-      await apiClient.updateVote(voteId, { status: 'ACTIVE' });
-      setVote({ ...vote, status: 'ACTIVE' });
+      await apiClient.updateVote(voteId, { status: "ACTIVE" });
+      setVote({ ...vote, status: "ACTIVE" });
       toast({
         title: "Vote Started",
         description: "The vote is now active and accepting votes.",
@@ -79,7 +95,8 @@ export default function VoteManagementPage() {
     } catch (err: any) {
       toast({
         title: "Failed to start vote",
-        description: err.message || "An error occurred while starting the vote.",
+        description:
+          err.message || "An error occurred while starting the vote.",
         variant: "destructive",
       });
     } finally {
@@ -89,19 +106,21 @@ export default function VoteManagementPage() {
 
   const handleStopVote = async () => {
     try {
-      setActionLoading('stop');
+      setActionLoading("stop");
       // Get the vote ID, handling both _id and id fields (MongoDB compatibility)
       const voteId = getDocumentId(vote);
-      await apiClient.updateVote(voteId, { status: 'CLOSED' });
-      setVote({ ...vote, status: 'CLOSED' });
+      await apiClient.updateVote(voteId, { status: "CLOSED" });
+      setVote({ ...vote, status: "CLOSED" });
       toast({
         title: "Vote Stopped",
-        description: "The vote has been closed and is no longer accepting votes.",
+        description:
+          "The vote has been closed and is no longer accepting votes.",
       });
     } catch (err: any) {
       toast({
         title: "Failed to stop vote",
-        description: err.message || "An error occurred while stopping the vote.",
+        description:
+          err.message || "An error occurred while stopping the vote.",
         variant: "destructive",
       });
     } finally {
@@ -111,7 +130,7 @@ export default function VoteManagementPage() {
 
   const handleDeleteVote = async () => {
     try {
-      setActionLoading('delete');
+      setActionLoading("delete");
       // Get the vote ID, handling both _id and id fields (MongoDB compatibility)
       const voteId = getDocumentId(vote);
       await apiClient.deleteVote(voteId);
@@ -119,11 +138,12 @@ export default function VoteManagementPage() {
         title: "Vote Deleted",
         description: "The vote has been successfully deleted.",
       });
-      router.push('/voting');
+      router.push("/voting");
     } catch (err: any) {
       toast({
         title: "Failed to delete vote",
-        description: err.message || "An error occurred while deleting the vote.",
+        description:
+          err.message || "An error occurred while deleting the vote.",
         variant: "destructive",
       });
     } finally {
@@ -133,24 +153,24 @@ export default function VoteManagementPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'ACTIVE':
-        return 'bg-green-100 text-green-800';
-      case 'SCHEDULED':
-        return 'bg-blue-100 text-blue-800';
-      case 'CLOSED':
-        return 'bg-gray-100 text-gray-800';
+      case "ACTIVE":
+        return "bg-green-100 text-green-800";
+      case "SCHEDULED":
+        return "bg-blue-100 text-blue-800";
+      case "CLOSED":
+        return "bg-gray-100 text-gray-800";
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'ACTIVE':
+      case "ACTIVE":
         return <CheckCircle className="h-4 w-4" />;
-      case 'SCHEDULED':
+      case "SCHEDULED":
         return <Clock className="h-4 w-4" />;
-      case 'CLOSED':
+      case "CLOSED":
         return <Square className="h-4 w-4" />;
       default:
         return <AlertCircle className="h-4 w-4" />;
@@ -158,19 +178,19 @@ export default function VoteManagementPage() {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
-  const canEdit = vote?.status === 'SCHEDULED';
-  const canStart = vote?.status === 'SCHEDULED';
-  const canStop = vote?.status === 'ACTIVE';
-  const canDelete = vote?.status === 'SCHEDULED';
+  const canEdit = vote?.status === "SCHEDULED";
+  const canStart = vote?.status === "SCHEDULED";
+  const canStop = vote?.status === "ACTIVE";
+  const canDelete = vote?.status === "SCHEDULED";
 
   if (loading) {
     return (
@@ -187,8 +207,12 @@ export default function VoteManagementPage() {
           <Card>
             <CardContent className="text-center py-12">
               <Loader2 className="h-12 w-12 text-gray-400 mx-auto mb-4 animate-spin" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Loading vote...</h3>
-              <p className="text-gray-500">Please wait while we fetch the vote details.</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                Loading vote...
+              </h3>
+              <p className="text-gray-500">
+                Please wait while we fetch the vote details.
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -211,8 +235,10 @@ export default function VoteManagementPage() {
           <Card>
             <CardContent className="text-center py-12">
               <AlertCircle className="h-12 w-12 text-red-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Error loading vote</h3>
-              <p className="text-gray-500">{error || 'Vote not found'}</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                Error loading vote
+              </h3>
+              <p className="text-gray-500">{error || "Vote not found"}</p>
             </CardContent>
           </Card>
         </div>
@@ -221,7 +247,7 @@ export default function VoteManagementPage() {
   }
 
   // Additional safety check for vote properties
-  if (!vote || typeof vote !== 'object') {
+  if (!vote || typeof vote !== "object") {
     return (
       <AppShell>
         <div className="space-y-6">
@@ -236,8 +262,12 @@ export default function VoteManagementPage() {
           <Card>
             <CardContent className="text-center py-12">
               <AlertCircle className="h-12 w-12 text-red-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Invalid vote data</h3>
-              <p className="text-gray-500">The vote data is not in the expected format.</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                Invalid vote data
+              </h3>
+              <p className="text-gray-500">
+                The vote data is not in the expected format.
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -250,7 +280,12 @@ export default function VoteManagementPage() {
       <div className="space-y-4">
         {/* Back Button */}
         <div className="flex items-center justify-between">
-          <Button variant="ghost" size="sm" asChild className="text-gray-600 hover:text-gray-900">
+          <Button
+            variant="ghost"
+            size="sm"
+            asChild
+            className="text-gray-600 hover:text-gray-900"
+          >
             <Link href="/voting">
               <ArrowLeft className="h-4 w-4 mr-1" />
               Back
@@ -280,12 +315,20 @@ export default function VoteManagementPage() {
                   </div>
                 </div>
               </div>
-              
+
               {/* Action Buttons */}
               <div className="flex items-center gap-2 flex-wrap">
                 {canEdit && (
-                  <Button variant="secondary" size="sm" asChild className="bg-gray-100 hover:bg-gray-200 text-gray-700 hover:text-gray-900">
-                    <Link href={`/voting/${getDocumentId(vote)}/edit`} className="flex items-center">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    asChild
+                    className="bg-gray-100 hover:bg-gray-200 text-gray-700 hover:text-gray-900"
+                  >
+                    <Link
+                      href={`/voting/${getDocumentId(vote)}/edit`}
+                      className="flex items-center"
+                    >
                       <Edit className="h-4 w-4 mr-2" />
                       <span className="hidden sm:inline">Edit</span>
                     </Link>
@@ -293,13 +336,13 @@ export default function VoteManagementPage() {
                 )}
 
                 {canStop && (
-                  <Button 
-                    variant="destructive" 
-                    size="sm" 
+                  <Button
+                    variant="destructive"
+                    size="sm"
                     onClick={handleStopVote}
-                    disabled={actionLoading === 'stop'}
+                    disabled={actionLoading === "stop"}
                   >
-                    {actionLoading === 'stop' ? (
+                    {actionLoading === "stop" ? (
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                     ) : (
                       <Square className="h-4 w-4 mr-2" />
@@ -312,13 +355,13 @@ export default function VoteManagementPage() {
                 {canDelete && (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        disabled={actionLoading === 'delete'}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        disabled={actionLoading === "delete"}
                         className="text-gray-500 hover:text-red-600 hover:bg-red-50"
                       >
-                        {actionLoading === 'delete' ? (
+                        {actionLoading === "delete" ? (
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                         ) : (
                           <Trash2 className="h-4 w-4 mr-2" />
@@ -330,8 +373,9 @@ export default function VoteManagementPage() {
                       <AlertDialogHeader>
                         <AlertDialogTitle>Delete Vote</AlertDialogTitle>
                         <AlertDialogDescription>
-                          Are you sure you want to delete this vote? This action cannot be undone.
-                          The vote "{vote.title}" will be permanently removed.
+                          Are you sure you want to delete this vote? This action
+                          cannot be undone. The vote "{vote.title}" will be
+                          permanently removed.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -360,7 +404,9 @@ export default function VoteManagementPage() {
             {vote.description && (
               <Card>
                 <CardContent className="pt-6">
-                  <p className="text-gray-700 leading-relaxed">{vote.description}</p>
+                  <p className="text-gray-700 leading-relaxed">
+                    {vote.description}
+                  </p>
                 </CardContent>
               </Card>
             )}
@@ -374,10 +420,18 @@ export default function VoteManagementPage() {
                 {vote.options && vote.options.length > 0 ? (
                   <div className="space-y-3">
                     {vote.options.map((option: string, index: number) => (
-                      <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                        <span className="font-medium text-gray-900">{option}</span>
+                      <div
+                        key={index}
+                        className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                      >
+                        <span className="font-medium text-gray-900">
+                          {option}
+                        </span>
                         {vote.results && vote.results[option] !== undefined && (
-                          <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                          <Badge
+                            variant="secondary"
+                            className="bg-blue-100 text-blue-800"
+                          >
                             {vote.results[option]} votes
                           </Badge>
                         )}
@@ -397,26 +451,36 @@ export default function VoteManagementPage() {
               <Card>
                 <CardContent className="pt-6">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-gray-900">{vote.eligibleCount || 0}</div>
-                    <div className="text-sm text-gray-600">Eligible Members</div>
+                    <div className="text-2xl font-bold text-gray-900">
+                      {vote.eligibleCount || 0}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      Eligible Members
+                    </div>
                   </div>
                 </CardContent>
               </Card>
-              
+
               <Card>
                 <CardContent className="pt-6">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-gray-900">{vote.participationCount || 0}</div>
+                    <div className="text-2xl font-bold text-gray-900">
+                      {vote.participationCount || 0}
+                    </div>
                     <div className="text-sm text-gray-600">Votes Cast</div>
                   </div>
                 </CardContent>
               </Card>
-              
+
               <Card>
                 <CardContent className="pt-6">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-gray-900">{vote.participationPercent || 0}%</div>
-                    <div className="text-sm text-gray-600">Participation Rate</div>
+                    <div className="text-2xl font-bold text-gray-900">
+                      {vote.participationPercent || 0}%
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      Participation Rate
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -430,14 +494,20 @@ export default function VoteManagementPage() {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <div className="text-sm font-medium text-gray-500 mb-1">Vote Type</div>
+                    <div className="text-sm font-medium text-gray-500 mb-1">
+                      Vote Type
+                    </div>
                     <div className="text-sm text-gray-900">
-                      {vote.type === 'SINGLE_CHOICE' ? 'Single Choice (Election)' : 'Yes/No (Approval)'}
+                      {vote.type === "SINGLE_CHOICE"
+                        ? "Single Choice (Election)"
+                        : "Yes/No (Approval)"}
                     </div>
                   </div>
-                  
+
                   <div>
-                    <div className="text-sm font-medium text-gray-500 mb-1">Timeline</div>
+                    <div className="text-sm font-medium text-gray-500 mb-1">
+                      Timeline
+                    </div>
                     <div className="text-sm text-gray-900">
                       {vote.startAt && vote.endAt ? (
                         <span>
@@ -455,7 +525,7 @@ export default function VoteManagementPage() {
 
           {/* Results Tab */}
           <TabsContent value="results" className="space-y-6">
-            {vote.status === 'CLOSED' || vote.participationCount > 0 ? (
+            {vote.status === "CLOSED" || vote.participationCount > 0 ? (
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
@@ -467,17 +537,25 @@ export default function VoteManagementPage() {
                   {vote.results && Object.keys(vote.results).length > 0 ? (
                     <div className="space-y-4">
                       {Object.entries(vote.results)
-                        .sort(([,a], [,b]) => b - a)
+                        .sort(([, a], [, b]) => (b as number) - (a as number))
                         .map(([option, count]) => {
-                          const percentage = (vote.participationCount && vote.participationCount > 0) 
-                            ? Math.round((count / vote.participationCount) * 100) 
-                            : 0;
+                          const percentage =
+                            vote.participationCount &&
+                            vote.participationCount > 0
+                              ? Math.round(
+                                  ((count as number) /
+                                    vote.participationCount) *
+                                    100
+                                )
+                              : 0;
                           return (
                             <div key={option} className="space-y-2">
                               <div className="flex items-center justify-between">
                                 <span className="font-medium">{option}</span>
                                 <div className="flex items-center space-x-2">
-                                  <span className="text-sm text-gray-600">{count} votes</span>
+                                  <span className="text-sm text-gray-600">
+                                    {count as number} votes
+                                  </span>
                                   <Badge variant="outline">{percentage}%</Badge>
                                 </div>
                               </div>
@@ -489,12 +567,13 @@ export default function VoteManagementPage() {
                   ) : (
                     <div className="text-center py-8">
                       <BarChart3 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">No Results Yet</h3>
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">
+                        No Results Yet
+                      </h3>
                       <p className="text-gray-500">
-                        {vote.status === 'CLOSED' 
-                          ? 'No votes were cast for this election.'
-                          : 'Results will appear here once votes are cast.'
-                        }
+                        {vote.status === "CLOSED"
+                          ? "No votes were cast for this election."
+                          : "Results will appear here once votes are cast."}
                       </p>
                     </div>
                   )}
@@ -504,9 +583,12 @@ export default function VoteManagementPage() {
               <Card>
                 <CardContent className="text-center py-8">
                   <BarChart3 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">Results Not Available</h3>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    Results Not Available
+                  </h3>
                   <p className="text-gray-500">
-                    Results will be available after the vote closes or when votes are cast.
+                    Results will be available after the vote closes or when
+                    votes are cast.
                   </p>
                 </CardContent>
               </Card>
@@ -522,17 +604,18 @@ export default function VoteManagementPage() {
                   <span>Vote Participants</span>
                 </CardTitle>
                 <CardDescription>
-                  {vote.anonymous 
-                    ? 'This is an anonymous vote. Individual votes cannot be tracked.'
-                    : 'List of members who have participated in this vote.'
-                  }
+                  {vote.anonymous
+                    ? "This is an anonymous vote. Individual votes cannot be tracked."
+                    : "List of members who have participated in this vote."}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 {vote.anonymous ? (
                   <div className="text-center py-8">
                     <Eye className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">Anonymous Voting</h3>
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                      Anonymous Voting
+                    </h3>
                     <p className="text-gray-500">
                       Individual votes are not tracked to maintain anonymity.
                     </p>
@@ -540,9 +623,12 @@ export default function VoteManagementPage() {
                 ) : (
                   <div className="text-center py-8">
                     <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">Participant Tracking</h3>
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                      Participant Tracking
+                    </h3>
                     <p className="text-gray-500">
-                      Individual participant tracking will be implemented in a future update.
+                      Individual participant tracking will be implemented in a
+                      future update.
                     </p>
                   </div>
                 )}

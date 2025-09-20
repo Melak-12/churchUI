@@ -1,36 +1,39 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { AppShell } from '@/components/layout/app-shell';
-import { MemberTable } from '@/components/members/member-table';
-import { Member } from '@/types';
-import apiClient from '@/lib/api';
-import { Loader2, AlertCircle, RefreshCw } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useState, useEffect } from "react";
+import { AppShell } from "@/components/layout/app-shell";
+import { MemberTable } from "@/components/members/member-table";
+import { Member } from "@/types";
+import apiClient from "@/lib/api";
+import { getDocumentId } from "@/lib/utils";
+import { Loader2, AlertCircle, RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function MembersPage() {
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const fetchMembers = async () => {
     try {
       setLoading(true);
       // Add cache-busting parameter to ensure fresh data
-      const response = await apiClient.getMembers({ 
-        _t: Date.now() // Cache busting parameter
+      const response = await apiClient.getMembers({
+        _t: Date.now(), // Cache busting parameter
       } as any);
-      
+
       // Transform member data to ensure proper ID format
-      const transformedMembers = response.members.map(member => ({
-        ...member,
-        id: member.id || member._id || ''
-      })).filter(member => member.id); // Filter out members without valid IDs
-      
+      const transformedMembers = response.members
+        .map((member) => ({
+          ...member,
+          id: getDocumentId(member),
+        }))
+        .filter((member) => member.id); // Filter out members without valid IDs
+
       setMembers(transformedMembers);
     } catch (err: any) {
-      setError(err.message || 'Failed to load members');
-      console.error('Members fetch error:', err);
+      setError(err.message || "Failed to load members");
+      console.error("Members fetch error:", err);
     } finally {
       setLoading(false);
     }

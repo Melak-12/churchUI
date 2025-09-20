@@ -57,18 +57,18 @@ export default function LoginPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-background to-blue-50 dark:from-slate-900 dark:via-background dark:to-slate-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo and Header */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+          <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
             <Church className="h-8 w-8 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Community Church</h1>
-          <p className="text-gray-600">Sign in to your account</p>
+          <h1 className="text-2xl font-bold text-foreground mb-2">Community Church</h1>
+          <p className="text-muted-foreground">Sign in to your account</p>
         </div>
 
-        <Card className="shadow-xl border-0">
+        <Card className="shadow-xl border backdrop-blur-sm bg-card/95">
           <CardHeader className="space-y-1 pb-6">
             <CardTitle className="text-xl text-center">Welcome Back</CardTitle>
             <CardDescription className="text-center">
@@ -88,7 +88,7 @@ export default function LoginPage() {
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                   <Input
                     id="email"
                     type="email"
@@ -104,7 +104,7 @@ export default function LoginPage() {
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                   <Input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
@@ -122,9 +122,9 @@ export default function LoginPage() {
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-gray-400" />
+                      <EyeOff className="h-4 w-4 text-muted-foreground" />
                     ) : (
-                      <Eye className="h-4 w-4 text-gray-400" />
+                      <Eye className="h-4 w-4 text-muted-foreground" />
                     )}
                   </Button>
                 </div>
@@ -145,7 +145,7 @@ export default function LoginPage() {
                 </div>
                 <Link 
                   href="/forgot-password" 
-                  className="text-sm text-blue-600 hover:text-blue-500 transition-colors"
+                  className="text-sm text-primary hover:text-primary/80 transition-colors"
                 >
                   Forgot password?
                 </Link>
@@ -168,13 +168,13 @@ export default function LoginPage() {
 
               {/* Quick Login Buttons - Integrated into form */}
               <div className="mt-4 space-y-2">
-                <div className="text-center text-xs text-gray-500 mb-2">Quick Login</div>
+                <div className="text-center text-xs text-muted-foreground mb-2">Quick Login</div>
                 <div className="grid grid-cols-2 gap-2">
                   <Button
                     type="button"
                     variant="outline"
                     onClick={() => fillCredentials(demoCredentials[0].email, demoCredentials[0].password)}
-                    className="text-xs py-2 h-8 bg-slate-50 hover:bg-slate-100 border-slate-200"
+                    className="text-xs py-2 h-8"
                   >
                     {demoCredentials[0].role}
                   </Button>
@@ -182,7 +182,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     onClick={() => fillCredentials(demoCredentials[1].email, demoCredentials[1].password)}
-                    className="text-xs py-2 h-8 bg-blue-50 hover:bg-blue-100 border-blue-200"
+                    className="text-xs py-2 h-8"
                   >
                     {demoCredentials[1].role}
                   </Button>
@@ -194,11 +194,11 @@ export default function LoginPage() {
               <Separator className="my-4" />
               
               <div className="text-center">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted-foreground">
                   Don't have an account?{' '}
                   <Link 
                     href="/register" 
-                    className="text-blue-600 hover:text-blue-500 font-medium transition-colors"
+                    className="text-primary hover:text-primary/80 font-medium transition-colors"
                   >
                     Register here
                   </Link>
@@ -210,7 +210,7 @@ export default function LoginPage() {
 
         {/* Footer */}
         <div className="text-center mt-8">
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-muted-foreground">
             © 2025 Community Church. All rights reserved.
           </p>
         </div>
