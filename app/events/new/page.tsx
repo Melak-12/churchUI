@@ -185,7 +185,6 @@ export default function NewEventPage() {
     try {
       setLoading(true);
 
-      fron; // Prepare event data with proper resource formatting
       const eventDataToSend = {
         ...eventData,
         resources: eventData.resources || [], // Include resources if they exist
