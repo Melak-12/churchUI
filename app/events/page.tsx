@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { AppShell } from "@/components/layout/app-shell";
+import { FeatureGuard } from "@/components/auth/feature-guard";
 import {
   Card,
   CardContent,
@@ -220,30 +221,40 @@ export default function EventsPage() {
   }
 
   return (
-    <AppShell>
+    <FeatureGuard feature="events">
+      <AppShell>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
+        <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Events</h1>
-            <p className="text-gray-600">
+            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
+              Events
+            </h1>
+            <p className="text-gray-600 text-sm lg:text-base">
               {isAdmin
                 ? "Manage church events, services, and meetings"
                 : "Discover and register for upcoming church events"}
             </p>
           </div>
-          <div className="flex space-x-2">
-            <Button variant="outline" asChild>
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full sm:w-auto"
+              asChild
+            >
               <Link href="/events/calendar">
                 <Calendar className="h-4 w-4 mr-2" />
-                Calendar View
+                <span className="hidden sm:inline">Calendar View</span>
+                <span className="sm:hidden">Calendar</span>
               </Link>
             </Button>
             {isAdmin && (
-              <Button asChild>
+              <Button size="sm" className="w-full sm:w-auto" asChild>
                 <Link href="/events/new">
                   <Plus className="h-4 w-4 mr-2" />
-                  New Event
+                  <span className="hidden sm:inline">New Event</span>
+                  <span className="sm:hidden">New</span>
                 </Link>
               </Button>
             )}
@@ -252,8 +263,8 @@ export default function EventsPage() {
 
         {/* Filters */}
         <Card>
-          <CardContent className="pt-6">
-            <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
+          <CardContent className="pt-4 sm:pt-6">
+            <div className="flex flex-col space-y-3 sm:space-y-4 lg:flex-row lg:space-y-0 lg:space-x-4">
               <div className="flex-1">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -261,49 +272,57 @@ export default function EventsPage() {
                     placeholder="Search events..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
+                    className="pl-10 h-10 sm:h-11"
                   />
                 </div>
               </div>
-              <Select value={filterType} onValueChange={setFilterType}>
-                <SelectTrigger className="w-full md:w-48">
-                  <SelectValue placeholder="Event Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="SERVICE">Service</SelectItem>
-                  <SelectItem value="MEETING">Meeting</SelectItem>
-                  <SelectItem value="SPECIAL_OCCASION">
-                    Special Occasion
-                  </SelectItem>
-                  <SelectItem value="CONFERENCE">Conference</SelectItem>
-                  <SelectItem value="SOCIAL">Social</SelectItem>
-                  <SelectItem value="OTHER">Other</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={filterStatus} onValueChange={setFilterStatus}>
-                <SelectTrigger className="w-full md:w-48">
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="DRAFT">Draft</SelectItem>
-                  <SelectItem value="PUBLISHED">Published</SelectItem>
-                  <SelectItem value="CANCELLED">Cancelled</SelectItem>
-                  <SelectItem value="COMPLETED">Completed</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 lg:gap-4">
+                <Select value={filterType} onValueChange={setFilterType}>
+                  <SelectTrigger className="w-full sm:w-48 lg:w-48 h-10 sm:h-11">
+                    <SelectValue placeholder="Event Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Types</SelectItem>
+                    <SelectItem value="SERVICE">Service</SelectItem>
+                    <SelectItem value="MEETING">Meeting</SelectItem>
+                    <SelectItem value="SPECIAL_OCCASION">
+                      Special Occasion
+                    </SelectItem>
+                    <SelectItem value="CONFERENCE">Conference</SelectItem>
+                    <SelectItem value="SOCIAL">Social</SelectItem>
+                    <SelectItem value="OTHER">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select value={filterStatus} onValueChange={setFilterStatus}>
+                  <SelectTrigger className="w-full sm:w-48 lg:w-48 h-10 sm:h-11">
+                    <SelectValue placeholder="Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="DRAFT">Draft</SelectItem>
+                    <SelectItem value="PUBLISHED">Published</SelectItem>
+                    <SelectItem value="CANCELLED">Cancelled</SelectItem>
+                    <SelectItem value="COMPLETED">Completed</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Events List */}
-        <Tabs defaultValue="upcoming" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="upcoming">
-              Upcoming ({upcomingEvents.length})
+        <Tabs defaultValue="upcoming" className="space-y-4 sm:space-y-6">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="upcoming" className="text-sm sm:text-base">
+              <span className="hidden sm:inline">Upcoming</span>
+              <span className="sm:hidden">Upcoming</span>
+              <span className="ml-1">({upcomingEvents.length})</span>
             </TabsTrigger>
-            <TabsTrigger value="past">Past ({pastEvents.length})</TabsTrigger>
+            <TabsTrigger value="past" className="text-sm sm:text-base">
+              <span className="hidden sm:inline">Past</span>
+              <span className="sm:hidden">Past</span>
+              <span className="ml-1">({pastEvents.length})</span>
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="upcoming" className="space-y-4">
@@ -323,20 +342,22 @@ export default function EventsPage() {
               </div>
             ) : (
               <Card>
-                <CardContent className="flex flex-col items-center justify-center py-12">
-                  <Calendar className="h-12 w-12 text-gray-400 mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                <CardContent className="flex flex-col items-center justify-center py-8 sm:py-12 px-4">
+                  <Calendar className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mb-4" />
+                  <h3 className="text-lg sm:text-xl font-medium text-gray-900 mb-2 text-center">
                     No upcoming events
                   </h3>
-                  <p className="text-gray-500 text-center mb-4">
+                  <p className="text-gray-500 text-center mb-6 text-sm sm:text-base max-w-md">
                     Create your first event to get started
                   </p>
-                  <Button asChild>
-                    <Link href="/events/new">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Create Event
-                    </Link>
-                  </Button>
+                  {isAdmin && (
+                    <Button size="sm" className="w-full sm:w-auto" asChild>
+                      <Link href="/events/new">
+                        <Plus className="h-4 w-4 mr-2" />
+                        Create Event
+                      </Link>
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
             )}
@@ -359,12 +380,12 @@ export default function EventsPage() {
               </div>
             ) : (
               <Card>
-                <CardContent className="flex flex-col items-center justify-center py-12">
-                  <Calendar className="h-12 w-12 text-gray-400 mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                <CardContent className="flex flex-col items-center justify-center py-8 sm:py-12 px-4">
+                  <Calendar className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mb-4" />
+                  <h3 className="text-lg sm:text-xl font-medium text-gray-900 mb-2 text-center">
                     No past events
                   </h3>
-                  <p className="text-gray-500 text-center">
+                  <p className="text-gray-500 text-center text-sm sm:text-base max-w-md">
                     Past events will appear here
                   </p>
                 </CardContent>
@@ -374,6 +395,7 @@ export default function EventsPage() {
         </Tabs>
       </div>
     </AppShell>
+    </FeatureGuard>
   );
 }
 
@@ -428,41 +450,46 @@ function EventCard({
 
   return (
     <Card className="hover:shadow-md transition-shadow">
-      <CardContent className="p-6">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center space-x-2 mb-2">
-              <h3 className="text-lg font-semibold text-gray-900">
+      <CardContent className="p-4 sm:p-6">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-4 lg:space-y-0">
+          <div className="flex-1 min-w-0">
+            {/* Title and Badges */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 mb-3 space-y-2 sm:space-y-0">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 truncate">
                 {event.title}
               </h3>
-              <Badge className={getEventTypeColor(event.type)}>
-                {event.type.replace("_", " ")}
-              </Badge>
-              <Badge className={getStatusColor(event.status)}>
-                {event.status}
-              </Badge>
+              <div className="flex flex-wrap gap-2">
+                <Badge className={`${getEventTypeColor(event.type)} text-xs`}>
+                  {event.type.replace("_", " ")}
+                </Badge>
+                <Badge className={`${getStatusColor(event.status)} text-xs`}>
+                  {event.status}
+                </Badge>
+              </div>
             </div>
 
+            {/* Description */}
             {event.description && (
-              <p className="text-gray-600 mb-3 line-clamp-2">
+              <p className="text-gray-600 mb-4 line-clamp-2 text-sm sm:text-base">
                 {event.description}
               </p>
             )}
 
-            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+            {/* Event Details */}
+            <div className="space-y-2 sm:space-y-0 sm:flex sm:flex-wrap sm:items-center sm:gap-4 text-sm text-gray-500">
               <div className="flex items-center space-x-1">
-                <Clock className="h-4 w-4" />
-                <span>
+                <Clock className="h-4 w-4 flex-shrink-0" />
+                <span className="truncate">
                   {format(new Date(event.startDate), "MMM d, yyyy h:mm a")}
                 </span>
               </div>
               <div className="flex items-center space-x-1">
-                <MapPin className="h-4 w-4" />
-                <span>{event.location}</span>
+                <MapPin className="h-4 w-4 flex-shrink-0" />
+                <span className="truncate">{event.location}</span>
               </div>
               {event.capacity && (
                 <div className="flex items-center space-x-1">
-                  <Users className="h-4 w-4" />
+                  <Users className="h-4 w-4 flex-shrink-0" />
                   <span>
                     {event.registrationCount || 0}/{event.capacity} registered
                   </span>
@@ -474,18 +501,35 @@ function EventCard({
             </div>
           </div>
 
-          <div className="flex items-center space-x-2 ml-4">
-            <Button variant="outline" size="sm" asChild>
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 lg:ml-4 lg:flex-col lg:items-stretch lg:min-w-0">
+            {/* View Button */}
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full sm:w-auto lg:w-full"
+              asChild
+            >
               <Link href={`/events/${eventId}`}>
-                <Eye className="h-4 w-4" />
+                <Eye className="h-4 w-4 mr-2" />
+                <span className="hidden sm:inline lg:hidden">View</span>
+                <span className="sm:hidden lg:inline">View Details</span>
               </Link>
             </Button>
 
+            {/* Admin Actions */}
             {isAdmin ? (
-              <>
-                <Button variant="outline" size="sm" asChild>
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 lg:flex-col">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full sm:w-auto lg:w-full"
+                  asChild
+                >
                   <Link href={`/events/${eventId}/edit`}>
-                    <Edit className="h-4 w-4" />
+                    <Edit className="h-4 w-4 mr-2" />
+                    <span className="hidden sm:inline lg:hidden">Edit</span>
+                    <span className="sm:hidden lg:inline">Edit Event</span>
                   </Link>
                 </Button>
                 {onDelete && (
@@ -494,18 +538,27 @@ function EventCard({
                     size="sm"
                     onClick={() => onDelete(eventId)}
                     disabled={isDeleting}
-                    className="text-red-600 hover:text-red-700 hover:bg-red-50 disabled:opacity-50"
+                    className="w-full sm:w-auto lg:w-full text-red-600 hover:text-red-700 hover:bg-red-50 disabled:opacity-50"
                   >
                     {isDeleting ? (
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
                     ) : (
-                      <Trash2 className="h-4 w-4" />
+                      <>
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        <span className="hidden sm:inline lg:hidden">
+                          Delete
+                        </span>
+                        <span className="sm:hidden lg:inline">
+                          Delete Event
+                        </span>
+                      </>
                     )}
                   </Button>
                 )}
-              </>
+              </div>
             ) : (
-              <>
+              /* Member Actions */
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 lg:flex-col">
                 {event.registrationRequired &&
                   event.status === "PUBLISHED" &&
                   onRegister && (
@@ -514,31 +567,46 @@ function EventCard({
                       size="sm"
                       onClick={() => onRegister(eventId)}
                       disabled={isRegistering || event.isFull}
-                      className="bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50"
+                      className="w-full sm:w-auto lg:w-full bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50"
                     >
                       {isRegistering ? (
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                       ) : event.isFull ? (
                         <>
                           <AlertCircle className="h-4 w-4 mr-2" />
-                          Full
+                          <span className="hidden sm:inline lg:hidden">
+                            Full
+                          </span>
+                          <span className="sm:hidden lg:inline">
+                            Event Full
+                          </span>
                         </>
                       ) : (
                         <>
                           <UserPlus className="h-4 w-4 mr-2" />
-                          Register
+                          <span className="hidden sm:inline lg:hidden">
+                            Register
+                          </span>
+                          <span className="sm:hidden lg:inline">
+                            Register Now
+                          </span>
                         </>
                       )}
                     </Button>
                   )}
                 {!event.registrationRequired &&
                   event.status === "PUBLISHED" && (
-                    <div className="flex items-center text-green-600 text-sm">
-                      <CheckCircle className="h-4 w-4 mr-1" />
-                      Open to all
+                    <div className="flex items-center justify-center text-green-600 text-sm py-2 px-3 border border-green-200 rounded-md bg-green-50">
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      <span className="hidden sm:inline lg:hidden">
+                        Open to all
+                      </span>
+                      <span className="sm:hidden lg:inline">
+                        Open to All Members
+                      </span>
                     </div>
                   )}
-              </>
+              </div>
             )}
           </div>
         </div>

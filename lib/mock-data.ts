@@ -134,4 +134,11 @@ export const mockSettings: Settings = {
   twilioSenderId: "+251911234567",
   androidSenderId: "+251911234567",
   privacyPolicyUrl: "https://example.com/privacy",
+  features: {
+    events: true,
+    financial: true,
+    communications: true,
+    voting: true,
+    memberPortal: true,
+  },
 };

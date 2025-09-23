@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
 import { mockSettings } from "@/lib/mock-data";
 import {
   Save,
@@ -23,10 +24,13 @@ import {
   Shield,
   Phone,
   Smartphone,
+  ToggleLeft,
 } from "lucide-react";
+import { useFeatures } from "@/contexts/features-context";
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState(mockSettings);
+  const { features, updateFeatures } = useFeatures();
 
   return (
     <AppShell>
@@ -40,8 +44,9 @@ export default function SettingsPage() {
         </div>
 
         <Tabs defaultValue="branding" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5">
+          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-6">
             <TabsTrigger value="branding">Branding</TabsTrigger>
+            <TabsTrigger value="features">Features</TabsTrigger>
             <TabsTrigger value="communications">Communications</TabsTrigger>
             <TabsTrigger value="twilio">Twilio</TabsTrigger>
             <TabsTrigger value="android-sms">Android SMS</TabsTrigger>
@@ -127,6 +132,88 @@ export default function SettingsPage() {
                 <Button>
                   <Save className="h-4 w-4 mr-2" />
                   Save Branding
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="features">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <ToggleLeft className="h-5 w-5" />
+                  <span>Feature Management</span>
+                </CardTitle>
+                <CardDescription>
+                  Enable or disable features for your organization
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="events-toggle">Events Management</Label>
+                      <p className="text-sm text-muted-foreground">Manage church events, registrations, and volunteers</p>
+                    </div>
+                    <Switch
+                      id="events-toggle"
+                      checked={features.events}
+                      onCheckedChange={(checked) => updateFeatures({ events: checked })}
+                    />
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="financial-toggle">Financial Management</Label>
+                      <p className="text-sm text-muted-foreground">Track payments, transactions, and budgets</p>
+                    </div>
+                    <Switch
+                      id="financial-toggle"
+                      checked={features.financial}
+                      onCheckedChange={(checked) => updateFeatures({ financial: checked })}
+                    />
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="communications-toggle">Communications</Label>
+                      <p className="text-sm text-muted-foreground">Send SMS and manage member communications</p>
+                    </div>
+                    <Switch
+                      id="communications-toggle"
+                      checked={features.communications}
+                      onCheckedChange={(checked) => updateFeatures({ communications: checked })}
+                    />
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="voting-toggle">Voting System</Label>
+                      <p className="text-sm text-muted-foreground">Create and manage member voting</p>
+                    </div>
+                    <Switch
+                      id="voting-toggle"
+                      checked={features.voting}
+                      onCheckedChange={(checked) => updateFeatures({ voting: checked })}
+                    />
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="member-portal-toggle">Member Portal</Label>
+                      <p className="text-sm text-muted-foreground">Family management and document library</p>
+                    </div>
+                    <Switch
+                      id="member-portal-toggle"
+                      checked={features.memberPortal}
+                      onCheckedChange={(checked) => updateFeatures({ memberPortal: checked })}
+                    />
+                  </div>
+                </div>
+
+                <Button>
+                  <Save className="h-4 w-4 mr-2" />
+                  Save Feature Settings
                 </Button>
               </CardContent>
             </Card>

@@ -23,24 +23,25 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { getCurrentUser, hasPermission, logout } from "@/lib/auth";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { useFeatures } from "@/contexts/features-context";
 
-const adminNavItems = [
+const getAdminNavItems = (features: any) => [
   { href: "/dashboard", label: "Dashboard", icon: Home },
   { href: "/members", label: "Members", icon: Users },
-  { href: "/events", label: "Events", icon: Calendar },
-  { href: "/voting", label: "Voting", icon: Vote },
-  { href: "/communications", label: "Communications", icon: MessageSquare },
-  { href: "/financial", label: "Financial", icon: DollarSign },
+  ...(features.events ? [{ href: "/events", label: "Events", icon: Calendar }] : []),
+  ...(features.voting ? [{ href: "/voting", label: "Voting", icon: Vote }] : []),
+  ...(features.communications ? [{ href: "/communications", label: "Communications", icon: MessageSquare }] : []),
+  ...(features.financial ? [{ href: "/financial", label: "Financial", icon: DollarSign }] : []),
   { href: "/profile", label: "Profile", icon: User },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 
-const memberNavItems = [
+const getMemberNavItems = (features: any) => [
   { href: "/profile", label: "My Profile", icon: User },
   { href: "/eligibility", label: "My Eligibility", icon: CheckCircle },
-  { href: "/events", label: "Events", icon: Calendar },
-  { href: "/votes", label: "Active Votes", icon: Vote },
-  { href: "/member-portal", label: "Family & Documents", icon: FileText },
+  ...(features.events ? [{ href: "/events", label: "Events", icon: Calendar }] : []),
+  ...(features.voting ? [{ href: "/votes", label: "Active Votes", icon: Vote }] : []),
+  ...(features.memberPortal ? [{ href: "/member-portal", label: "Family & Documents", icon: FileText }] : []),
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -48,10 +49,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const user = getCurrentUser();
+  const { features } = useFeatures();
 
   const navItems = hasPermission(user.role, "ADMIN")
-    ? adminNavItems
-    : memberNavItems;
+    ? getAdminNavItems(features)
+    : getMemberNavItems(features);
 
   const handleLogout = async () => {
     await logout();

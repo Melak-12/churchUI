@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { AppShell } from '@/components/layout/app-shell';
+import { FeatureGuard } from '@/components/auth/feature-guard';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -219,7 +220,8 @@ export default function CommunicationsPage() {
   }
 
   return (
-    <AppShell>
+    <FeatureGuard feature="communications">
+      <AppShell>
       <div className="space-y-6">
         {/* Cohesive Header */}
         <div className="space-y-6">
@@ -340,5 +342,6 @@ export default function CommunicationsPage() {
         />
       </div>
     </AppShell>
+    </FeatureGuard>
   );
 }

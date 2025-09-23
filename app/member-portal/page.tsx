@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AppShell } from "@/components/layout/app-shell";
 import { AuthGuard } from "@/components/auth/auth-guard";
+import { FeatureGuard } from "@/components/auth/feature-guard";
 import { FamilyManagement } from "@/components/member-portal/family-management";
 import { DocumentLibrary } from "@/components/member-portal/document-library";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,8 +18,9 @@ import { Users, FileText, Calendar, CreditCard } from "lucide-react";
 
 export default function MemberPortalPage() {
   return (
-    <AuthGuard>
-      <AppShell>
+    <FeatureGuard feature="memberPortal">
+      <AuthGuard>
+        <AppShell>
         <div className="space-y-6">
           {/* Header */}
           <div>
@@ -54,6 +56,8 @@ export default function MemberPortalPage() {
         </div>
       </AppShell>
     </AuthGuard>
+    </FeatureGuard>
   );
 }
+
 

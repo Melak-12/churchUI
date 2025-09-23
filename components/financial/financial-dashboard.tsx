@@ -32,6 +32,9 @@ import {
   Loader2,
 } from "lucide-react";
 import { PaymentForm } from "./payment-form";
+import { TransactionManager } from "./transaction-manager";
+import { BudgetManager } from "./budget-manager";
+import { ReportsManager } from "./reports-manager";
 import apiClient from "@/lib/api";
 
 interface FinancialStats {
@@ -122,7 +125,7 @@ export function FinancialDashboard() {
         setRecentPayments(paymentsResponse.data.data.payments);
       }
 
-      if (membersResponse.success) {
+      if (membersResponse.members) {
         setMembers(membersResponse.members);
       }
     } catch (err: any) {
@@ -379,9 +382,11 @@ export function FinancialDashboard() {
       )}
 
       <Tabs defaultValue="payments" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="payments">Recent Payments</TabsTrigger>
-          <TabsTrigger value="breakdown">Payment Breakdown</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="payments">Payments</TabsTrigger>
+          <TabsTrigger value="transactions">Transactions</TabsTrigger>
+          <TabsTrigger value="budgets">Budgets</TabsTrigger>
+          <TabsTrigger value="breakdown">Breakdown</TabsTrigger>
           <TabsTrigger value="reports">Reports</TabsTrigger>
         </TabsList>
 
@@ -442,6 +447,14 @@ export function FinancialDashboard() {
           </Card>
         </TabsContent>
 
+        <TabsContent value="transactions" className="space-y-4">
+          <TransactionManager onTransactionUpdate={fetchData} />
+        </TabsContent>
+
+        <TabsContent value="budgets" className="space-y-4">
+          <BudgetManager onBudgetUpdate={fetchData} />
+        </TabsContent>
+
         <TabsContent value="breakdown" className="space-y-4">
           <Card>
             <CardHeader>
@@ -496,34 +509,7 @@ export function FinancialDashboard() {
         </TabsContent>
 
         <TabsContent value="reports" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Financial Reports</CardTitle>
-              <CardDescription>
-                Generate and download financial reports
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Button variant="outline" className="h-20 flex-col">
-                  <Download className="w-6 h-6 mb-2" />
-                  Payment Report
-                </Button>
-                <Button variant="outline" className="h-20 flex-col">
-                  <BarChart3 className="w-6 h-6 mb-2" />
-                  Financial Summary
-                </Button>
-                <Button variant="outline" className="h-20 flex-col">
-                  <Users className="w-6 h-6 mb-2" />
-                  Member Contributions
-                </Button>
-                <Button variant="outline" className="h-20 flex-col">
-                  <Calendar className="w-6 h-6 mb-2" />
-                  Monthly Report
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <ReportsManager onReportGenerated={fetchData} />
         </TabsContent>
       </Tabs>
     </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { AppShell } from '@/components/layout/app-shell';
+import { FeatureGuard } from '@/components/auth/feature-guard';
 import { VoteCard } from '@/components/voting/vote-card';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -35,7 +36,8 @@ export default function VotingPage() {
     fetchVotes();
   }, [statusFilter]);
   return (
-    <AppShell>
+    <FeatureGuard feature="voting">
+      <AppShell>
       <div className="space-y-6">
         {/* Cohesive Header */}
         <div className="space-y-6">
@@ -139,5 +141,6 @@ export default function VotingPage() {
         )}
       </div>
     </AppShell>
+    </FeatureGuard>
   );
 }

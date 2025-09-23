@@ -89,6 +89,13 @@ export interface Settings {
   twilioSenderId: string;
   androidSenderId?: string;
   privacyPolicyUrl?: string;
+  features?: {
+    events: boolean;
+    financial: boolean;
+    communications: boolean;
+    voting: boolean;
+    memberPortal: boolean;
+  };
 }
 
 export type UserRole = "ADMIN" | "MEMBER" | "GUEST";
