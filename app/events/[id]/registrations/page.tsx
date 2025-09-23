@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Select,
   SelectContent,
@@ -57,6 +58,8 @@ export default function EventRegistrationsPage() {
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [debugInfo, setDebugInfo] = useState<any>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusFilter, setStatusFilter] = useState("all");
   const [showAddForm, setShowAddForm] = useState(false);
   const [newRegistration, setNewRegistration] = useState({
@@ -85,6 +88,10 @@ export default function EventRegistrationsPage() {
 
       console.log("Event data received:", eventData);
       console.log("Registrations data received:", registrationsData);
+      console.log("🎯 Event Status:", eventData.status);
+      console.log("📅 Registration Deadline:", eventData.registrationDeadline);
+      console.log("👥 Capacity:", eventData.capacity);
+      console.log("📝 Registration Required:", eventData.registrationRequired);
 
       setEvent(eventData);
       setRegistrations(registrationsData);
@@ -120,28 +127,63 @@ export default function EventRegistrationsPage() {
 
     if (!newRegistration.memberId) {
       toast({
-        title: "Validation Error",
-        description: "Please select a member",
+        title: "❌ Validation Error",
+        description: "Please select a member to register",
         variant: "destructive",
       });
       return;
     }
 
+    setIsSubmitting(true);
+    setDebugInfo(null);
+
+    const registrationData = {
+      eventId,
+      memberId: newRegistration.memberId,
+      notes: newRegistration.notes,
+      emergencyContact: newRegistration.emergencyContact.name
+        ? newRegistration.emergencyContact
+        : undefined,
+      dietaryRestrictions: newRegistration.dietaryRestrictions || undefined,
+      specialRequirements: newRegistration.specialRequirements || undefined,
+    };
+
+    console.log("🚀 Starting registration process...");
+    console.log("📋 Registration data:", registrationData);
+    console.log("🎯 Event ID:", eventId);
+
+    // Check API client state
+    console.log(
+      "🔑 API Client token:",
+      apiClient.token ? "Present" : "Missing"
+    );
+    console.log(
+      "🌐 API Base URL:",
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
+    );
+
     try {
-      await apiClient.registerForEvent(eventId, {
+      // Test API client connectivity first
+      console.log("🧪 Testing API client connectivity...");
+      try {
+        const healthCheck = await apiClient.healthCheck();
+        console.log("✅ Health check successful:", healthCheck);
+      } catch (healthErr) {
+        console.error("❌ Health check failed:", healthErr);
+      }
+
+      console.log("📡 Calling API: registerForEvent");
+      const response = await apiClient.registerForEvent(
         eventId,
-        memberId: newRegistration.memberId,
-        notes: newRegistration.notes,
-        emergencyContact: newRegistration.emergencyContact.name
-          ? newRegistration.emergencyContact
-          : undefined,
-        dietaryRestrictions: newRegistration.dietaryRestrictions || undefined,
-        specialRequirements: newRegistration.specialRequirements || undefined,
-      });
+        registrationData
+      );
+
+      console.log("✅ Registration successful:", response);
 
       toast({
-        title: "Success",
-        description: "Registration added successfully",
+        title: "🎉 Success!",
+        description:
+          "Registration added successfully! The member has been registered for this event.",
       });
 
       setNewRegistration({
@@ -154,11 +196,70 @@ export default function EventRegistrationsPage() {
       setShowAddForm(false);
       await fetchData();
     } catch (err: any) {
+      console.error("❌ Registration failed:", err);
+      console.error("❌ Error details:", {
+        message: err.message,
+        stack: err.stack,
+        name: err.name,
+        response: err.response,
+        config: err.config,
+      });
+
+      const debugData = {
+        error: err.message,
+        errorName: err.name,
+        errorStack: err.stack,
+        status: err.response?.status,
+        statusText: err.response?.statusText,
+        responseData: err.response?.data,
+        url: err.config?.url || err.request?.url,
+        method: err.config?.method || err.request?.method,
+        headers: err.config?.headers || err.request?.headers,
+        timestamp: new Date().toISOString(),
+        registrationData: registrationData,
+        eventId: eventId,
+        fullError: err,
+      };
+
+      setDebugInfo(debugData);
+
+      // Enhanced error message based on status code
+      let errorTitle = "❌ Registration Failed";
+      let errorDescription = err.message || "Failed to add registration";
+
+      if (err.response?.status === 401) {
+        errorTitle = "🔐 Authentication Error";
+        errorDescription =
+          "You need to be logged in to register members. Please log in and try again.";
+      } else if (err.response?.status === 403) {
+        errorTitle = "🚫 Permission Denied";
+        errorDescription =
+          "You don't have permission to register members for this event. Admin access required.";
+      } else if (err.response?.status === 400) {
+        errorTitle = "📝 Validation Error";
+        errorDescription =
+          err.response?.data?.message ||
+          "Please check your input and try again.";
+      } else if (err.response?.status === 409) {
+        errorTitle = "⚠️ Already Registered";
+        errorDescription = "This member is already registered for this event.";
+      } else if (err.response?.status === 404) {
+        errorTitle = "🔍 Event Not Found";
+        errorDescription =
+          "The event you're trying to register for doesn't exist or has been deleted.";
+      } else if (err.response?.status >= 500) {
+        errorTitle = "🔧 Server Error";
+        errorDescription =
+          "There's a problem with the server. Please try again later or contact support.";
+      }
+
       toast({
-        title: "Error",
-        description: err.message || "Failed to add registration",
+        title: errorTitle,
+        description: errorDescription,
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -272,11 +373,64 @@ export default function EventRegistrationsPage() {
             </div>
           </div>
 
-          <Button onClick={() => setShowAddForm(true)}>
+          <Button
+            onClick={() => setShowAddForm(true)}
+            disabled={event.status !== "PUBLISHED"}
+            title={
+              event.status !== "PUBLISHED"
+                ? "Event must be published to allow registrations"
+                : ""
+            }
+          >
             <UserPlus className="h-4 w-4 mr-2" />
             Add Registration
           </Button>
         </div>
+
+        {/* Event Status Alert */}
+        {event.status !== "PUBLISHED" && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              <div className="space-y-2">
+                <div className="font-semibold">
+                  ⚠️ Event Not Available for Registration
+                </div>
+                <div>
+                  <strong>Current Status:</strong> {event.status}
+                </div>
+                <div>
+                  <strong>Required Status:</strong> PUBLISHED
+                </div>
+                <div className="text-sm">
+                  This event needs to be published before members can register.
+                  Only published events accept registrations.
+                </div>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {event.registrationDeadline &&
+          new Date() > new Date(event.registrationDeadline) && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                <div className="space-y-2">
+                  <div className="font-semibold">
+                    ⏰ Registration Deadline Passed
+                  </div>
+                  <div>
+                    <strong>Deadline:</strong>{" "}
+                    {format(new Date(event.registrationDeadline), "PPP 'at' p")}
+                  </div>
+                  <div className="text-sm">
+                    The registration deadline for this event has passed.
+                  </div>
+                </div>
+              </AlertDescription>
+            </Alert>
+          )}
 
         {/* Event Info */}
         <Card>
@@ -454,15 +608,100 @@ export default function EventRegistrationsPage() {
                 </div>
 
                 <div className="flex space-x-2">
-                  <Button type="submit">Add Registration</Button>
+                  <Button type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Registering...
+                      </>
+                    ) : (
+                      <>
+                        <UserPlus className="h-4 w-4 mr-2" />
+                        Add Registration
+                      </>
+                    )}
+                  </Button>
                   <Button
                     type="button"
                     variant="outline"
                     onClick={() => setShowAddForm(false)}
+                    disabled={isSubmitting}
                   >
                     Cancel
                   </Button>
                 </div>
+
+                {/* Debug Information */}
+                {debugInfo && (
+                  <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <details>
+                      <summary className="cursor-pointer text-sm font-medium text-red-800 hover:text-red-900">
+                        🔍 Click to view debug information
+                      </summary>
+                      <div className="mt-3 p-3 bg-white border border-red-200 rounded text-xs font-mono">
+                        <div className="space-y-2">
+                          <div>
+                            <strong>Error:</strong> {debugInfo.error}
+                          </div>
+                          <div>
+                            <strong>Error Name:</strong> {debugInfo.errorName}
+                          </div>
+                          <div>
+                            <strong>Status:</strong> {debugInfo.status}{" "}
+                            {debugInfo.statusText}
+                          </div>
+                          <div>
+                            <strong>URL:</strong> {debugInfo.url}
+                          </div>
+                          <div>
+                            <strong>Method:</strong> {debugInfo.method}
+                          </div>
+                          <div>
+                            <strong>Timestamp:</strong> {debugInfo.timestamp}
+                          </div>
+                          <div>
+                            <strong>Event ID:</strong> {debugInfo.eventId}
+                          </div>
+
+                          {debugInfo.registrationData && (
+                            <div>
+                              <strong>Registration Data:</strong>
+                              <pre className="mt-1 p-2 bg-gray-50 border rounded overflow-auto max-h-40">
+                                {JSON.stringify(
+                                  debugInfo.registrationData,
+                                  null,
+                                  2
+                                )}
+                              </pre>
+                            </div>
+                          )}
+
+                          {debugInfo.responseData && (
+                            <div>
+                              <strong>Server Response:</strong>
+                              <pre className="mt-1 p-2 bg-gray-50 border rounded overflow-auto max-h-40">
+                                {JSON.stringify(
+                                  debugInfo.responseData,
+                                  null,
+                                  2
+                                )}
+                              </pre>
+                            </div>
+                          )}
+
+                          {debugInfo.headers && (
+                            <div>
+                              <strong>Request Headers:</strong>
+                              <pre className="mt-1 p-2 bg-gray-50 border rounded overflow-auto max-h-40">
+                                {JSON.stringify(debugInfo.headers, null, 2)}
+                              </pre>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </details>
+                  </div>
+                )}
               </form>
             </CardContent>
           </Card>

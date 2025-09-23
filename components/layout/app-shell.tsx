@@ -15,6 +15,9 @@ import {
   CheckCircle,
   LogOut,
   Calendar,
+  DollarSign,
+  FileText,
+  UserCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -27,6 +30,7 @@ const adminNavItems = [
   { href: "/events", label: "Events", icon: Calendar },
   { href: "/voting", label: "Voting", icon: Vote },
   { href: "/communications", label: "Communications", icon: MessageSquare },
+  { href: "/financial", label: "Financial", icon: DollarSign },
   { href: "/profile", label: "Profile", icon: User },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
@@ -36,6 +40,7 @@ const memberNavItems = [
   { href: "/eligibility", label: "My Eligibility", icon: CheckCircle },
   { href: "/events", label: "Events", icon: Calendar },
   { href: "/votes", label: "Active Votes", icon: Vote },
+  { href: "/member-portal", label: "Family & Documents", icon: FileText },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -70,7 +75,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         )}
       >
         <div className="flex items-center justify-between p-4 border-b">
-          <h1 className="text-xl font-bold text-foreground">Community Church</h1>
+          <h1 className="text-xl font-bold text-foreground">
+            Community Church
+          </h1>
           <Button
             variant="ghost"
             size="sm"

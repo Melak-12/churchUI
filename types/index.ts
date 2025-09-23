@@ -168,7 +168,7 @@ export interface EventRegistration {
     phone: string;
     email?: string;
   };
-  status: "REGISTERED" | "ATTENDED" | "CANCELLED" | "NO_SHOW";
+  status: "REGISTERED" | "ATTENDED" | "CANCELLED" | "NO_SHOW" | "WAITLISTED";
   registeredAt: string;
   attendedAt?: string;
   notes?: string;
@@ -256,6 +256,7 @@ export interface EventResourceRequest {
 
 export interface RegisterEventRequest {
   eventId: string;
+  memberId?: string; // Optional for self-registration, required for admin registration
   notes?: string;
   emergencyContact?: {
     name: string;

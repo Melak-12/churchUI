@@ -88,6 +88,29 @@ class ApiClient {
     }
   }
 
+  // Generic HTTP methods
+  async get<T>(endpoint: string): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, { method: "GET" });
+  }
+
+  async post<T>(endpoint: string, data?: any): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, {
+      method: "POST",
+      body: data ? JSON.stringify(data) : undefined,
+    });
+  }
+
+  async put<T>(endpoint: string, data?: any): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, {
+      method: "PUT",
+      body: data ? JSON.stringify(data) : undefined,
+    });
+  }
+
+  async delete<T>(endpoint: string): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, { method: "DELETE" });
+  }
+
   setToken(token: string) {
     this.token = token;
     if (typeof window !== "undefined") {
@@ -142,6 +165,35 @@ class ApiClient {
       method: "POST",
     });
     this.clearToken();
+  }
+
+  async getCurrentUser(): Promise<any> {
+    const response = await this.request<{ user: any }>("/api/auth/me");
+    return response.data!.user;
+  }
+
+  async updateProfile(profileData: {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    phone?: string;
+    address?: string;
+  }): Promise<any> {
+    const response = await this.request<{ user: any }>("/api/auth/profile", {
+      method: "PUT",
+      body: JSON.stringify(profileData),
+    });
+    return response.data!.user;
+  }
+
+  async changePassword(passwordData: {
+    currentPassword: string;
+    newPassword: string;
+  }): Promise<void> {
+    await this.request("/api/auth/change-password", {
+      method: "PUT",
+      body: JSON.stringify(passwordData),
+    });
   }
 
   // Members endpoints
@@ -536,7 +588,7 @@ class ApiClient {
     registrationData: RegisterEventRequest
   ): Promise<EventRegistration> {
     const response = await this.request<EventRegistration>(
-      `/api/events/${eventId}/register`,
+      `/api/event-registration/${eventId}/register`,
       {
         method: "POST",
         body: JSON.stringify(registrationData),
@@ -669,6 +721,267 @@ class ApiClient {
     await this.request(`/api/events/${eventId}/resources/${resourceId}`, {
       method: "DELETE",
     });
+  }
+
+  // Financial Management endpoints
+  async getPayments(params?: {
+    page?: number;
+    limit?: number;
+    memberId?: string;
+    type?: string;
+    status?: string;
+    startDate?: string;
+    endDate?: string;
+  }): Promise<{ payments: any[]; pagination: any }> {
+    const searchParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined) {
+          searchParams.append(key, value.toString());
+        }
+      });
+    }
+
+    const queryString = searchParams.toString();
+    const endpoint = queryString
+      ? `/api/financial/payments?${queryString}`
+      : "/api/financial/payments";
+
+    const response = await this.request<{ payments: any[]; pagination: any }>(
+      endpoint
+    );
+    return response.data!;
+  }
+
+  async createPayment(paymentData: {
+    memberId: string;
+    type: string;
+    amount: number;
+    method: string;
+    paymentDate?: string;
+    description?: string;
+    category?: string;
+    metadata?: any;
+  }): Promise<any> {
+    const response = await this.request<{ payment: any }>(
+      "/api/financial/payments",
+      {
+        method: "POST",
+        body: JSON.stringify(paymentData),
+      }
+    );
+    return response.data!.payment;
+  }
+
+  async getPaymentStats(startDate?: string, endDate?: string): Promise<any> {
+    const searchParams = new URLSearchParams();
+    if (startDate) searchParams.append("startDate", startDate);
+    if (endDate) searchParams.append("endDate", endDate);
+
+    const queryString = searchParams.toString();
+    const endpoint = queryString
+      ? `/api/financial/payments/stats?${queryString}`
+      : "/api/financial/payments/stats";
+
+    const response = await this.request<{ stats: any }>(endpoint);
+    return response.data!.stats;
+  }
+
+  async getFinancialSummary(
+    startDate?: string,
+    endDate?: string
+  ): Promise<any> {
+    const searchParams = new URLSearchParams();
+    if (startDate) searchParams.append("startDate", startDate);
+    if (endDate) searchParams.append("endDate", endDate);
+
+    const queryString = searchParams.toString();
+    const endpoint = queryString
+      ? `/api/financial/financial/summary?${queryString}`
+      : "/api/financial/financial/summary";
+
+    const response = await this.request<any>(endpoint);
+    return response.data!;
+  }
+
+  async getTransactions(params?: {
+    page?: number;
+    limit?: number;
+    type?: string;
+    category?: string;
+    status?: string;
+    startDate?: string;
+    endDate?: string;
+  }): Promise<{ transactions: any[]; pagination: any }> {
+    const searchParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined) {
+          searchParams.append(key, value.toString());
+        }
+      });
+    }
+
+    const queryString = searchParams.toString();
+    const endpoint = queryString
+      ? `/api/financial/transactions?${queryString}`
+      : "/api/financial/transactions";
+
+    const response = await this.request<{
+      transactions: any[];
+      pagination: any;
+    }>(endpoint);
+    return response.data!;
+  }
+
+  async createTransaction(transactionData: {
+    type: string;
+    category: string;
+    amount: number;
+    description: string;
+    paymentMethod: string;
+    transactionDate?: string;
+    budgetCategory?: string;
+    tags?: string[];
+  }): Promise<any> {
+    const response = await this.request<{ transaction: any }>(
+      "/api/financial/transactions",
+      {
+        method: "POST",
+        body: JSON.stringify(transactionData),
+      }
+    );
+    return response.data!.transaction;
+  }
+
+  // Member Portal endpoints
+  async getFamily(): Promise<any> {
+    const response = await this.request<{ family: any }>(
+      "/api/member-portal/family"
+    );
+    return response.data!.family;
+  }
+
+  async getDocuments(params?: {
+    category?: string;
+    search?: string;
+    tags?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<{ documents: any[] }> {
+    const searchParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined) {
+          searchParams.append(key, value.toString());
+        }
+      });
+    }
+
+    const queryString = searchParams.toString();
+    const endpoint = queryString
+      ? `/api/member-portal/documents?${queryString}`
+      : "/api/member-portal/documents";
+
+    const response = await this.request<{ documents: any[] }>(endpoint);
+    return response.data!;
+  }
+
+  async getDocumentCategories(): Promise<{ categories: any[] }> {
+    const response = await this.request<{ categories: any[] }>(
+      "/api/member-portal/documents/categories"
+    );
+    return response.data!;
+  }
+
+  async downloadDocument(documentId: string): Promise<Blob> {
+    const response = await fetch(
+      `${this.baseURL}/api/member-portal/documents/${documentId}/download`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to download document");
+    }
+
+    return response.blob();
+  }
+
+  // Enhanced Event Registration endpoints
+  async registerForEventNew(
+    eventId: string,
+    registrationData: {
+      notes?: string;
+      emergencyContact?: {
+        name?: string;
+        phone?: string;
+      };
+      dietaryRestrictions?: string;
+      specialRequirements?: string;
+    }
+  ): Promise<any> {
+    const response = await this.request<{ registration: any }>(
+      `/api/event-registration/${eventId}/register`,
+      {
+        method: "POST",
+        body: JSON.stringify(registrationData),
+      }
+    );
+    return response.data!.registration;
+  }
+
+  async cancelEventRegistration(eventId: string): Promise<any> {
+    const response = await this.request<{ registration: any }>(
+      `/api/event-registration/${eventId}/register/cancel`,
+      {
+        method: "PUT",
+      }
+    );
+    return response.data!.registration;
+  }
+
+  async getMyRegistrations(params?: {
+    status?: string;
+    upcoming?: boolean;
+  }): Promise<{ registrations: any[] }> {
+    const searchParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined) {
+          searchParams.append(key, value.toString());
+        }
+      });
+    }
+
+    const queryString = searchParams.toString();
+    const endpoint = queryString
+      ? `/api/event-registration/my-registrations?${queryString}`
+      : "/api/event-registration/my-registrations";
+
+    const response = await this.request<{ registrations: any[] }>(endpoint);
+    return response.data!;
+  }
+
+  async getEventRegistrationsNew(
+    eventId: string,
+    status?: string
+  ): Promise<{ registrations: any[]; stats: any }> {
+    const searchParams = new URLSearchParams();
+    if (status) searchParams.append("status", status);
+
+    const queryString = searchParams.toString();
+    const endpoint = queryString
+      ? `/api/event-registration/${eventId}/registrations?${queryString}`
+      : `/api/event-registration/${eventId}/registrations`;
+
+    const response = await this.request<{ registrations: any[]; stats: any }>(
+      endpoint
+    );
+    return response.data!;
   }
 
   // Health check
