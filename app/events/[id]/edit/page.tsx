@@ -56,6 +56,7 @@ export default function EditEventPage() {
     registrationDeadline: "",
     allowWaitlist: false,
     maxWaitlist: undefined,
+    status: "DRAFT",
     isRecurring: false,
     recurrencePattern: undefined,
     recurrenceEndDate: "",
@@ -87,6 +88,7 @@ export default function EditEventPage() {
           : "",
         allowWaitlist: event.allowWaitlist,
         maxWaitlist: event.maxWaitlist,
+        status: event.status,
         isRecurring: event.isRecurring,
         recurrencePattern: event.recurrencePattern,
         recurrenceEndDate: event.recurrenceEndDate
@@ -182,9 +184,9 @@ export default function EditEventPage() {
   if (loadingEvent) {
     return (
       <AppShell>
-        <div className='flex items-center justify-center h-64'>
-          <div className='flex items-center space-x-2'>
-            <div className='animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600'></div>
+        <div className="flex items-center justify-center h-64">
+          <div className="flex items-center space-x-2">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
             <span>Loading event...</span>
           </div>
         </div>
@@ -194,25 +196,25 @@ export default function EditEventPage() {
 
   return (
     <AppShell>
-      <div className='space-y-6'>
+      <div className="space-y-6">
         {/* Header */}
-        <div className='flex items-center space-x-4'>
-          <Button variant='outline' size='sm' asChild>
+        <div className="flex items-center space-x-4">
+          <Button variant="outline" size="sm" asChild>
             <Link href={`/events/${eventId}`}>
-              <ArrowLeft className='h-4 w-4 mr-2' />
+              <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Event
             </Link>
           </Button>
           <div>
-            <h1 className='text-2xl font-bold text-gray-900'>Edit Event</h1>
-            <p className='text-gray-600'>Update event details and settings</p>
+            <h1 className="text-2xl font-bold text-gray-900">Edit Event</h1>
+            <p className="text-gray-600">Update event details and settings</p>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className='space-y-6'>
-          <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Main Event Details */}
-            <div className='lg:col-span-2 space-y-6'>
+            <div className="lg:col-span-2 space-y-6">
               <Card>
                 <CardHeader>
                   <CardTitle>Event Details</CardTitle>
@@ -220,36 +222,36 @@ export default function EditEventPage() {
                     Basic information about the event
                   </CardDescription>
                 </CardHeader>
-                <CardContent className='space-y-4'>
-                  <div className='space-y-2'>
-                    <Label htmlFor='title'>Event Title *</Label>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="title">Event Title *</Label>
                     <Input
-                      id='title'
+                      id="title"
                       value={eventData.title}
                       onChange={(e) =>
                         handleInputChange("title", e.target.value)
                       }
-                      placeholder='Enter event title'
+                      placeholder="Enter event title"
                       required
                     />
                   </div>
 
-                  <div className='space-y-2'>
-                    <Label htmlFor='description'>Description</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="description">Description</Label>
                     <Textarea
-                      id='description'
+                      id="description"
                       value={eventData.description}
                       onChange={(e) =>
                         handleInputChange("description", e.target.value)
                       }
-                      placeholder='Enter event description'
+                      placeholder="Enter event description"
                       rows={3}
                     />
                   </div>
 
-                  <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                    <div className='space-y-2'>
-                      <Label htmlFor='type'>Event Type *</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="type">Event Type *</Label>
                       <Select
                         value={eventData.type}
                         onValueChange={(value) =>
@@ -257,41 +259,63 @@ export default function EditEventPage() {
                         }
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder='Select type' />
+                          <SelectValue placeholder="Select type" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value='SERVICE'>Service</SelectItem>
-                          <SelectItem value='MEETING'>Meeting</SelectItem>
-                          <SelectItem value='SPECIAL_OCCASION'>
+                          <SelectItem value="SERVICE">Service</SelectItem>
+                          <SelectItem value="MEETING">Meeting</SelectItem>
+                          <SelectItem value="SPECIAL_OCCASION">
                             Special Occasion
                           </SelectItem>
-                          <SelectItem value='CONFERENCE'>Conference</SelectItem>
-                          <SelectItem value='SOCIAL'>Social</SelectItem>
-                          <SelectItem value='OTHER'>Other</SelectItem>
+                          <SelectItem value="CONFERENCE">Conference</SelectItem>
+                          <SelectItem value="SOCIAL">Social</SelectItem>
+                          <SelectItem value="OTHER">Other</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
-                    <div className='space-y-2'>
-                      <Label htmlFor='location'>Location *</Label>
+                    <div className="space-y-2">
+                      <Label htmlFor="status">Status *</Label>
+                      <Select
+                        value={eventData.status || "DRAFT"}
+                        onValueChange={(value) =>
+                          handleInputChange("status", value)
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="DRAFT">Draft</SelectItem>
+                          <SelectItem value="PUBLISHED">Published</SelectItem>
+                          <SelectItem value="CANCELLED">Cancelled</SelectItem>
+                          <SelectItem value="COMPLETED">Completed</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="location">Location *</Label>
                       <Input
-                        id='location'
+                        id="location"
                         value={eventData.location}
                         onChange={(e) =>
                           handleInputChange("location", e.target.value)
                         }
-                        placeholder='Enter location'
+                        placeholder="Enter location"
                         required
                       />
                     </div>
                   </div>
 
-                  <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                    <div className='space-y-2'>
-                      <Label htmlFor='startDate'>Start Date & Time *</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="startDate">Start Date & Time *</Label>
                       <Input
-                        id='startDate'
-                        type='datetime-local'
+                        id="startDate"
+                        type="datetime-local"
                         value={eventData.startDate}
                         onChange={(e) =>
                           handleInputChange("startDate", e.target.value)
@@ -300,11 +324,11 @@ export default function EditEventPage() {
                       />
                     </div>
 
-                    <div className='space-y-2'>
-                      <Label htmlFor='endDate'>End Date & Time *</Label>
+                    <div className="space-y-2">
+                      <Label htmlFor="endDate">End Date & Time *</Label>
                       <Input
-                        id='endDate'
-                        type='datetime-local'
+                        id="endDate"
+                        type="datetime-local"
                         value={eventData.endDate}
                         onChange={(e) =>
                           handleInputChange("endDate", e.target.value)
@@ -324,27 +348,27 @@ export default function EditEventPage() {
                     Configure event registration and capacity
                   </CardDescription>
                 </CardHeader>
-                <CardContent className='space-y-4'>
-                  <div className='flex items-center space-x-2'>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center space-x-2">
                     <Switch
-                      id='registrationRequired'
+                      id="registrationRequired"
                       checked={eventData.registrationRequired}
                       onCheckedChange={(checked) =>
                         handleInputChange("registrationRequired", checked)
                       }
                     />
-                    <Label htmlFor='registrationRequired'>
+                    <Label htmlFor="registrationRequired">
                       Registration Required
                     </Label>
                   </div>
 
                   {eventData.registrationRequired && (
                     <>
-                      <div className='space-y-2'>
-                        <Label htmlFor='capacity'>Capacity</Label>
+                      <div className="space-y-2">
+                        <Label htmlFor="capacity">Capacity</Label>
                         <Input
-                          id='capacity'
-                          type='number'
+                          id="capacity"
+                          type="number"
                           value={eventData.capacity || ""}
                           onChange={(e) =>
                             handleInputChange(
@@ -354,17 +378,17 @@ export default function EditEventPage() {
                                 : undefined
                             )
                           }
-                          placeholder='Maximum number of attendees'
+                          placeholder="Maximum number of attendees"
                         />
                       </div>
 
-                      <div className='space-y-2'>
-                        <Label htmlFor='registrationDeadline'>
+                      <div className="space-y-2">
+                        <Label htmlFor="registrationDeadline">
                           Registration Deadline
                         </Label>
                         <Input
-                          id='registrationDeadline'
-                          type='datetime-local'
+                          id="registrationDeadline"
+                          type="datetime-local"
                           value={eventData.registrationDeadline || ""}
                           onChange={(e) =>
                             handleInputChange(
@@ -375,23 +399,23 @@ export default function EditEventPage() {
                         />
                       </div>
 
-                      <div className='flex items-center space-x-2'>
+                      <div className="flex items-center space-x-2">
                         <Switch
-                          id='allowWaitlist'
+                          id="allowWaitlist"
                           checked={eventData.allowWaitlist}
                           onCheckedChange={(checked) =>
                             handleInputChange("allowWaitlist", checked)
                           }
                         />
-                        <Label htmlFor='allowWaitlist'>Allow Waitlist</Label>
+                        <Label htmlFor="allowWaitlist">Allow Waitlist</Label>
                       </div>
 
                       {eventData.allowWaitlist && (
-                        <div className='space-y-2'>
-                          <Label htmlFor='maxWaitlist'>Max Waitlist Size</Label>
+                        <div className="space-y-2">
+                          <Label htmlFor="maxWaitlist">Max Waitlist Size</Label>
                           <Input
-                            id='maxWaitlist'
-                            type='number'
+                            id="maxWaitlist"
+                            type="number"
                             value={eventData.maxWaitlist || ""}
                             onChange={(e) =>
                               handleInputChange(
@@ -401,7 +425,7 @@ export default function EditEventPage() {
                                   : undefined
                               )
                             }
-                            placeholder='Maximum waitlist size'
+                            placeholder="Maximum waitlist size"
                           />
                         </div>
                       )}
@@ -416,24 +440,24 @@ export default function EditEventPage() {
                   <CardTitle>Recurring Events</CardTitle>
                   <CardDescription>Set up recurring events</CardDescription>
                 </CardHeader>
-                <CardContent className='space-y-4'>
-                  <div className='flex items-center space-x-2'>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center space-x-2">
                     <Switch
-                      id='isRecurring'
+                      id="isRecurring"
                       checked={eventData.isRecurring}
                       onCheckedChange={(checked) =>
                         handleInputChange("isRecurring", checked)
                       }
                     />
-                    <Label htmlFor='isRecurring'>
+                    <Label htmlFor="isRecurring">
                       This is a recurring event
                     </Label>
                   </div>
 
                   {eventData.isRecurring && (
-                    <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                      <div className='space-y-2'>
-                        <Label htmlFor='recurrencePattern'>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="recurrencePattern">
                           Recurrence Pattern
                         </Label>
                         <Select
@@ -443,22 +467,22 @@ export default function EditEventPage() {
                           }
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder='Select pattern' />
+                            <SelectValue placeholder="Select pattern" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value='DAILY'>Daily</SelectItem>
-                            <SelectItem value='WEEKLY'>Weekly</SelectItem>
-                            <SelectItem value='MONTHLY'>Monthly</SelectItem>
-                            <SelectItem value='YEARLY'>Yearly</SelectItem>
+                            <SelectItem value="DAILY">Daily</SelectItem>
+                            <SelectItem value="WEEKLY">Weekly</SelectItem>
+                            <SelectItem value="MONTHLY">Monthly</SelectItem>
+                            <SelectItem value="YEARLY">Yearly</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
 
-                      <div className='space-y-2'>
-                        <Label htmlFor='recurrenceEndDate'>End Date</Label>
+                      <div className="space-y-2">
+                        <Label htmlFor="recurrenceEndDate">End Date</Label>
                         <Input
-                          id='recurrenceEndDate'
-                          type='date'
+                          id="recurrenceEndDate"
+                          type="date"
                           value={eventData.recurrenceEndDate || ""}
                           onChange={(e) =>
                             handleInputChange(
@@ -475,20 +499,20 @@ export default function EditEventPage() {
             </div>
 
             {/* Sidebar */}
-            <div className='space-y-6'>
+            <div className="space-y-6">
               <Card>
                 <CardHeader>
                   <CardTitle>Actions</CardTitle>
                 </CardHeader>
-                <CardContent className='space-y-4'>
-                  <Button type='submit' className='w-full' disabled={loading}>
+                <CardContent className="space-y-4">
+                  <Button type="submit" className="w-full" disabled={loading}>
                     {loading ? "Updating..." : "Update Event"}
                   </Button>
 
                   <Button
-                    type='button'
-                    variant='outline'
-                    className='w-full'
+                    type="button"
+                    variant="outline"
+                    className="w-full"
                     asChild
                   >
                     <Link href={`/events/${eventId}`}>Cancel</Link>
@@ -500,9 +524,9 @@ export default function EditEventPage() {
                 <CardHeader>
                   <CardTitle>Quick Stats</CardTitle>
                 </CardHeader>
-                <CardContent className='space-y-2 text-sm text-gray-600'>
-                  <div className='flex items-center space-x-2'>
-                    <Calendar className='h-4 w-4' />
+                <CardContent className="space-y-2 text-sm text-gray-600">
+                  <div className="flex items-center space-x-2">
+                    <Calendar className="h-4 w-4" />
                     <span>
                       Duration:{" "}
                       {eventData.startDate && eventData.endDate
@@ -515,8 +539,8 @@ export default function EditEventPage() {
                     </span>
                   </div>
                   {eventData.capacity && (
-                    <div className='flex items-center space-x-2'>
-                      <Users className='h-4 w-4' />
+                    <div className="flex items-center space-x-2">
+                      <Users className="h-4 w-4" />
                       <span>Capacity: {eventData.capacity} people</span>
                     </div>
                   )}

@@ -248,6 +248,7 @@ export interface CreateEventRequest {
   registrationDeadline?: string;
   allowWaitlist: boolean;
   maxWaitlist?: number;
+  status?: "DRAFT" | "PUBLISHED" | "CANCELLED" | "COMPLETED";
   isRecurring: boolean;
   recurrencePattern?: "DAILY" | "WEEKLY" | "MONTHLY" | "YEARLY";
   recurrenceEndDate?: string;
