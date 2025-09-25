@@ -639,3 +639,4 @@ export function BudgetManager({ onBudgetUpdate }: BudgetManagerProps) {
     </div>
   );
 }
+

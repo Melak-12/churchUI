@@ -544,3 +544,4 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
     </Card>
   );
 }
+

@@ -386,3 +386,4 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
     </Card>
   );
 }
+

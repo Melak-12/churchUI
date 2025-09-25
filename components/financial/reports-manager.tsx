@@ -700,3 +700,4 @@ export function ReportsManager({ onReportGenerated }: ReportsManagerProps) {
     </div>
   );
 }
+
