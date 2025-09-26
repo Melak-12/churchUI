@@ -374,8 +374,8 @@ export default function VoteManagementPage() {
                         <AlertDialogTitle>Delete Vote</AlertDialogTitle>
                         <AlertDialogDescription>
                           Are you sure you want to delete this vote? This action
-                          cannot be undone. The vote "{vote.title}" will be
-                          permanently removed.
+                          cannot be undone. The vote &quot;{vote.title}&quot;
+                          will be permanently removed.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>

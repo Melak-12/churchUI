@@ -257,7 +257,8 @@ export function FinancialDashboard() {
           </p>
           <ul className="list-disc list-inside mt-1 space-y-1">
             <li>
-              Make sure you're logged in as an admin user (john.smith@email.com)
+              Make sure you&apos;re logged in as an admin user
+              (john.smith@email.com)
             </li>
             <li>Check that the backend server is running on port 3001</li>
             <li>Verify your authentication token is valid</li>

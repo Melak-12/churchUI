@@ -95,6 +95,8 @@ export interface Settings {
     communications: boolean;
     voting: boolean;
     memberPortal: boolean;
+    ministries: boolean;
+    attendance: boolean;
   };
 }
 
@@ -307,4 +309,365 @@ export interface EventQuery {
   search?: string;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
+}
+
+// Ministry Management Types
+export interface Ministry {
+  id: string;
+  _id?: string;
+  name: string;
+  description?: string;
+  category:
+    | "WORSHIP"
+    | "CHILDREN"
+    | "YOUTH"
+    | "ADULTS"
+    | "SENIORS"
+    | "OUTREACH"
+    | "ADMINISTRATION"
+    | "OTHER";
+  status: "ACTIVE" | "INACTIVE" | "PLANNING";
+  leader: {
+    _id: string;
+    firstName: string;
+    lastName: string;
+    email?: string;
+    phone?: string;
+  };
+  coLeaders?: Array<{
+    _id: string;
+    firstName: string;
+    lastName: string;
+    email?: string;
+    phone?: string;
+  }>;
+  members: Array<{
+    _id: string;
+    firstName: string;
+    lastName: string;
+    email?: string;
+    phone?: string;
+  }>;
+  meetingSchedule?: {
+    frequency: "WEEKLY" | "BIWEEKLY" | "MONTHLY" | "QUARTERLY" | "AS_NEEDED";
+    dayOfWeek?: number;
+    time?: string;
+    location?: string;
+    notes?: string;
+  };
+  goals?: string[];
+  budget?: {
+    allocated: number;
+    spent: number;
+    currency: string;
+  };
+  isActive: boolean;
+  createdBy?: {
+    _id: string;
+    firstName: string;
+    lastName: string;
+  };
+  createdAt?: string;
+  updatedAt?: string;
+  memberCount?: number;
+}
+
+export interface SmallGroup {
+  id: string;
+  _id?: string;
+  name: string;
+  description?: string;
+  ministry?: {
+    _id: string;
+    name: string;
+    category: string;
+  };
+  leader: {
+    _id: string;
+    firstName: string;
+    lastName: string;
+    email?: string;
+    phone?: string;
+  };
+  coLeaders?: Array<{
+    _id: string;
+    firstName: string;
+    lastName: string;
+    email?: string;
+    phone?: string;
+  }>;
+  members: Array<{
+    _id: string;
+    firstName: string;
+    lastName: string;
+    email?: string;
+    phone?: string;
+  }>;
+  maxMembers?: number;
+  meetingSchedule: {
+    frequency: "WEEKLY" | "BIWEEKLY" | "MONTHLY";
+    dayOfWeek: number;
+    time: string;
+    location: string;
+    address?: string;
+    notes?: string;
+  };
+  studyMaterial?: {
+    title: string;
+    author?: string;
+    startDate: string;
+    endDate?: string;
+    currentLesson?: number;
+    totalLessons?: number;
+  };
+  demographics?: {
+    ageRange?: {
+      min: number;
+      max: number;
+    };
+    targetAudience?: "SINGLES" | "COUPLES" | "FAMILIES" | "SENIORS" | "MIXED";
+    genderPreference?: "MALE" | "FEMALE" | "MIXED";
+  };
+  status: "ACTIVE" | "INACTIVE" | "FULL" | "RECRUITING";
+  isActive: boolean;
+  createdBy?: {
+    _id: string;
+    firstName: string;
+    lastName: string;
+  };
+  createdAt?: string;
+  updatedAt?: string;
+  memberCount?: number;
+  availableSpots?: number | null;
+  isFull?: boolean;
+  nextMeeting?: string | null;
+}
+
+// Attendance Management Types
+export interface Attendance {
+  id: string;
+  _id?: string;
+  member: {
+    _id: string;
+    firstName: string;
+    lastName: string;
+    email?: string;
+    phone?: string;
+  };
+  event?: {
+    _id: string;
+    title: string;
+    startDate: string;
+    endDate: string;
+  };
+  service?: {
+    date: string;
+    type: "SUNDAY_SERVICE" | "WEDNESDAY_SERVICE" | "SPECIAL_SERVICE" | "OTHER";
+    time?: string;
+  };
+  ministry?: {
+    _id: string;
+    name: string;
+    category: string;
+  };
+  smallGroup?: {
+    _id: string;
+    name: string;
+  };
+  checkInTime: string;
+  checkOutTime?: string;
+  method: "MANUAL" | "QR_CODE" | "MOBILE_APP" | "KIOSK";
+  notes?: string;
+  recordedBy: {
+    _id: string;
+    firstName: string;
+    lastName: string;
+  };
+  isActive: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  duration?: number | null;
+  isPresent?: boolean;
+}
+
+// Request Types
+export interface CreateMinistryRequest {
+  name: string;
+  description?: string;
+  category:
+    | "WORSHIP"
+    | "CHILDREN"
+    | "YOUTH"
+    | "ADULTS"
+    | "SENIORS"
+    | "OUTREACH"
+    | "ADMINISTRATION"
+    | "OTHER";
+  leader: string;
+  coLeaders?: string[];
+  members?: string[];
+  meetingSchedule?: {
+    frequency: "WEEKLY" | "BIWEEKLY" | "MONTHLY" | "QUARTERLY" | "AS_NEEDED";
+    dayOfWeek?: number;
+    time?: string;
+    location?: string;
+    notes?: string;
+  };
+  goals?: string[];
+  budget?: {
+    allocated: number;
+    currency: string;
+  };
+}
+
+export interface UpdateMinistryRequest {
+  name?: string;
+  description?: string;
+  category?:
+    | "WORSHIP"
+    | "CHILDREN"
+    | "YOUTH"
+    | "ADULTS"
+    | "SENIORS"
+    | "OUTREACH"
+    | "ADMINISTRATION"
+    | "OTHER";
+  status?: "ACTIVE" | "INACTIVE" | "PLANNING";
+  leader?: string;
+  coLeaders?: string[];
+  members?: string[];
+  meetingSchedule?: {
+    frequency: "WEEKLY" | "BIWEEKLY" | "MONTHLY" | "QUARTERLY" | "AS_NEEDED";
+    dayOfWeek?: number;
+    time?: string;
+    location?: string;
+    notes?: string;
+  };
+  goals?: string[];
+  budget?: {
+    allocated: number;
+    spent: number;
+    currency: string;
+  };
+}
+
+export interface CreateSmallGroupRequest {
+  name: string;
+  description?: string;
+  ministry?: string;
+  leader: string;
+  coLeaders?: string[];
+  members?: string[];
+  maxMembers?: number;
+  meetingSchedule: {
+    frequency: "WEEKLY" | "BIWEEKLY" | "MONTHLY";
+    dayOfWeek: number;
+    time: string;
+    location: string;
+    address?: string;
+    notes?: string;
+  };
+  studyMaterial?: {
+    title: string;
+    author?: string;
+    startDate: string;
+    endDate?: string;
+    currentLesson?: number;
+    totalLessons?: number;
+  };
+  demographics?: {
+    ageRange?: {
+      min: number;
+      max: number;
+    };
+    targetAudience?: "SINGLES" | "COUPLES" | "FAMILIES" | "SENIORS" | "MIXED";
+    genderPreference?: "MALE" | "FEMALE" | "MIXED";
+  };
+}
+
+export interface UpdateSmallGroupRequest {
+  name?: string;
+  description?: string;
+  ministry?: string;
+  leader?: string;
+  coLeaders?: string[];
+  members?: string[];
+  maxMembers?: number;
+  meetingSchedule?: {
+    frequency: "WEEKLY" | "BIWEEKLY" | "MONTHLY";
+    dayOfWeek: number;
+    time: string;
+    location: string;
+    address?: string;
+    notes?: string;
+  };
+  studyMaterial?: {
+    title: string;
+    author?: string;
+    startDate: string;
+    endDate?: string;
+    currentLesson?: number;
+    totalLessons?: number;
+  };
+  demographics?: {
+    ageRange?: {
+      min: number;
+      max: number;
+    };
+    targetAudience?: "SINGLES" | "COUPLES" | "FAMILIES" | "SENIORS" | "MIXED";
+    genderPreference?: "MALE" | "FEMALE" | "MIXED";
+  };
+  status?: "ACTIVE" | "INACTIVE" | "FULL" | "RECRUITING";
+}
+
+export interface CreateAttendanceRequest {
+  member: string;
+  event?: string;
+  service?: {
+    date: string;
+    type: "SUNDAY_SERVICE" | "WEDNESDAY_SERVICE" | "SPECIAL_SERVICE" | "OTHER";
+    time?: string;
+  };
+  ministry?: string;
+  smallGroup?: string;
+  checkInTime?: string;
+  method?: "MANUAL" | "QR_CODE" | "MOBILE_APP" | "KIOSK";
+  notes?: string;
+}
+
+export interface UpdateAttendanceRequest {
+  checkOutTime?: string;
+  notes?: string;
+}
+
+// Query Types
+export interface MinistryQuery {
+  page?: number;
+  limit?: number;
+  category?: string;
+  status?: string;
+  leader?: string;
+  search?: string;
+}
+
+export interface SmallGroupQuery {
+  page?: number;
+  limit?: number;
+  ministry?: string;
+  status?: string;
+  leader?: string;
+  available?: boolean;
+  search?: string;
+}
+
+export interface AttendanceQuery {
+  page?: number;
+  limit?: number;
+  member?: string;
+  event?: string;
+  ministry?: string;
+  smallGroup?: string;
+  serviceType?: string;
+  startDate?: string;
+  endDate?: string;
 }

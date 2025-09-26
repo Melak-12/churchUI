@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { AppShell } from "@/components/layout/app-shell";
 import {
   Card,
@@ -84,9 +85,11 @@ export default function SettingsPage() {
                   <div className="flex items-center space-x-4 mt-2">
                     <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
                       {settings.logoUrl ? (
-                        <img
+                        <Image
                           src={settings.logoUrl}
                           alt="Logo"
+                          width={64}
+                          height={64}
                           className="w-full h-full object-contain rounded-lg"
                         />
                       ) : (
@@ -153,60 +156,86 @@ export default function SettingsPage() {
                   <div className="flex items-center justify-between">
                     <div>
                       <Label htmlFor="events-toggle">Events Management</Label>
-                      <p className="text-sm text-muted-foreground">Manage church events, registrations, and volunteers</p>
+                      <p className="text-sm text-muted-foreground">
+                        Manage church events, registrations, and volunteers
+                      </p>
                     </div>
                     <Switch
                       id="events-toggle"
                       checked={features.events}
-                      onCheckedChange={(checked) => updateFeatures({ events: checked })}
+                      onCheckedChange={(checked) =>
+                        updateFeatures({ events: checked })
+                      }
                     />
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <div>
-                      <Label htmlFor="financial-toggle">Financial Management</Label>
-                      <p className="text-sm text-muted-foreground">Track payments, transactions, and budgets</p>
+                      <Label htmlFor="financial-toggle">
+                        Financial Management
+                      </Label>
+                      <p className="text-sm text-muted-foreground">
+                        Track payments, transactions, and budgets
+                      </p>
                     </div>
                     <Switch
                       id="financial-toggle"
                       checked={features.financial}
-                      onCheckedChange={(checked) => updateFeatures({ financial: checked })}
+                      onCheckedChange={(checked) =>
+                        updateFeatures({ financial: checked })
+                      }
                     />
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <div>
-                      <Label htmlFor="communications-toggle">Communications</Label>
-                      <p className="text-sm text-muted-foreground">Send SMS and manage member communications</p>
+                      <Label htmlFor="communications-toggle">
+                        Communications
+                      </Label>
+                      <p className="text-sm text-muted-foreground">
+                        Send SMS and manage member communications
+                      </p>
                     </div>
                     <Switch
                       id="communications-toggle"
                       checked={features.communications}
-                      onCheckedChange={(checked) => updateFeatures({ communications: checked })}
+                      onCheckedChange={(checked) =>
+                        updateFeatures({ communications: checked })
+                      }
                     />
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <div>
                       <Label htmlFor="voting-toggle">Voting System</Label>
-                      <p className="text-sm text-muted-foreground">Create and manage member voting</p>
+                      <p className="text-sm text-muted-foreground">
+                        Create and manage member voting
+                      </p>
                     </div>
                     <Switch
                       id="voting-toggle"
                       checked={features.voting}
-                      onCheckedChange={(checked) => updateFeatures({ voting: checked })}
+                      onCheckedChange={(checked) =>
+                        updateFeatures({ voting: checked })
+                      }
                     />
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <div>
-                      <Label htmlFor="member-portal-toggle">Member Portal</Label>
-                      <p className="text-sm text-muted-foreground">Family management and document library</p>
+                      <Label htmlFor="member-portal-toggle">
+                        Member Portal
+                      </Label>
+                      <p className="text-sm text-muted-foreground">
+                        Family management and document library
+                      </p>
                     </div>
                     <Switch
                       id="member-portal-toggle"
                       checked={features.memberPortal}
-                      onCheckedChange={(checked) => updateFeatures({ memberPortal: checked })}
+                      onCheckedChange={(checked) =>
+                        updateFeatures({ memberPortal: checked })
+                      }
                     />
                   </div>
                 </div>

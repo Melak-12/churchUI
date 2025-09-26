@@ -140,5 +140,7 @@ export const mockSettings: Settings = {
     communications: true,
     voting: true,
     memberPortal: true,
+    ministries: true,
+    attendance: true,
   },
 };

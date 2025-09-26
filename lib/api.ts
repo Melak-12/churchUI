@@ -13,6 +13,18 @@ import {
   AssignVolunteerRequest,
   CreateResourceRequest,
   EventQuery,
+  Ministry,
+  SmallGroup,
+  Attendance,
+  CreateMinistryRequest,
+  UpdateMinistryRequest,
+  CreateSmallGroupRequest,
+  UpdateSmallGroupRequest,
+  CreateAttendanceRequest,
+  UpdateAttendanceRequest,
+  MinistryQuery,
+  SmallGroupQuery,
+  AttendanceQuery,
 } from "@/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
@@ -999,6 +1011,359 @@ class ApiClient {
       uptime: number;
       environment: string;
     }>("/health");
+    return response.data!;
+  }
+
+  // Ministry Management API
+  async getMinistries(
+    params?: MinistryQuery
+  ): Promise<{ ministries: Ministry[]; pagination?: any }> {
+    const searchParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined) {
+          searchParams.append(key, value.toString());
+        }
+      });
+    }
+
+    const queryString = searchParams.toString();
+    const endpoint = queryString
+      ? `/api/ministries?${queryString}`
+      : "/api/ministries";
+
+    const response = await this.request<{
+      ministries: Ministry[];
+      pagination?: any;
+    }>(endpoint);
+    return response.data!;
+  }
+
+  async getMinistry(
+    id: string
+  ): Promise<{ ministry: Ministry; smallGroups: SmallGroup[] }> {
+    const response = await this.request<{
+      ministry: Ministry;
+      smallGroups: SmallGroup[];
+    }>(`/api/ministries/${id}`);
+    return response.data!;
+  }
+
+  async createMinistry(data: CreateMinistryRequest): Promise<Ministry> {
+    const response = await this.request<Ministry>("/api/ministries", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+    return response.data!;
+  }
+
+  async updateMinistry(
+    id: string,
+    data: UpdateMinistryRequest
+  ): Promise<Ministry> {
+    const response = await this.request<Ministry>(`/api/ministries/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+    return response.data!;
+  }
+
+  async deleteMinistry(id: string): Promise<void> {
+    await this.request(`/api/ministries/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  async getMinistryStats(): Promise<any> {
+    const response = await this.request<any>("/api/ministries/stats");
+    return response.data!;
+  }
+
+  async addMinistryMember(
+    ministryId: string,
+    memberId: string
+  ): Promise<Ministry> {
+    const response = await this.request<Ministry>(
+      `/api/ministries/${ministryId}/members`,
+      {
+        method: "POST",
+        body: JSON.stringify({ memberId }),
+      }
+    );
+    return response.data!;
+  }
+
+  async removeMinistryMember(
+    ministryId: string,
+    memberId: string
+  ): Promise<Ministry> {
+    const response = await this.request<Ministry>(
+      `/api/ministries/${ministryId}/members/${memberId}`,
+      {
+        method: "DELETE",
+      }
+    );
+    return response.data!;
+  }
+
+  async promoteToCoLeader(
+    ministryId: string,
+    memberId: string
+  ): Promise<Ministry> {
+    const response = await this.request<Ministry>(
+      `/api/ministries/${ministryId}/co-leaders`,
+      {
+        method: "POST",
+        body: JSON.stringify({ memberId }),
+      }
+    );
+    return response.data!;
+  }
+
+  async demoteFromCoLeader(
+    ministryId: string,
+    memberId: string
+  ): Promise<Ministry> {
+    const response = await this.request<Ministry>(
+      `/api/ministries/${ministryId}/co-leaders/${memberId}`,
+      {
+        method: "DELETE",
+      }
+    );
+    return response.data!;
+  }
+
+  // Small Group Management API
+  async getSmallGroups(
+    params?: SmallGroupQuery
+  ): Promise<{ smallGroups: SmallGroup[]; pagination?: any }> {
+    const searchParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined) {
+          searchParams.append(key, value.toString());
+        }
+      });
+    }
+
+    const queryString = searchParams.toString();
+    const endpoint = queryString
+      ? `/api/small-groups?${queryString}`
+      : "/api/small-groups";
+
+    const response = await this.request<{
+      smallGroups: SmallGroup[];
+      pagination?: any;
+    }>(endpoint);
+    return response.data!;
+  }
+
+  async getSmallGroup(id: string): Promise<SmallGroup> {
+    const response = await this.request<SmallGroup>(`/api/small-groups/${id}`);
+    return response.data!;
+  }
+
+  async createSmallGroup(data: CreateSmallGroupRequest): Promise<SmallGroup> {
+    const response = await this.request<SmallGroup>("/api/small-groups", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+    return response.data!;
+  }
+
+  async updateSmallGroup(
+    id: string,
+    data: UpdateSmallGroupRequest
+  ): Promise<SmallGroup> {
+    const response = await this.request<SmallGroup>(`/api/small-groups/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+    return response.data!;
+  }
+
+  async deleteSmallGroup(id: string): Promise<void> {
+    await this.request(`/api/small-groups/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  async getSmallGroupStats(): Promise<any> {
+    const response = await this.request<any>("/api/small-groups/stats");
+    return response.data!;
+  }
+
+  async getAvailableSmallGroups(): Promise<SmallGroup[]> {
+    const response = await this.request<SmallGroup[]>(
+      "/api/small-groups/available"
+    );
+    return response.data!;
+  }
+
+  async joinSmallGroup(id: string): Promise<SmallGroup> {
+    const response = await this.request<SmallGroup>(
+      `/api/small-groups/${id}/join`,
+      {
+        method: "POST",
+      }
+    );
+    return response.data!;
+  }
+
+  async leaveSmallGroup(id: string): Promise<SmallGroup> {
+    const response = await this.request<SmallGroup>(
+      `/api/small-groups/${id}/leave`,
+      {
+        method: "POST",
+      }
+    );
+    return response.data!;
+  }
+
+  async addSmallGroupMember(
+    smallGroupId: string,
+    memberId: string
+  ): Promise<SmallGroup> {
+    const response = await this.request<SmallGroup>(
+      `/api/small-groups/${smallGroupId}/members`,
+      {
+        method: "POST",
+        body: JSON.stringify({ memberId }),
+      }
+    );
+    return response.data!;
+  }
+
+  async removeSmallGroupMember(
+    smallGroupId: string,
+    memberId: string
+  ): Promise<SmallGroup> {
+    const response = await this.request<SmallGroup>(
+      `/api/small-groups/${smallGroupId}/members/${memberId}`,
+      {
+        method: "DELETE",
+      }
+    );
+    return response.data!;
+  }
+
+  // Attendance Management API
+  async getAttendance(
+    params?: AttendanceQuery
+  ): Promise<{ attendance: Attendance[]; pagination?: any }> {
+    const searchParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined) {
+          searchParams.append(key, value.toString());
+        }
+      });
+    }
+
+    const queryString = searchParams.toString();
+    const endpoint = queryString
+      ? `/api/attendance?${queryString}`
+      : "/api/attendance";
+
+    const response = await this.request<{
+      attendance: Attendance[];
+      pagination?: any;
+    }>(endpoint);
+    return response.data!;
+  }
+
+  async getAttendanceRecord(id: string): Promise<Attendance> {
+    const response = await this.request<Attendance>(`/api/attendance/${id}`);
+    return response.data!;
+  }
+
+  async createAttendance(data: CreateAttendanceRequest): Promise<Attendance> {
+    const response = await this.request<Attendance>("/api/attendance", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+    return response.data!;
+  }
+
+  async updateAttendance(
+    id: string,
+    data: UpdateAttendanceRequest
+  ): Promise<Attendance> {
+    const response = await this.request<Attendance>(`/api/attendance/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+    return response.data!;
+  }
+
+  async deleteAttendance(id: string): Promise<void> {
+    await this.request(`/api/attendance/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  async getAttendanceStats(startDate?: string, endDate?: string): Promise<any> {
+    const searchParams = new URLSearchParams();
+    if (startDate) searchParams.append("startDate", startDate);
+    if (endDate) searchParams.append("endDate", endDate);
+
+    const queryString = searchParams.toString();
+    const endpoint = queryString
+      ? `/api/attendance/stats?${queryString}`
+      : "/api/attendance/stats";
+
+    const response = await this.request<any>(endpoint);
+    return response.data!;
+  }
+
+  async getMemberAttendance(
+    memberId: string,
+    startDate?: string,
+    endDate?: string
+  ): Promise<{ attendance: Attendance[]; stats: any }> {
+    const searchParams = new URLSearchParams();
+    if (startDate) searchParams.append("startDate", startDate);
+    if (endDate) searchParams.append("endDate", endDate);
+
+    const queryString = searchParams.toString();
+    const endpoint = queryString
+      ? `/api/attendance/member/${memberId}?${queryString}`
+      : `/api/attendance/member/${memberId}`;
+
+    const response = await this.request<{
+      attendance: Attendance[];
+      stats: any;
+    }>(endpoint);
+    return response.data!;
+  }
+
+  async getServiceAttendance(
+    date: string,
+    serviceType?: string
+  ): Promise<Attendance[]> {
+    const searchParams = new URLSearchParams();
+    if (serviceType) searchParams.append("serviceType", serviceType);
+
+    const queryString = searchParams.toString();
+    const endpoint = queryString
+      ? `/api/attendance/service/${date}?${queryString}`
+      : `/api/attendance/service/${date}`;
+
+    const response = await this.request<Attendance[]>(endpoint);
+    return response.data!;
+  }
+
+  async checkOutAttendance(
+    id: string,
+    checkOutTime?: string
+  ): Promise<Attendance> {
+    const response = await this.request<Attendance>(
+      `/api/attendance/${id}/checkout`,
+      {
+        method: "POST",
+        body: JSON.stringify({ checkOutTime }),
+      }
+    );
     return response.data!;
   }
 }

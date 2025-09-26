@@ -1,22 +1,24 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { AppShell } from '@/components/layout/app-shell';
-import { CommunicationEditForm } from '@/components/communications/communication-edit-form';
-import { Communication } from '@/types';
-import apiClient from '@/lib/api';
-import { getDocumentId } from '@/lib/utils';
-import { Loader2, AlertCircle, ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { AppShell } from "@/components/layout/app-shell";
+import { CommunicationEditForm } from "@/components/communications/communication-edit-form";
+import { Communication } from "@/types";
+import apiClient from "@/lib/api";
+import { getDocumentId } from "@/lib/utils";
+import { Loader2, AlertCircle, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function CommunicationEditPage() {
   const params = useParams();
   const router = useRouter();
-  const [communication, setCommunication] = useState<Communication | null>(null);
+  const [communication, setCommunication] = useState<Communication | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
   const communicationId = params.id as string;
@@ -25,22 +27,24 @@ export default function CommunicationEditPage() {
     const fetchCommunication = async () => {
       try {
         setLoading(true);
-        setError('');
-        
+        setError("");
+
         // Check if communicationId is valid
-        if (!communicationId || communicationId === 'undefined') {
-          setError('Invalid communication ID');
+        if (!communicationId || communicationId === "undefined") {
+          setError("Invalid communication ID");
           return;
         }
 
-        const fetchedCommunication = await apiClient.getCommunication(communicationId);
-        console.log('Fetched communication:', fetchedCommunication);
-        console.log('Communication ID:', fetchedCommunication.id);
-        console.log('Communication _id:', fetchedCommunication._id);
+        const fetchedCommunication = await apiClient.getCommunication(
+          communicationId
+        );
+        console.log("Fetched communication:", fetchedCommunication);
+        console.log("Communication ID:", fetchedCommunication.id);
+        console.log("Communication _id:", fetchedCommunication._id);
         setCommunication(fetchedCommunication);
       } catch (err: any) {
-        console.error('Error fetching communication:', err);
-        setError(err.message || 'Failed to load communication');
+        console.error("Error fetching communication:", err);
+        setError(err.message || "Failed to load communication");
       } finally {
         setLoading(false);
       }
@@ -52,38 +56,41 @@ export default function CommunicationEditPage() {
   const handleSave = async (communicationData: Partial<Communication>) => {
     if (!communication) return;
 
-    console.log('handleSave called with communication:', communication);
-    console.log('communication.id:', communication.id);
-    console.log('communication._id:', communication._id);
-    console.log('communicationData:', communicationData);
+    console.log("handleSave called with communication:", communication);
+    console.log("communication.id:", communication.id);
+    console.log("communication._id:", communication._id);
+    console.log("communicationData:", communicationData);
 
     try {
       setSaving(true);
-      setError('');
+      setError("");
 
       // Use getDocumentId to properly extract the ID
       const idToUse = getDocumentId(communication) || communicationId;
-      console.log('Using ID for update:', idToUse);
+      console.log("Using ID for update:", idToUse);
 
-      if (!idToUse || idToUse === 'undefined') {
-        throw new Error('Invalid communication ID');
+      if (!idToUse || idToUse === "undefined") {
+        throw new Error("Invalid communication ID");
       }
 
       // Update the communication
-      const updatedCommunication = await apiClient.updateCommunication(idToUse, communicationData);
-      
+      const updatedCommunication = await apiClient.updateCommunication(
+        idToUse,
+        communicationData
+      );
+
       // Redirect back to communications list with success message
-      router.push('/communications?message=updated');
+      router.push("/communications?message=updated");
     } catch (err: any) {
-      console.error('Error updating communication:', err);
-      setError(err.message || 'Failed to update communication');
+      console.error("Error updating communication:", err);
+      setError(err.message || "Failed to update communication");
     } finally {
       setSaving(false);
     }
   };
 
   const handleCancel = () => {
-    router.push('/communications');
+    router.push("/communications");
   };
 
   if (loading) {
@@ -111,12 +118,14 @@ export default function CommunicationEditPage() {
               </Link>
             </Button>
           </div>
-          
+
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center space-y-4">
               <AlertCircle className="h-12 w-12 text-red-500 mx-auto" />
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Error Loading Communication</h3>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Error Loading Communication
+                </h3>
                 <p className="text-gray-600 mt-2">{error}</p>
               </div>
               <Button onClick={() => window.location.reload()}>
@@ -136,13 +145,15 @@ export default function CommunicationEditPage() {
           <div className="text-center space-y-4">
             <AlertCircle className="h-12 w-12 text-gray-400 mx-auto" />
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">Communication Not Found</h3>
-              <p className="text-gray-600 mt-2">The communication you're looking for doesn't exist.</p>
+              <h3 className="text-lg font-semibold text-gray-900">
+                Communication Not Found
+              </h3>
+              <p className="text-gray-600 mt-2">
+                The communication you&apos;re looking for doesn&apos;t exist.
+              </p>
             </div>
             <Button asChild>
-              <Link href="/communications">
-                Back to Communications
-              </Link>
+              <Link href="/communications">Back to Communications</Link>
             </Button>
           </div>
         </div>
@@ -151,7 +162,7 @@ export default function CommunicationEditPage() {
   }
 
   // Check if communication can be edited
-  if (communication.status === 'SENT' || communication.status === 'SENDING') {
+  if (communication.status === "SENT" || communication.status === "SENDING") {
     return (
       <AppShell>
         <div className="space-y-6">
@@ -163,20 +174,20 @@ export default function CommunicationEditPage() {
               </Link>
             </Button>
           </div>
-          
+
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center space-y-4">
               <AlertCircle className="h-12 w-12 text-orange-500 mx-auto" />
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Cannot Edit Communication</h3>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Cannot Edit Communication
+                </h3>
                 <p className="text-gray-600 mt-2">
                   This communication has already been sent and cannot be edited.
                 </p>
               </div>
               <Button asChild>
-                <Link href="/communications">
-                  Back to Communications
-                </Link>
+                <Link href="/communications">Back to Communications</Link>
               </Button>
             </div>
           </div>
@@ -200,7 +211,9 @@ export default function CommunicationEditPage() {
 
         {/* Title */}
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Edit Communication</h1>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Edit Communication
+          </h1>
           <p className="text-gray-600 mt-1">Update your SMS campaign details</p>
         </div>
 
@@ -222,7 +235,9 @@ export default function CommunicationEditPage() {
             audience: communication.audience,
             customAudience: communication.customAudience || [],
             body: communication.body,
-            scheduledAt: communication.scheduledAt ? new Date(communication.scheduledAt).toISOString() : undefined
+            scheduledAt: communication.scheduledAt
+              ? new Date(communication.scheduledAt).toISOString()
+              : undefined,
           }}
           onSave={handleSave}
           onCancel={handleCancel}

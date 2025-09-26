@@ -1,45 +1,51 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Separator } from '@/components/ui/separator';
-import { Church, Eye, EyeOff, Mail, Lock, AlertCircle } from 'lucide-react';
-import Link from 'next/link';
-import { login } from '@/lib/auth';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Separator } from "@/components/ui/separator";
+import { Church, Eye, EyeOff, Mail, Lock, AlertCircle } from "lucide-react";
+import Link from "next/link";
+import { login } from "@/lib/auth";
 
 export default function LoginPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    rememberMe: false
+    email: "",
+    password: "",
+    rememberMe: false,
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
+    setError("");
 
     try {
       const user = await login(formData.email, formData.password);
-      
+
       // Redirect based on user role
-      if (user.role === 'ADMIN') {
-        router.push('/dashboard');
-      } else if (user.role === 'MEMBER') {
-        router.push('/profile');
+      if (user.role === "ADMIN") {
+        router.push("/dashboard");
+      } else if (user.role === "MEMBER") {
+        router.push("/profile");
       }
     } catch (err: any) {
-      setError(err.message || 'An error occurred. Please try again.');
+      setError(err.message || "An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -47,13 +53,17 @@ export default function LoginPage() {
 
   const fillCredentials = (email: string, password: string) => {
     setFormData({ ...formData, email, password });
-    setError('');
+    setError("");
   };
 
   // Demo credentials from the backend
   const demoCredentials = [
-    { email: 'john.smith@email.com', password: 'password123', role: 'Admin' },
-    { email: 'sarah.johnson@email.com', password: 'password123', role: 'Member' }
+    { email: "john.smith@email.com", password: "password123", role: "Admin" },
+    {
+      email: "sarah.johnson@email.com",
+      password: "password123",
+      role: "Member",
+    },
   ];
 
   return (
@@ -64,7 +74,9 @@ export default function LoginPage() {
           <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
             <Church className="h-8 w-8 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground mb-2">Community Church</h1>
+          <h1 className="text-2xl font-bold text-foreground mb-2">
+            Community Church
+          </h1>
           <p className="text-muted-foreground">Sign in to your account</p>
         </div>
 
@@ -75,7 +87,7 @@ export default function LoginPage() {
               Enter your credentials to access your account
             </CardDescription>
           </CardHeader>
-          
+
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
@@ -94,7 +106,9 @@ export default function LoginPage() {
                     type="email"
                     placeholder="Enter your email"
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
                     className="pl-10"
                     required
                   />
@@ -107,10 +121,12 @@ export default function LoginPage() {
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                   <Input
                     id="password"
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
                     value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, password: e.target.value })
+                    }
                     className="pl-10 pr-10"
                     required
                   />
@@ -135,24 +151,27 @@ export default function LoginPage() {
                   <Checkbox
                     id="rememberMe"
                     checked={formData.rememberMe}
-                    onCheckedChange={(checked) => 
-                      setFormData({ ...formData, rememberMe: checked as boolean })
+                    onCheckedChange={(checked) =>
+                      setFormData({
+                        ...formData,
+                        rememberMe: checked as boolean,
+                      })
                     }
                   />
                   <Label htmlFor="rememberMe" className="text-sm">
                     Remember me
                   </Label>
                 </div>
-                <Link 
-                  href="/forgot-password" 
+                <Link
+                  href="/forgot-password"
                   className="text-sm text-primary hover:text-primary/80 transition-colors"
                 >
                   Forgot password?
                 </Link>
               </div>
 
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 className="w-full h-11"
                 disabled={isLoading || !formData.email || !formData.password}
               >
@@ -162,18 +181,25 @@ export default function LoginPage() {
                     <span>Signing in...</span>
                   </div>
                 ) : (
-                  'Sign In'
+                  "Sign In"
                 )}
               </Button>
 
               {/* Quick Login Buttons - Integrated into form */}
               <div className="mt-4 space-y-2">
-                <div className="text-center text-xs text-muted-foreground mb-2">Quick Login</div>
+                <div className="text-center text-xs text-muted-foreground mb-2">
+                  Quick Login
+                </div>
                 <div className="grid grid-cols-2 gap-2">
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => fillCredentials(demoCredentials[0].email, demoCredentials[0].password)}
+                    onClick={() =>
+                      fillCredentials(
+                        demoCredentials[0].email,
+                        demoCredentials[0].password
+                      )
+                    }
                     className="text-xs py-2 h-8"
                   >
                     {demoCredentials[0].role}
@@ -181,7 +207,12 @@ export default function LoginPage() {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => fillCredentials(demoCredentials[1].email, demoCredentials[1].password)}
+                    onClick={() =>
+                      fillCredentials(
+                        demoCredentials[1].email,
+                        demoCredentials[1].password
+                      )
+                    }
                     className="text-xs py-2 h-8"
                   >
                     {demoCredentials[1].role}
@@ -192,12 +223,12 @@ export default function LoginPage() {
 
             <div className="mt-6">
               <Separator className="my-4" />
-              
+
               <div className="text-center">
                 <p className="text-sm text-muted-foreground">
-                  Don't have an account?{' '}
-                  <Link 
-                    href="/register" 
+                  Don&apos;t have an account?{" "}
+                  <Link
+                    href="/register"
                     className="text-primary hover:text-primary/80 font-medium transition-colors"
                   >
                     Register here

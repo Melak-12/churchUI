@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { mockSettings } from "@/lib/mock-data";
 
 interface FeaturesContextType {
@@ -10,17 +16,25 @@ interface FeaturesContextType {
     communications: boolean;
     voting: boolean;
     memberPortal: boolean;
+    ministries: boolean;
+    attendance: boolean;
   };
-  updateFeatures: (newFeatures: Partial<FeaturesContextType['features']>) => void;
+  updateFeatures: (
+    newFeatures: Partial<FeaturesContextType["features"]>
+  ) => void;
 }
 
-const FeaturesContext = createContext<FeaturesContextType | undefined>(undefined);
+const FeaturesContext = createContext<FeaturesContextType | undefined>(
+  undefined
+);
 
 export function FeaturesProvider({ children }: { children: ReactNode }) {
   const [features, setFeatures] = useState(mockSettings.features!);
 
-  const updateFeatures = (newFeatures: Partial<FeaturesContextType['features']>) => {
-    setFeatures(prev => ({ ...prev, ...newFeatures }));
+  const updateFeatures = (
+    newFeatures: Partial<FeaturesContextType["features"]>
+  ) => {
+    setFeatures((prev) => ({ ...prev, ...newFeatures }));
   };
 
   return (

@@ -455,7 +455,7 @@ export function DocumentLibrary() {
             </CardHeader>
             <CardContent>
               <p className="text-center text-gray-500 py-8">
-                This feature will show documents you've uploaded
+                This feature will show documents you&apos;ve uploaded
               </p>
             </CardContent>
           </Card>
@@ -490,6 +490,3 @@ export function DocumentLibrary() {
     </div>
   );
 }
-
-
-

@@ -18,6 +18,8 @@ import {
   DollarSign,
   FileText,
   UserCheck,
+  Building2,
+  UserPlus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -28,10 +30,30 @@ import { useFeatures } from "@/contexts/features-context";
 const getAdminNavItems = (features: any) => [
   { href: "/dashboard", label: "Dashboard", icon: Home },
   { href: "/members", label: "Members", icon: Users },
-  ...(features.events ? [{ href: "/events", label: "Events", icon: Calendar }] : []),
-  ...(features.voting ? [{ href: "/voting", label: "Voting", icon: Vote }] : []),
-  ...(features.communications ? [{ href: "/communications", label: "Communications", icon: MessageSquare }] : []),
-  ...(features.financial ? [{ href: "/financial", label: "Financial", icon: DollarSign }] : []),
+  ...(features.ministries
+    ? [{ href: "/ministries", label: "Ministries", icon: Building2 }]
+    : []),
+  ...(features.attendance
+    ? [{ href: "/attendance", label: "Attendance", icon: UserPlus }]
+    : []),
+  ...(features.events
+    ? [{ href: "/events", label: "Events", icon: Calendar }]
+    : []),
+  ...(features.voting
+    ? [{ href: "/voting", label: "Voting", icon: Vote }]
+    : []),
+  ...(features.communications
+    ? [
+        {
+          href: "/communications",
+          label: "Communications",
+          icon: MessageSquare,
+        },
+      ]
+    : []),
+  ...(features.financial
+    ? [{ href: "/financial", label: "Financial", icon: DollarSign }]
+    : []),
   { href: "/profile", label: "Profile", icon: User },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
@@ -39,9 +61,15 @@ const getAdminNavItems = (features: any) => [
 const getMemberNavItems = (features: any) => [
   { href: "/profile", label: "My Profile", icon: User },
   { href: "/eligibility", label: "My Eligibility", icon: CheckCircle },
-  ...(features.events ? [{ href: "/events", label: "Events", icon: Calendar }] : []),
-  ...(features.voting ? [{ href: "/votes", label: "Active Votes", icon: Vote }] : []),
-  ...(features.memberPortal ? [{ href: "/member-portal", label: "Family & Documents", icon: FileText }] : []),
+  ...(features.events
+    ? [{ href: "/events", label: "Events", icon: Calendar }]
+    : []),
+  ...(features.voting
+    ? [{ href: "/votes", label: "Active Votes", icon: Vote }]
+    : []),
+  ...(features.memberPortal
+    ? [{ href: "/member-portal", label: "Family & Documents", icon: FileText }]
+    : []),
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
