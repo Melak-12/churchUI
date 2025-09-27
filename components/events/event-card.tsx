@@ -69,40 +69,40 @@ export function EventCard({
   };
 
   const isUpcoming = isFuture(new Date(event.startDate));
-  const isPast = isPast(new Date(event.startDate));
+  const eventIsPast = isPast(new Date(event.startDate));
 
   if (compact) {
     return (
-      <Card className="hover:shadow-md transition-shadow">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center space-x-2 mb-1">
-                <h3 className="font-medium text-gray-900 truncate">
+      <Card className='hover:shadow-md transition-shadow'>
+        <CardContent className='p-4'>
+          <div className='flex items-center justify-between'>
+            <div className='flex-1 min-w-0'>
+              <div className='flex items-center space-x-2 mb-1'>
+                <h3 className='font-medium text-gray-900 truncate'>
                   {event.title}
                 </h3>
-                <Badge className={getEventTypeColor(event.type)} size="sm">
+                <Badge className={getEventTypeColor(event.type)}>
                   {event.type.replace("_", " ")}
                 </Badge>
               </div>
-              <div className="flex items-center space-x-4 text-sm text-gray-500">
-                <div className="flex items-center space-x-1">
-                  <Clock className="h-3 w-3" />
+              <div className='flex items-center space-x-4 text-sm text-gray-500'>
+                <div className='flex items-center space-x-1'>
+                  <Clock className='h-3 w-3' />
                   <span>
                     {format(new Date(event.startDate), "MMM d, h:mm a")}
                   </span>
                 </div>
-                <div className="flex items-center space-x-1">
-                  <MapPin className="h-3 w-3" />
-                  <span className="truncate">{event.location}</span>
+                <div className='flex items-center space-x-1'>
+                  <MapPin className='h-3 w-3' />
+                  <span className='truncate'>{event.location}</span>
                 </div>
               </div>
             </div>
             {showActions && (
-              <div className="flex items-center space-x-1 ml-2">
-                <Button variant="ghost" size="sm" asChild>
+              <div className='flex items-center space-x-1 ml-2'>
+                <Button variant='ghost' size='sm' asChild>
                   <Link href={`/events/${eventId}`}>
-                    <Eye className="h-4 w-4" />
+                    <Eye className='h-4 w-4' />
                   </Link>
                 </Button>
               </div>
@@ -114,12 +114,12 @@ export function EventCard({
   }
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardContent className="p-6">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center space-x-2 mb-2">
-              <h3 className="text-lg font-semibold text-gray-900">
+    <Card className='hover:shadow-md transition-shadow'>
+      <CardContent className='p-6'>
+        <div className='flex items-start justify-between'>
+          <div className='flex-1'>
+            <div className='flex items-center space-x-2 mb-2'>
+              <h3 className='text-lg font-semibold text-gray-900'>
                 {event.title}
               </h3>
               <Badge className={getEventTypeColor(event.type)}>
@@ -131,50 +131,50 @@ export function EventCard({
             </div>
 
             {event.description && (
-              <p className="text-gray-600 mb-3 line-clamp-2">
+              <p className='text-gray-600 mb-3 line-clamp-2'>
                 {event.description}
               </p>
             )}
 
-            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
-              <div className="flex items-center space-x-1">
-                <Clock className="h-4 w-4" />
+            <div className='flex flex-wrap items-center gap-4 text-sm text-gray-500'>
+              <div className='flex items-center space-x-1'>
+                <Clock className='h-4 w-4' />
                 <span>
                   {format(new Date(event.startDate), "MMM d, yyyy h:mm a")}
                 </span>
               </div>
-              <div className="flex items-center space-x-1">
-                <MapPin className="h-4 w-4" />
+              <div className='flex items-center space-x-1'>
+                <MapPin className='h-4 w-4' />
                 <span>{event.location}</span>
               </div>
               {event.capacity && (
-                <div className="flex items-center space-x-1">
-                  <Users className="h-4 w-4" />
+                <div className='flex items-center space-x-1'>
+                  <Users className='h-4 w-4' />
                   <span>
                     {event.registrationCount || 0}/{event.capacity} registered
                   </span>
                 </div>
               )}
-              <div className="text-xs text-gray-400">
+              <div className='text-xs text-gray-400'>
                 {getRelativeTime(event.startDate)}
               </div>
             </div>
           </div>
 
           {showActions && (
-            <div className="flex items-center space-x-2 ml-4">
-              <Button variant="outline" size="sm" asChild>
+            <div className='flex items-center space-x-2 ml-4'>
+              <Button variant='outline' size='sm' asChild>
                 <Link href={`/events/${eventId}`}>
-                  <Eye className="h-4 w-4" />
+                  <Eye className='h-4 w-4' />
                 </Link>
               </Button>
-              <Button variant="outline" size="sm" asChild>
+              <Button variant='outline' size='sm' asChild>
                 <Link href={`/events/${eventId}/edit`}>
-                  <Edit className="h-4 w-4" />
+                  <Edit className='h-4 w-4' />
                 </Link>
               </Button>
-              <Button variant="outline" size="sm">
-                <MoreHorizontal className="h-4 w-4" />
+              <Button variant='outline' size='sm'>
+                <MoreHorizontal className='h-4 w-4' />
               </Button>
             </div>
           )}

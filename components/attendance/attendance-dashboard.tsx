@@ -95,10 +95,7 @@ export function AttendanceDashboard() {
           startDate: startDate?.toISOString(),
           endDate: endDate?.toISOString(),
         }),
-        apiClient.getAttendanceStats({
-          startDate: startDate?.toISOString(),
-          endDate: endDate?.toISOString(),
-        }),
+        apiClient.getAttendanceStats(),
       ]);
 
       setAttendance(attendanceResponse.attendance);
@@ -163,39 +160,39 @@ export function AttendanceDashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-8">
-        <Loader2 className="h-8 w-8 animate-spin" />
-        <span className="ml-2">Loading attendance dashboard...</span>
+      <div className='flex items-center justify-center py-8'>
+        <Loader2 className='h-8 w-8 animate-spin' />
+        <span className='ml-2'>Loading attendance dashboard...</span>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       {/* Time Range Selector */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className='flex items-center justify-between'>
             <div>
               <CardTitle>Attendance Overview</CardTitle>
               <CardDescription>
                 Statistics for {getTimeRangeLabel().toLowerCase()}
               </CardDescription>
             </div>
-            <div className="flex items-center gap-2">
+            <div className='flex items-center gap-2'>
               <Select value={timeRange} onValueChange={setTimeRange}>
-                <SelectTrigger className="w-48">
-                  <SelectValue placeholder="Select time range" />
+                <SelectTrigger className='w-48'>
+                  <SelectValue placeholder='Select time range' />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="today">Today</SelectItem>
-                  <SelectItem value="week">This Week</SelectItem>
-                  <SelectItem value="month">This Month</SelectItem>
-                  <SelectItem value="last30days">Last 30 Days</SelectItem>
+                  <SelectItem value='today'>Today</SelectItem>
+                  <SelectItem value='week'>This Week</SelectItem>
+                  <SelectItem value='month'>This Month</SelectItem>
+                  <SelectItem value='last30days'>Last 30 Days</SelectItem>
                 </SelectContent>
               </Select>
-              <Button variant="outline" size="sm" onClick={fetchData}>
-                <BarChart3 className="h-4 w-4 mr-2" />
+              <Button variant='outline' size='sm' onClick={fetchData}>
+                <BarChart3 className='h-4 w-4 mr-2' />
                 Refresh
               </Button>
             </div>
@@ -204,51 +201,51 @@ export function AttendanceDashboard() {
       </Card>
 
       {/* Overview Stats */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>
               Total Check-ins
             </CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <Users className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className='text-2xl font-bold'>
               {stats?.totalAttendance || 0}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className='text-xs text-muted-foreground'>
               {getTimeRangeLabel().toLowerCase()}
             </p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>
               Unique Members
             </CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <Users className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className='text-2xl font-bold'>
               {stats?.uniqueMemberCount || 0}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className='text-xs text-muted-foreground'>
               Different members attended
             </p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Checked Out</CardTitle>
-            <CheckCircle className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>Checked Out</CardTitle>
+            <CheckCircle className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className='text-2xl font-bold'>
               {attendance.filter((a) => a.checkOutTime).length}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className='text-xs text-muted-foreground'>
               {stats?.totalAttendance
                 ? `${Math.round(
                     (attendance.filter((a) => a.checkOutTime).length /
@@ -261,12 +258,12 @@ export function AttendanceDashboard() {
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg. Duration</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>Avg. Duration</CardTitle>
+            <Clock className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className='text-2xl font-bold'>
               {(() => {
                 const checkedOut = attendance.filter((a) => a.duration);
                 if (checkedOut.length === 0) return "N/A";
@@ -276,7 +273,7 @@ export function AttendanceDashboard() {
                 return formatDuration(Math.round(avgDuration));
               })()}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className='text-xs text-muted-foreground'>
               For checked-out members
             </p>
           </CardContent>
@@ -293,18 +290,18 @@ export function AttendanceDashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
               {stats.byServiceType.map((service) => (
-                <div key={service.serviceType} className="space-y-2">
-                  <div className="flex items-center justify-between">
+                <div key={service.serviceType} className='space-y-2'>
+                  <div className='flex items-center justify-between'>
                     <Badge className={getServiceTypeColor(service.serviceType)}>
                       {service.serviceType.replace("_", " ")}
                     </Badge>
-                    <span className="text-sm font-medium">{service.count}</span>
+                    <span className='text-sm font-medium'>{service.count}</span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className='w-full bg-gray-200 rounded-full h-2'>
                     <div
-                      className="bg-blue-600 h-2 rounded-full"
+                      className='bg-blue-600 h-2 rounded-full'
                       style={{
                         width: `${
                           stats.totalAttendance > 0
@@ -331,22 +328,22 @@ export function AttendanceDashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className='space-y-4'>
               {stats.byMinistry.map((ministry) => (
                 <div
                   key={ministry.ministry}
-                  className="flex items-center justify-between"
+                  className='flex items-center justify-between'
                 >
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium">{ministry.ministry}</span>
+                  <div className='flex items-center gap-2'>
+                    <span className='font-medium'>{ministry.ministry}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground">
+                  <div className='flex items-center gap-2'>
+                    <span className='text-sm text-muted-foreground'>
                       {ministry.count} check-ins
                     </span>
-                    <div className="w-24 bg-gray-200 rounded-full h-2">
+                    <div className='w-24 bg-gray-200 rounded-full h-2'>
                       <div
-                        className="bg-green-600 h-2 rounded-full"
+                        className='bg-green-600 h-2 rounded-full'
                         style={{
                           width: `${
                             stats.totalAttendance > 0
@@ -374,22 +371,22 @@ export function AttendanceDashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className='space-y-4'>
               {stats.bySmallGroup.map((group) => (
                 <div
                   key={group.smallGroup}
-                  className="flex items-center justify-between"
+                  className='flex items-center justify-between'
                 >
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium">{group.smallGroup}</span>
+                  <div className='flex items-center gap-2'>
+                    <span className='font-medium'>{group.smallGroup}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground">
+                  <div className='flex items-center gap-2'>
+                    <span className='text-sm text-muted-foreground'>
                       {group.count} check-ins
                     </span>
-                    <div className="w-24 bg-gray-200 rounded-full h-2">
+                    <div className='w-24 bg-gray-200 rounded-full h-2'>
                       <div
-                        className="bg-purple-600 h-2 rounded-full"
+                        className='bg-purple-600 h-2 rounded-full'
                         style={{
                           width: `${
                             stats.totalAttendance > 0
@@ -415,21 +412,21 @@ export function AttendanceDashboard() {
         </CardHeader>
         <CardContent>
           {attendance.length === 0 ? (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground">
+            <div className='text-center py-8'>
+              <p className='text-muted-foreground'>
                 No attendance records found for the selected time range.
               </p>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className='space-y-4'>
               {attendance.slice(0, 10).map((record) => (
                 <div
                   key={record.id}
-                  className="flex items-center justify-between p-4 border rounded-lg"
+                  className='flex items-center justify-between p-4 border rounded-lg'
                 >
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">
+                  <div className='space-y-1'>
+                    <div className='flex items-center gap-2'>
+                      <span className='font-medium'>
                         {record.member.firstName} {record.member.lastName}
                       </span>
                       {record.service && (
@@ -440,17 +437,17 @@ export function AttendanceDashboard() {
                         </Badge>
                       )}
                       {record.event && (
-                        <Badge className="bg-green-100 text-green-800">
+                        <Badge className='bg-green-100 text-green-800'>
                           Event
                         </Badge>
                       )}
                       {record.ministry && (
-                        <Badge className="bg-purple-100 text-purple-800">
+                        <Badge className='bg-purple-100 text-purple-800'>
                           Ministry
                         </Badge>
                       )}
                       {record.smallGroup && (
-                        <Badge className="bg-orange-100 text-orange-800">
+                        <Badge className='bg-orange-100 text-orange-800'>
                           Small Group
                         </Badge>
                       )}
@@ -458,7 +455,7 @@ export function AttendanceDashboard() {
                         {record.method.replace("_", " ")}
                       </Badge>
                     </div>
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <div className='flex items-center gap-4 text-sm text-muted-foreground'>
                       <span>
                         {format(
                           new Date(record.checkInTime),
@@ -470,15 +467,15 @@ export function AttendanceDashboard() {
                       )}
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className='flex items-center gap-2'>
                     {record.checkOutTime ? (
-                      <Badge variant="outline" className="text-green-600">
-                        <CheckCircle className="h-3 w-3 mr-1" />
+                      <Badge variant='outline' className='text-green-600'>
+                        <CheckCircle className='h-3 w-3 mr-1' />
                         Checked Out
                       </Badge>
                     ) : (
-                      <Badge variant="outline" className="text-blue-600">
-                        <Clock className="h-3 w-3 mr-1" />
+                      <Badge variant='outline' className='text-blue-600'>
+                        <Clock className='h-3 w-3 mr-1' />
                         Checked In
                       </Badge>
                     )}

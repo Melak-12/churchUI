@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { AppShell } from "@/components/layout/app-shell";
 import { FeatureGuard } from "@/components/auth/feature-guard";
 import {
@@ -33,13 +33,19 @@ import {
   MapPin,
   Users,
   Clock,
-  MoreHorizontal,
   Edit,
   Trash2,
   Eye,
   UserPlus,
   CheckCircle,
   AlertCircle,
+  CalendarDays,
+  PartyPopper,
+  Zap,
+  Star,
+  Grid,
+  List,
+  Heart,
 } from "lucide-react";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
@@ -69,11 +75,7 @@ export default function EventsPage() {
     null
   );
 
-  useEffect(() => {
-    fetchEvents();
-  }, [searchTerm, filterType, filterStatus]);
-
-  const fetchEvents = async () => {
+  const fetchEvents = useCallback(async () => {
     try {
       setLoading(true);
       const query: EventQuery = {
@@ -94,7 +96,11 @@ export default function EventsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchTerm, filterType, filterStatus]);
+
+  useEffect(() => {
+    fetchEvents();
+  }, [fetchEvents]);
 
   const handleDeleteEvent = async (eventId: string) => {
     if (
@@ -195,9 +201,9 @@ export default function EventsPage() {
   if (loading) {
     return (
       <AppShell>
-        <div className="flex items-center justify-center h-64">
-          <div className="flex items-center space-x-2">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+        <div className='flex items-center justify-center h-64'>
+          <div className='flex items-center space-x-2'>
+            <div className='animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600'></div>
             <span>Loading events...</span>
           </div>
         </div>
@@ -208,10 +214,10 @@ export default function EventsPage() {
   if (error) {
     return (
       <AppShell>
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <p className="text-red-600">{error}</p>
-            <Button onClick={fetchEvents} className="mt-4">
+        <div className='flex items-center justify-center h-64'>
+          <div className='text-center'>
+            <p className='text-red-600'>{error}</p>
+            <Button onClick={fetchEvents} className='mt-4'>
               Try Again
             </Button>
           </div>
@@ -221,180 +227,243 @@ export default function EventsPage() {
   }
 
   return (
-    <FeatureGuard feature="events">
+    <FeatureGuard feature='events'>
       <AppShell>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
-          <div>
-            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
-              Events
-            </h1>
-            <p className="text-gray-600 text-sm lg:text-base">
-              {isAdmin
-                ? "Manage church events, services, and meetings"
-                : "Discover and register for upcoming church events"}
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full sm:w-auto"
-              asChild
-            >
-              <Link href="/events/calendar">
-                <Calendar className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline">Calendar View</span>
-                <span className="sm:hidden">Calendar</span>
-              </Link>
-            </Button>
-            {isAdmin && (
-              <Button size="sm" className="w-full sm:w-auto" asChild>
-                <Link href="/events/new">
-                  <Plus className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">New Event</span>
-                  <span className="sm:hidden">New</span>
-                </Link>
-              </Button>
-            )}
-          </div>
-        </div>
-
-        {/* Filters */}
-        <Card>
-          <CardContent className="pt-4 sm:pt-6">
-            <div className="flex flex-col space-y-3 sm:space-y-4 lg:flex-row lg:space-y-0 lg:space-x-4">
-              <div className="flex-1">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                  <Input
-                    placeholder="Search events..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 h-10 sm:h-11"
-                  />
+        <div className='space-y-6'>
+          {/* Header Section */}
+          <div className='bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-6 border border-green-100 dark:border-green-800'>
+            <div className='flex items-center justify-between'>
+              <div>
+                <div className='flex items-center space-x-3 mb-2'>
+                  <div className='p-2 bg-green-500 rounded-lg'>
+                    <Calendar className='h-6 w-6 text-white' />
+                  </div>
+                  <h1 className='text-2xl font-bold text-foreground'>
+                    Church Events 🎉
+                  </h1>
                 </div>
+                <p className='text-muted-foreground'>
+                  Discover and join upcoming community activities
+                </p>
               </div>
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 lg:gap-4">
-                <Select value={filterType} onValueChange={setFilterType}>
-                  <SelectTrigger className="w-full sm:w-48 lg:w-48 h-10 sm:h-11">
-                    <SelectValue placeholder="Event Type" />
+              {isAdmin && (
+                <Button asChild className='shadow-lg'>
+                  <Link href='/events/new'>
+                    <Plus className='h-4 w-4 mr-2' />
+                    Create Event
+                  </Link>
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {/* Quick Stats */}
+          <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+            <Card className='border-l-4 border-l-blue-500'>
+              <CardContent className='p-4'>
+                <div className='flex items-center justify-between'>
+                  <div>
+                    <p className='text-sm text-muted-foreground'>
+                      Upcoming Events
+                    </p>
+                    <p className='text-2xl font-bold text-blue-600'>
+                      {
+                        events.filter((e) => isFuture(new Date(e.startDate)))
+                          .length
+                      }
+                    </p>
+                  </div>
+                  <CalendarDays className='h-8 w-8 text-blue-500' />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className='border-l-4 border-l-green-500'>
+              <CardContent className='p-4'>
+                <div className='flex items-center justify-between'>
+                  <div>
+                    <p className='text-sm text-muted-foreground'>This Week</p>
+                    <p className='text-2xl font-bold text-green-600'>
+                      {
+                        events.filter((e) => isThisWeek(new Date(e.startDate)))
+                          .length
+                      }
+                    </p>
+                  </div>
+                  <Zap className='h-8 w-8 text-green-500' />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className='border-l-4 border-l-purple-500'>
+              <CardContent className='p-4'>
+                <div className='flex items-center justify-between'>
+                  <div>
+                    <p className='text-sm text-muted-foreground'>
+                      Total Events
+                    </p>
+                    <p className='text-2xl font-bold text-purple-600'>
+                      {events.length}
+                    </p>
+                  </div>
+                  <PartyPopper className='h-8 w-8 text-purple-500' />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Search and Filters */}
+          <div className='bg-card rounded-xl p-4 border'>
+            <div className='flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between'>
+              <div className='relative flex-1 max-w-md'>
+                <Search className='h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground' />
+                <Input
+                  placeholder='Search events...'
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className='pl-10'
+                />
+              </div>
+              <div className='flex flex-col sm:flex-row gap-2 sm:gap-3'>
+                <Button
+                  variant='outline'
+                  size='sm'
+                  className='justify-start'
+                  asChild
+                >
+                  <Link href='/events/calendar'>
+                    <Calendar className='h-4 w-4 mr-2' />
+                    Calendar View
+                  </Link>
+                </Button>
+                <Select value={filterStatus} onValueChange={setFilterStatus}>
+                  <SelectTrigger className='w-full sm:w-[140px]'>
+                    <SelectValue placeholder='Status' />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Types</SelectItem>
-                    <SelectItem value="SERVICE">Service</SelectItem>
-                    <SelectItem value="MEETING">Meeting</SelectItem>
-                    <SelectItem value="SPECIAL_OCCASION">
-                      Special Occasion
-                    </SelectItem>
-                    <SelectItem value="CONFERENCE">Conference</SelectItem>
-                    <SelectItem value="SOCIAL">Social</SelectItem>
-                    <SelectItem value="OTHER">Other</SelectItem>
+                    <SelectItem value='all'>All Status</SelectItem>
+                    <SelectItem value='DRAFT'>Draft</SelectItem>
+                    <SelectItem value='PUBLISHED'>Published</SelectItem>
+                    <SelectItem value='CANCELLED'>Cancelled</SelectItem>
+                    <SelectItem value='COMPLETED'>Completed</SelectItem>
                   </SelectContent>
                 </Select>
-                <Select value={filterStatus} onValueChange={setFilterStatus}>
-                  <SelectTrigger className="w-full sm:w-48 lg:w-48 h-10 sm:h-11">
-                    <SelectValue placeholder="Status" />
+                <Select value={filterType} onValueChange={setFilterType}>
+                  <SelectTrigger className='w-full sm:w-[140px]'>
+                    <SelectValue placeholder='Type' />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="DRAFT">Draft</SelectItem>
-                    <SelectItem value="PUBLISHED">Published</SelectItem>
-                    <SelectItem value="CANCELLED">Cancelled</SelectItem>
-                    <SelectItem value="COMPLETED">Completed</SelectItem>
+                    <SelectItem value='all'>All Types</SelectItem>
+                    <SelectItem value='SERVICE'>Service</SelectItem>
+                    <SelectItem value='MEETING'>Meeting</SelectItem>
+                    <SelectItem value='SPECIAL_OCCASION'>
+                      Special Occasion
+                    </SelectItem>
+                    <SelectItem value='CONFERENCE'>Conference</SelectItem>
+                    <SelectItem value='SOCIAL'>Social</SelectItem>
+                    <SelectItem value='OTHER'>Other</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
 
-        {/* Events List */}
-        <Tabs defaultValue="upcoming" className="space-y-4 sm:space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="upcoming" className="text-sm sm:text-base">
-              <span className="hidden sm:inline">Upcoming</span>
-              <span className="sm:hidden">Upcoming</span>
-              <span className="ml-1">({upcomingEvents.length})</span>
-            </TabsTrigger>
-            <TabsTrigger value="past" className="text-sm sm:text-base">
-              <span className="hidden sm:inline">Past</span>
-              <span className="sm:hidden">Past</span>
-              <span className="ml-1">({pastEvents.length})</span>
-            </TabsTrigger>
-          </TabsList>
+          {/* Events List */}
+          <Tabs defaultValue='upcoming' className='space-y-4 sm:space-y-6'>
+            <TabsList className='grid w-full grid-cols-2'>
+              <TabsTrigger value='upcoming' className='text-sm sm:text-base'>
+                <span className='hidden sm:inline'>Upcoming</span>
+                <span className='sm:hidden'>Upcoming</span>
+                <span className='ml-1'>({upcomingEvents.length})</span>
+              </TabsTrigger>
+              <TabsTrigger value='past' className='text-sm sm:text-base'>
+                <span className='hidden sm:inline'>Past</span>
+                <span className='sm:hidden'>Past</span>
+                <span className='ml-1'>({pastEvents.length})</span>
+              </TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="upcoming" className="space-y-4">
-            {upcomingEvents.length > 0 ? (
-              <div className="grid gap-4">
-                {upcomingEvents.map((event) => (
-                  <EventCard
-                    key={getDocumentId(event)}
-                    event={event}
-                    onDelete={isAdmin ? handleDeleteEvent : undefined}
-                    onRegister={!isAdmin ? handleRegisterForEvent : undefined}
-                    isDeleting={deletingEventId === getDocumentId(event)}
-                    isRegistering={registeringEventId === getDocumentId(event)}
-                    isAdmin={isAdmin}
-                  />
-                ))}
-              </div>
-            ) : (
-              <Card>
-                <CardContent className="flex flex-col items-center justify-center py-8 sm:py-12 px-4">
-                  <Calendar className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mb-4" />
-                  <h3 className="text-lg sm:text-xl font-medium text-gray-900 mb-2 text-center">
-                    No upcoming events
-                  </h3>
-                  <p className="text-gray-500 text-center mb-6 text-sm sm:text-base max-w-md">
-                    Create your first event to get started
-                  </p>
-                  {isAdmin && (
-                    <Button size="sm" className="w-full sm:w-auto" asChild>
-                      <Link href="/events/new">
-                        <Plus className="h-4 w-4 mr-2" />
-                        Create Event
-                      </Link>
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
-            )}
-          </TabsContent>
+            <TabsContent value='upcoming' className='space-y-4'>
+              {upcomingEvents.length > 0 ? (
+                <div className='grid gap-4'>
+                  {upcomingEvents.map((event) => (
+                    <EventCard
+                      key={getDocumentId(event)}
+                      event={event}
+                      onDelete={isAdmin ? handleDeleteEvent : undefined}
+                      onRegister={!isAdmin ? handleRegisterForEvent : undefined}
+                      isDeleting={deletingEventId === getDocumentId(event)}
+                      isRegistering={
+                        registeringEventId === getDocumentId(event)
+                      }
+                      isAdmin={isAdmin}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <Card className='border-dashed border-2 border-gray-200 dark:border-gray-700'>
+                  <CardContent className='flex flex-col items-center justify-center py-12 px-4'>
+                    <div className='p-3 bg-blue-50 dark:bg-blue-900/20 rounded-full mb-4'>
+                      <Calendar className='h-8 w-8 text-blue-500' />
+                    </div>
+                    <h3 className='text-lg font-medium text-foreground mb-2 text-center'>
+                      No upcoming events yet! 📅
+                    </h3>
+                    <p className='text-muted-foreground text-center mb-6 max-w-md'>
+                      {isAdmin
+                        ? "Ready to bring the community together? Create your first event!"
+                        : "Check back soon for exciting community activities and gatherings."}
+                    </p>
+                    {isAdmin && (
+                      <Button className='shadow-lg' asChild>
+                        <Link href='/events/new'>
+                          <Plus className='h-4 w-4 mr-2' />
+                          Create Your First Event
+                        </Link>
+                      </Button>
+                    )}
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
 
-          <TabsContent value="past" className="space-y-4">
-            {pastEvents.length > 0 ? (
-              <div className="grid gap-4">
-                {pastEvents.map((event) => (
-                  <EventCard
-                    key={getDocumentId(event)}
-                    event={event}
-                    onDelete={isAdmin ? handleDeleteEvent : undefined}
-                    onRegister={!isAdmin ? handleRegisterForEvent : undefined}
-                    isDeleting={deletingEventId === getDocumentId(event)}
-                    isRegistering={registeringEventId === getDocumentId(event)}
-                    isAdmin={isAdmin}
-                  />
-                ))}
-              </div>
-            ) : (
-              <Card>
-                <CardContent className="flex flex-col items-center justify-center py-8 sm:py-12 px-4">
-                  <Calendar className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mb-4" />
-                  <h3 className="text-lg sm:text-xl font-medium text-gray-900 mb-2 text-center">
-                    No past events
-                  </h3>
-                  <p className="text-gray-500 text-center text-sm sm:text-base max-w-md">
-                    Past events will appear here
-                  </p>
-                </CardContent>
-              </Card>
-            )}
-          </TabsContent>
-        </Tabs>
-      </div>
-    </AppShell>
+            <TabsContent value='past' className='space-y-4'>
+              {pastEvents.length > 0 ? (
+                <div className='grid gap-4'>
+                  {pastEvents.map((event) => (
+                    <EventCard
+                      key={getDocumentId(event)}
+                      event={event}
+                      onDelete={isAdmin ? handleDeleteEvent : undefined}
+                      onRegister={!isAdmin ? handleRegisterForEvent : undefined}
+                      isDeleting={deletingEventId === getDocumentId(event)}
+                      isRegistering={
+                        registeringEventId === getDocumentId(event)
+                      }
+                      isAdmin={isAdmin}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <Card className='border-dashed border-2 border-gray-200 dark:border-gray-700'>
+                  <CardContent className='flex flex-col items-center justify-center py-12 px-4'>
+                    <div className='p-3 bg-purple-50 dark:bg-purple-900/20 rounded-full mb-4'>
+                      <Calendar className='h-8 w-8 text-purple-500' />
+                    </div>
+                    <h3 className='text-lg font-medium text-foreground mb-2 text-center'>
+                      No past events yet 📚
+                    </h3>
+                    <p className='text-muted-foreground text-center max-w-md'>
+                      Your event history will appear here as activities are
+                      completed.
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+          </Tabs>
+        </div>
+      </AppShell>
     </FeatureGuard>
   );
 }
@@ -449,20 +518,26 @@ function EventCard({
   };
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardContent className="p-4 sm:p-6">
-        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-4 lg:space-y-0">
-          <div className="flex-1 min-w-0">
+    <Card className='hover:shadow-lg transition-all duration-300 border-l-4 border-l-blue-500'>
+      <CardContent className='p-6'>
+        <div className='flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-4 lg:space-y-0'>
+          <div className='flex-1 min-w-0'>
             {/* Title and Badges */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 mb-3 space-y-2 sm:space-y-0">
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 truncate">
+            <div className='flex flex-col sm:flex-row sm:items-center sm:space-x-3 mb-3 space-y-2 sm:space-y-0'>
+              <h3 className='text-xl font-semibold text-foreground truncate'>
                 {event.title}
               </h3>
-              <div className="flex flex-wrap gap-2">
-                <Badge className={`${getEventTypeColor(event.type)} text-xs`}>
+              <div className='flex flex-wrap gap-2'>
+                <Badge
+                  variant='secondary'
+                  className={`${getEventTypeColor(event.type)}`}
+                >
                   {event.type.replace("_", " ")}
                 </Badge>
-                <Badge className={`${getStatusColor(event.status)} text-xs`}>
+                <Badge
+                  variant='secondary'
+                  className={`${getStatusColor(event.status)}`}
+                >
                   {event.status}
                 </Badge>
               </div>
@@ -470,85 +545,96 @@ function EventCard({
 
             {/* Description */}
             {event.description && (
-              <p className="text-gray-600 mb-4 line-clamp-2 text-sm sm:text-base">
+              <p className='text-muted-foreground mb-4 line-clamp-2'>
                 {event.description}
               </p>
             )}
 
             {/* Event Details */}
-            <div className="space-y-2 sm:space-y-0 sm:flex sm:flex-wrap sm:items-center sm:gap-4 text-sm text-gray-500">
-              <div className="flex items-center space-x-1">
-                <Clock className="h-4 w-4 flex-shrink-0" />
-                <span className="truncate">
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm text-muted-foreground'>
+              <div className='flex items-center space-x-2'>
+                <div className='p-1 bg-blue-50 dark:bg-blue-900/20 rounded'>
+                  <Clock className='h-4 w-4 text-blue-500' />
+                </div>
+                <span className='truncate'>
                   {format(new Date(event.startDate), "MMM d, yyyy h:mm a")}
                 </span>
               </div>
-              <div className="flex items-center space-x-1">
-                <MapPin className="h-4 w-4 flex-shrink-0" />
-                <span className="truncate">{event.location}</span>
+              <div className='flex items-center space-x-2'>
+                <div className='p-1 bg-green-50 dark:bg-green-900/20 rounded'>
+                  <MapPin className='h-4 w-4 text-green-500' />
+                </div>
+                <span className='truncate'>{event.location}</span>
               </div>
               {event.capacity && (
-                <div className="flex items-center space-x-1">
-                  <Users className="h-4 w-4 flex-shrink-0" />
+                <div className='flex items-center space-x-2'>
+                  <div className='p-1 bg-purple-50 dark:bg-purple-900/20 rounded'>
+                    <Users className='h-4 w-4 text-purple-500' />
+                  </div>
                   <span>
                     {event.registrationCount || 0}/{event.capacity} registered
                   </span>
                 </div>
               )}
-              <div className="text-xs text-gray-400">
-                {getRelativeTime(event.startDate)}
+              <div className='flex items-center space-x-2'>
+                <div className='p-1 bg-orange-50 dark:bg-orange-900/20 rounded'>
+                  <Calendar className='h-4 w-4 text-orange-500' />
+                </div>
+                <span className='font-medium text-orange-600'>
+                  {getRelativeTime(event.startDate)}
+                </span>
               </div>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 lg:ml-4 lg:flex-col lg:items-stretch lg:min-w-0">
+          <div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 lg:ml-4 lg:flex-col lg:items-stretch lg:min-w-0'>
             {/* View Button */}
             <Button
-              variant="outline"
-              size="sm"
-              className="w-full sm:w-auto lg:w-full"
+              variant='outline'
+              size='sm'
+              className='w-full sm:w-auto lg:w-full'
               asChild
             >
               <Link href={`/events/${eventId}`}>
-                <Eye className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline lg:hidden">View</span>
-                <span className="sm:hidden lg:inline">View Details</span>
+                <Eye className='h-4 w-4 mr-2' />
+                <span className='hidden sm:inline lg:hidden'>View</span>
+                <span className='sm:hidden lg:inline'>View Details</span>
               </Link>
             </Button>
 
             {/* Admin Actions */}
             {isAdmin ? (
-              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 lg:flex-col">
+              <div className='flex flex-col sm:flex-row gap-2 sm:gap-3 lg:flex-col'>
                 <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full sm:w-auto lg:w-full"
+                  variant='outline'
+                  size='sm'
+                  className='w-full sm:w-auto lg:w-full'
                   asChild
                 >
                   <Link href={`/events/${eventId}/edit`}>
-                    <Edit className="h-4 w-4 mr-2" />
-                    <span className="hidden sm:inline lg:hidden">Edit</span>
-                    <span className="sm:hidden lg:inline">Edit Event</span>
+                    <Edit className='h-4 w-4 mr-2' />
+                    <span className='hidden sm:inline lg:hidden'>Edit</span>
+                    <span className='sm:hidden lg:inline'>Edit Event</span>
                   </Link>
                 </Button>
                 {onDelete && (
                   <Button
-                    variant="outline"
-                    size="sm"
+                    variant='outline'
+                    size='sm'
                     onClick={() => onDelete(eventId)}
                     disabled={isDeleting}
-                    className="w-full sm:w-auto lg:w-full text-red-600 hover:text-red-700 hover:bg-red-50 disabled:opacity-50"
+                    className='w-full sm:w-auto lg:w-full text-red-600 hover:text-red-700 hover:bg-red-50 disabled:opacity-50'
                   >
                     {isDeleting ? (
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
+                      <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-red-600'></div>
                     ) : (
                       <>
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        <span className="hidden sm:inline lg:hidden">
+                        <Trash2 className='h-4 w-4 mr-2' />
+                        <span className='hidden sm:inline lg:hidden'>
                           Delete
                         </span>
-                        <span className="sm:hidden lg:inline">
+                        <span className='sm:hidden lg:inline'>
                           Delete Event
                         </span>
                       </>
@@ -558,36 +644,36 @@ function EventCard({
               </div>
             ) : (
               /* Member Actions */
-              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 lg:flex-col">
+              <div className='flex flex-col sm:flex-row gap-2 sm:gap-3 lg:flex-col'>
                 {event.registrationRequired &&
                   event.status === "PUBLISHED" &&
                   onRegister && (
                     <Button
-                      variant="default"
-                      size="sm"
+                      variant='default'
+                      size='sm'
                       onClick={() => onRegister(eventId)}
                       disabled={isRegistering || event.isFull}
-                      className="w-full sm:w-auto lg:w-full bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50"
+                      className='w-full sm:w-auto lg:w-full bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50'
                     >
                       {isRegistering ? (
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white'></div>
                       ) : event.isFull ? (
                         <>
-                          <AlertCircle className="h-4 w-4 mr-2" />
-                          <span className="hidden sm:inline lg:hidden">
+                          <AlertCircle className='h-4 w-4 mr-2' />
+                          <span className='hidden sm:inline lg:hidden'>
                             Full
                           </span>
-                          <span className="sm:hidden lg:inline">
+                          <span className='sm:hidden lg:inline'>
                             Event Full
                           </span>
                         </>
                       ) : (
                         <>
-                          <UserPlus className="h-4 w-4 mr-2" />
-                          <span className="hidden sm:inline lg:hidden">
+                          <UserPlus className='h-4 w-4 mr-2' />
+                          <span className='hidden sm:inline lg:hidden'>
                             Register
                           </span>
-                          <span className="sm:hidden lg:inline">
+                          <span className='sm:hidden lg:inline'>
                             Register Now
                           </span>
                         </>
@@ -596,12 +682,12 @@ function EventCard({
                   )}
                 {!event.registrationRequired &&
                   event.status === "PUBLISHED" && (
-                    <div className="flex items-center justify-center text-green-600 text-sm py-2 px-3 border border-green-200 rounded-md bg-green-50">
-                      <CheckCircle className="h-4 w-4 mr-2" />
-                      <span className="hidden sm:inline lg:hidden">
+                    <div className='flex items-center justify-center text-green-600 text-sm py-2 px-3 border border-green-200 rounded-md bg-green-50'>
+                      <CheckCircle className='h-4 w-4 mr-2' />
+                      <span className='hidden sm:inline lg:hidden'>
                         Open to all
                       </span>
-                      <span className="sm:hidden lg:inline">
+                      <span className='sm:hidden lg:inline'>
                         Open to All Members
                       </span>
                     </div>

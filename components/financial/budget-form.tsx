@@ -65,6 +65,20 @@ interface BudgetCategory {
   color?: string;
 }
 
+interface ApiResponse<T = any> {
+  success: boolean;
+  message?: string;
+  data?: T;
+}
+
+interface BudgetCategoriesResponse {
+  categories: BudgetCategory[];
+}
+
+interface BudgetResponse {
+  budget: any;
+}
+
 interface BudgetFormProps {
   onSuccess?: (budget: any) => void;
   onCancel?: () => void;
@@ -107,9 +121,11 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
   const fetchBudgetCategories = async () => {
     try {
       setCategoriesLoading(true);
-      const response = await apiClient.get("/api/financial/budget-categories");
+      const response = await apiClient.get<
+        ApiResponse<BudgetCategoriesResponse>
+      >("/api/financial/budget-categories");
       if (response.data?.success) {
-        setBudgetCategories(response.data.data.categories || []);
+        setBudgetCategories(response.data.data?.categories || []);
       }
     } catch (err: any) {
       console.error("❌ Budget categories fetch error:", err);
@@ -135,7 +151,7 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
         categories: data.categories,
       };
 
-      const response = await apiClient.post(
+      const response = await apiClient.post<ApiResponse<BudgetResponse>>(
         "/api/financial/budgets",
         budgetData
       );
@@ -143,7 +159,7 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
       if (response.data?.success) {
         setSuccess(true);
         form.reset();
-        onSuccess?.(response.data.data.budget);
+        onSuccess?.(response.data.data?.budget);
       } else {
         setError(response.data?.message || "Failed to create budget");
       }
@@ -197,21 +213,21 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
   if (success) {
     return (
       <Card>
-        <CardContent className="pt-6">
-          <div className="text-center">
-            <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">
+        <CardContent className='pt-6'>
+          <div className='text-center'>
+            <CheckCircle className='w-12 h-12 text-green-500 mx-auto mb-4' />
+            <h3 className='text-lg font-semibold mb-2'>
               Budget Created Successfully
             </h3>
-            <p className="text-gray-600 mb-4">
+            <p className='text-gray-600 mb-4'>
               The budget has been created and is ready for approval.
             </p>
-            <div className="space-x-2">
+            <div className='space-x-2'>
               <Button onClick={() => setSuccess(false)}>
                 Create Another Budget
               </Button>
               {onCancel && (
-                <Button variant="outline" onClick={onCancel}>
+                <Button variant='outline' onClick={onCancel}>
                   Close
                 </Button>
               )}
@@ -225,8 +241,8 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Calculator className="w-5 h-5" />
+        <CardTitle className='flex items-center gap-2'>
+          <Calculator className='w-5 h-5' />
           Create Budget
         </CardTitle>
         <CardDescription>
@@ -235,24 +251,24 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
       </CardHeader>
       <CardContent>
         {error && (
-          <Alert variant="destructive" className="mb-6">
+          <Alert variant='destructive' className='mb-6'>
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
             {/* Basic Information */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
               <FormField
                 control={form.control}
-                name="name"
+                name='name'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Budget Name</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="e.g., 2024 Annual Budget"
+                        placeholder='e.g., 2024 Annual Budget'
                         {...field}
                       />
                     </FormControl>
@@ -263,15 +279,15 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
 
               <FormField
                 control={form.control}
-                name="fiscalYear"
+                name='fiscalYear'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Fiscal Year</FormLabel>
                     <FormControl>
                       <Input
-                        type="number"
-                        min="2000"
-                        max="2100"
+                        type='number'
+                        min='2000'
+                        max='2100'
                         {...field}
                         onChange={(e) =>
                           field.onChange(
@@ -287,12 +303,12 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
 
               <FormField
                 control={form.control}
-                name="startDate"
+                name='startDate'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Start Date</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <Input type='date' {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -301,12 +317,12 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
 
               <FormField
                 control={form.control}
-                name="endDate"
+                name='endDate'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>End Date</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <Input type='date' {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -316,13 +332,13 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
 
             <FormField
               control={form.control}
-              name="description"
+              name='description'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Description (Optional)</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Brief description of the budget"
+                      placeholder='Brief description of the budget'
                       {...field}
                     />
                   </FormControl>
@@ -332,12 +348,11 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
             />
 
             {/* Budget Categories */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-medium">Budget Categories</h3>
+            <div className='space-y-4'>
+              <div className='flex items-center justify-between'>
+                <h3 className='text-lg font-medium'>Budget Categories</h3>
                 <Button
-                  type="button"
-                  variant="outline"
+                  type='button'
                   onClick={() =>
                     append({
                       categoryId: "",
@@ -346,18 +361,18 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
                     })
                   }
                 >
-                  <PlusCircle className="w-4 h-4 mr-2" />
+                  <PlusCircle className='w-4 h-4 mr-2' />
                   Add Category
                 </Button>
               </div>
 
               {categoriesLoading ? (
-                <div className="flex items-center justify-center py-8">
-                  <Loader2 className="w-6 h-6 animate-spin mr-2" />
+                <div className='flex items-center justify-center py-8'>
+                  <Loader2 className='w-6 h-6 animate-spin mr-2' />
                   Loading categories...
                 </div>
               ) : (
-                <div className="space-y-4">
+                <div className='space-y-4'>
                   {fields.map((field, index) => {
                     const selectedCategory = budgetCategories.find(
                       (bc) =>
@@ -367,9 +382,9 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
                     return (
                       <div
                         key={field.id}
-                        className="flex items-end space-x-4 p-4 border rounded-lg"
+                        className='flex items-end space-x-4 p-4 border rounded-none'
                       >
-                        <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className='flex-1 grid grid-cols-1 md:grid-cols-3 gap-4'>
                           <FormField
                             control={form.control}
                             name={`categories.${index}.categoryId`}
@@ -382,7 +397,7 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
                                 >
                                   <FormControl>
                                     <SelectTrigger>
-                                      <SelectValue placeholder="Select category" />
+                                      <SelectValue placeholder='Select category' />
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
@@ -391,7 +406,7 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
                                         key={category._id}
                                         value={category._id}
                                       >
-                                        <div className="flex items-center space-x-2">
+                                        <div className='flex items-center space-x-2'>
                                           <span
                                             className={`w-3 h-3 rounded-full ${
                                               category.type === "INCOME"
@@ -433,10 +448,10 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
                                 </FormLabel>
                                 <FormControl>
                                   <Input
-                                    type="number"
-                                    step="0.01"
-                                    min="0"
-                                    placeholder="0.00"
+                                    type='number'
+                                    step='0.01'
+                                    min='0'
+                                    placeholder='0.00'
                                     {...field}
                                     onChange={(e) =>
                                       field.onChange(
@@ -458,7 +473,7 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
                                 <FormLabel>Notes (Optional)</FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Budget notes"
+                                    placeholder='Budget notes'
                                     {...field}
                                   />
                                 </FormControl>
@@ -470,13 +485,13 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
 
                         {fields.length > 1 && (
                           <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            className="text-red-600 hover:text-red-700"
+                            type='button'
+                            variant='ghost'
+                            size='icon'
+                            className='text-red-600 hover:text-red-700'
                             onClick={() => remove(index)}
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className='w-4 h-4' />
                           </Button>
                         )}
                       </div>
@@ -487,26 +502,26 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
             </div>
 
             {/* Budget Summary */}
-            <Card className="bg-gray-50">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg">Budget Summary</CardTitle>
+            <Card className='bg-gray-50'>
+              <CardHeader className='pb-3'>
+                <CardTitle className='text-lg'>Budget Summary</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+                <div className='grid grid-cols-1 md:grid-cols-4 gap-4 text-center'>
                   <div>
-                    <p className="text-sm text-gray-600">Total Income</p>
-                    <p className="text-lg font-semibold text-green-600">
+                    <p className='text-sm text-gray-600'>Total Income</p>
+                    <p className='text-lg font-semibold text-green-600'>
                       {formatCurrency(getIncomeTotal())}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Total Expenses</p>
-                    <p className="text-lg font-semibold text-red-600">
+                    <p className='text-sm text-gray-600'>Total Expenses</p>
+                    <p className='text-lg font-semibold text-red-600'>
                       {formatCurrency(getExpenseTotal())}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Net Budget</p>
+                    <p className='text-sm text-gray-600'>Net Budget</p>
                     <p
                       className={`text-lg font-semibold ${
                         getIncomeTotal() - getExpenseTotal() >= 0
@@ -518,8 +533,8 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Total Budget</p>
-                    <p className="text-lg font-semibold text-blue-600">
+                    <p className='text-sm text-gray-600'>Total Budget</p>
+                    <p className='text-lg font-semibold text-blue-600'>
                       {formatCurrency(getTotalBudgetedAmount())}
                     </p>
                   </div>
@@ -527,14 +542,14 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
               </CardContent>
             </Card>
 
-            <div className="flex justify-end space-x-2">
+            <div className='flex justify-end space-x-2'>
               {onCancel && (
-                <Button type="button" variant="outline" onClick={onCancel}>
+                <Button type='button' variant='outline' onClick={onCancel}>
                   Cancel
                 </Button>
               )}
-              <Button type="submit" disabled={isLoading || categoriesLoading}>
-                {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+              <Button type='submit' disabled={isLoading || categoriesLoading}>
+                {isLoading && <Loader2 className='w-4 h-4 mr-2 animate-spin' />}
                 Create Budget
               </Button>
             </div>
@@ -544,4 +559,3 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
     </Card>
   );
 }
-

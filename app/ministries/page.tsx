@@ -15,8 +15,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Plus, Users, BarChart3, Settings } from "lucide-react";
-import { Ministry, CreateMinistryRequest } from "@/types";
+import { Plus, Users, BarChart3, Settings, Heart, Zap } from "lucide-react";
+import {
+  Ministry,
+  CreateMinistryRequest,
+  UpdateMinistryRequest,
+} from "@/types";
 import apiClient from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 
@@ -72,7 +76,19 @@ export default function MinistriesPage() {
     data: Partial<CreateMinistryRequest>
   ) => {
     try {
-      await apiClient.updateMinistry(id, data);
+      // Ensure budget has required spent field if budget is provided
+      const updateData = {
+        ...data,
+        budget: data.budget
+          ? {
+              allocated: data.budget.allocated,
+              currency: data.budget.currency,
+              spent: 0, // Default spent to 0 for updates
+            }
+          : undefined,
+      } as UpdateMinistryRequest;
+
+      await apiClient.updateMinistry(id, updateData);
       toast({
         title: "Success",
         description: "Ministry updated successfully",
@@ -108,56 +124,64 @@ export default function MinistriesPage() {
   };
 
   return (
-    <FeatureGuard feature="ministries">
+    <FeatureGuard feature='ministries'>
       <AuthGuard>
         <AppShell>
-          <div className="space-y-6">
-            {/* Header */}
-            <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
-              <div>
-                <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
-                  Ministries
-                </h1>
-                <p className="text-gray-600 text-sm lg:text-base">
-                  Manage church ministries and small groups
-                </p>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+          <div className='space-y-6'>
+            {/* Header Section */}
+            <div className='bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-xl p-6 border border-orange-100 dark:border-orange-800'>
+              <div className='flex items-center justify-between'>
+                <div>
+                  <div className='flex items-center space-x-3 mb-2'>
+                    <div className='p-2 bg-orange-500 rounded-lg'>
+                      <Heart className='h-6 w-6 text-white' />
+                    </div>
+                    <h1 className='text-2xl font-bold text-foreground'>
+                      Ministry Hub ❤️
+                    </h1>
+                  </div>
+                  <p className='text-muted-foreground'>
+                    Serving our community together through various ministries
+                  </p>
+                </div>
                 <Button
-                  size="sm"
-                  className="w-full sm:w-auto"
+                  className='shadow-lg'
                   onClick={() => setShowCreateForm(true)}
                 >
-                  <Plus className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">New Ministry</span>
-                  <span className="sm:hidden">New</span>
+                  <Plus className='h-4 w-4 mr-2' />
+                  New Ministry
                 </Button>
               </div>
             </div>
 
-            <Tabs defaultValue="list" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="list" className="flex items-center gap-2">
-                  <Users className="h-4 w-4" />
-                  Ministries
-                </TabsTrigger>
-                <TabsTrigger
-                  value="dashboard"
-                  className="flex items-center gap-2"
-                >
-                  <BarChart3 className="h-4 w-4" />
-                  Dashboard
-                </TabsTrigger>
-                <TabsTrigger
-                  value="settings"
-                  className="flex items-center gap-2"
-                >
-                  <Settings className="h-4 w-4" />
-                  Settings
-                </TabsTrigger>
-              </TabsList>
+            <Tabs defaultValue='list' className='space-y-6'>
+              <div className='bg-card rounded-xl p-4 border'>
+                <TabsList className='grid w-full grid-cols-3'>
+                  <TabsTrigger value='list' className='flex items-center gap-2'>
+                    <Users className='h-4 w-4' />
+                    <span className='hidden sm:inline'>Ministries</span>
+                    <span className='sm:hidden'>List</span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value='dashboard'
+                    className='flex items-center gap-2'
+                  >
+                    <BarChart3 className='h-4 w-4' />
+                    <span className='hidden sm:inline'>Dashboard</span>
+                    <span className='sm:hidden'>Stats</span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value='settings'
+                    className='flex items-center gap-2'
+                  >
+                    <Settings className='h-4 w-4' />
+                    <span className='hidden sm:inline'>Settings</span>
+                    <span className='sm:hidden'>Config</span>
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
-              <TabsContent value="list" className="space-y-4">
+              <TabsContent value='list' className='space-y-4'>
                 <MinistryList
                   ministries={ministries}
                   loading={loading}
@@ -167,22 +191,31 @@ export default function MinistriesPage() {
                 />
               </TabsContent>
 
-              <TabsContent value="dashboard" className="space-y-4">
+              <TabsContent value='dashboard' className='space-y-4'>
                 <MinistryDashboard />
               </TabsContent>
 
-              <TabsContent value="settings" className="space-y-4">
-                <div className="text-center py-8">
-                  <p className="text-gray-500">
-                    Ministry settings coming soon...
-                  </p>
+              <TabsContent value='settings' className='space-y-4'>
+                <div className='bg-card rounded-xl border'>
+                  <div className='text-center py-12'>
+                    <div className='p-3 bg-orange-50 dark:bg-orange-900/20 rounded-full mb-4 w-fit mx-auto'>
+                      <Settings className='h-8 w-8 text-orange-500' />
+                    </div>
+                    <h3 className='text-lg font-medium text-foreground mb-2'>
+                      Coming Soon! 🚧
+                    </h3>
+                    <p className='text-muted-foreground max-w-md mx-auto'>
+                      Ministry configuration options are being developed. Check
+                      back soon for advanced settings and customization options.
+                    </p>
+                  </div>
                 </div>
               </TabsContent>
             </Tabs>
 
             {/* Create Ministry Dialog */}
             <Dialog open={showCreateForm} onOpenChange={setShowCreateForm}>
-              <DialogContent className="max-w-2xl">
+              <DialogContent className='max-w-2xl'>
                 <DialogHeader>
                   <DialogTitle>Create New Ministry</DialogTitle>
                 </DialogHeader>
@@ -198,7 +231,7 @@ export default function MinistriesPage() {
               open={!!editingMinistry}
               onOpenChange={() => setEditingMinistry(null)}
             >
-              <DialogContent className="max-w-2xl">
+              <DialogContent className='max-w-2xl'>
                 <DialogHeader>
                   <DialogTitle>Edit Ministry</DialogTitle>
                 </DialogHeader>

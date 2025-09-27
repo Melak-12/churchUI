@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { AppShell } from "@/components/layout/app-shell";
 import {
@@ -70,13 +70,7 @@ export default function EventRegistrationsPage() {
     specialRequirements: "",
   });
 
-  useEffect(() => {
-    if (eventId && eventId !== "undefined") {
-      fetchData();
-    }
-  }, [eventId]);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       console.log("Fetching data for event ID:", eventId);
@@ -120,7 +114,13 @@ export default function EventRegistrationsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [eventId, toast]);
+
+  useEffect(() => {
+    if (eventId && eventId !== "undefined") {
+      fetchData();
+    }
+  }, [eventId, fetchData]);
 
   const handleAddRegistration = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -153,10 +153,6 @@ export default function EventRegistrationsPage() {
     console.log("🎯 Event ID:", eventId);
 
     // Check API client state
-    console.log(
-      "🔑 API Client token:",
-      apiClient.token ? "Present" : "Missing"
-    );
     console.log(
       "🌐 API Base URL:",
       process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
@@ -298,13 +294,13 @@ export default function EventRegistrationsPage() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "ATTENDED":
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
+        return <CheckCircle className='h-4 w-4 text-green-600' />;
       case "CANCELLED":
-        return <XCircle className="h-4 w-4 text-red-600" />;
+        return <XCircle className='h-4 w-4 text-red-600' />;
       case "NO_SHOW":
-        return <AlertCircle className="h-4 w-4 text-gray-600" />;
+        return <AlertCircle className='h-4 w-4 text-gray-600' />;
       default:
-        return <Users className="h-4 w-4 text-blue-600" />;
+        return <Users className='h-4 w-4 text-blue-600' />;
     }
   };
 
@@ -327,9 +323,9 @@ export default function EventRegistrationsPage() {
   if (loading) {
     return (
       <AppShell>
-        <div className="flex items-center justify-center h-64">
-          <div className="flex items-center space-x-2">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+        <div className='flex items-center justify-center h-64'>
+          <div className='flex items-center space-x-2'>
+            <div className='animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600'></div>
             <span>Loading registrations...</span>
           </div>
         </div>
@@ -340,11 +336,11 @@ export default function EventRegistrationsPage() {
   if (!event) {
     return (
       <AppShell>
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <AlertCircle className="h-8 w-8 text-red-500 mx-auto mb-2" />
-            <p className="text-red-600">Event not found</p>
-            <Button onClick={() => router.push("/events")} className="mt-4">
+        <div className='flex items-center justify-center h-64'>
+          <div className='text-center'>
+            <AlertCircle className='h-8 w-8 text-red-500 mx-auto mb-2' />
+            <p className='text-red-600'>Event not found</p>
+            <Button onClick={() => router.push("/events")} className='mt-4'>
               Back to Events
             </Button>
           </div>
@@ -355,21 +351,21 @@ export default function EventRegistrationsPage() {
 
   return (
     <AppShell>
-      <div className="space-y-6">
+      <div className='space-y-6'>
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <Button variant="outline" size="sm" asChild>
+        <div className='flex items-center justify-between'>
+          <div className='flex items-center space-x-4'>
+            <Button variant='outline' size='sm' asChild>
               <Link href={`/events/${eventId}`}>
-                <ArrowLeft className="h-4 w-4 mr-2" />
+                <ArrowLeft className='h-4 w-4 mr-2' />
                 Back to Event
               </Link>
             </Button>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className='text-2xl font-bold text-gray-900'>
                 Event Registrations
               </h1>
-              <p className="text-gray-600">{event.title}</p>
+              <p className='text-gray-600'>{event.title}</p>
             </div>
           </div>
 
@@ -382,18 +378,18 @@ export default function EventRegistrationsPage() {
                 : ""
             }
           >
-            <UserPlus className="h-4 w-4 mr-2" />
+            <UserPlus className='h-4 w-4 mr-2' />
             Add Registration
           </Button>
         </div>
 
         {/* Event Status Alert */}
         {event.status !== "PUBLISHED" && (
-          <Alert variant="destructive" className="mb-4">
-            <AlertCircle className="h-4 w-4" />
+          <Alert variant='destructive' className='mb-4'>
+            <AlertCircle className='h-4 w-4' />
             <AlertDescription>
-              <div className="space-y-2">
-                <div className="font-semibold">
+              <div className='space-y-2'>
+                <div className='font-semibold'>
                   ⚠️ Event Not Available for Registration
                 </div>
                 <div>
@@ -402,7 +398,7 @@ export default function EventRegistrationsPage() {
                 <div>
                   <strong>Required Status:</strong> PUBLISHED
                 </div>
-                <div className="text-sm">
+                <div className='text-sm'>
                   This event needs to be published before members can register.
                   Only published events accept registrations.
                 </div>
@@ -413,18 +409,18 @@ export default function EventRegistrationsPage() {
 
         {event.registrationDeadline &&
           new Date() > new Date(event.registrationDeadline) && (
-            <Alert variant="destructive" className="mb-4">
-              <AlertCircle className="h-4 w-4" />
+            <Alert variant='destructive' className='mb-4'>
+              <AlertCircle className='h-4 w-4' />
               <AlertDescription>
-                <div className="space-y-2">
-                  <div className="font-semibold">
+                <div className='space-y-2'>
+                  <div className='font-semibold'>
                     ⏰ Registration Deadline Passed
                   </div>
                   <div>
                     <strong>Deadline:</strong>{" "}
                     {format(new Date(event.registrationDeadline), "PPP 'at' p")}
                   </div>
-                  <div className="text-sm">
+                  <div className='text-sm'>
                     The registration deadline for this event has passed.
                   </div>
                 </div>
@@ -434,41 +430,41 @@ export default function EventRegistrationsPage() {
 
         {/* Event Info */}
         <Card>
-          <CardContent className="pt-6">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="flex items-center space-x-2">
-                <Calendar className="h-5 w-5 text-blue-500" />
+          <CardContent className='pt-6'>
+            <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
+              <div className='flex items-center space-x-2'>
+                <Calendar className='h-5 w-5 text-blue-500' />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Date</p>
-                  <p className="text-sm text-gray-600">
+                  <p className='text-sm font-medium text-gray-900'>Date</p>
+                  <p className='text-sm text-gray-600'>
                     {format(new Date(event.startDate), "MMM d, yyyy")}
                   </p>
                 </div>
               </div>
-              <div className="flex items-center space-x-2">
-                <MapPin className="h-5 w-5 text-green-500" />
+              <div className='flex items-center space-x-2'>
+                <MapPin className='h-5 w-5 text-green-500' />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Location</p>
-                  <p className="text-sm text-gray-600">{event.location}</p>
+                  <p className='text-sm font-medium text-gray-900'>Location</p>
+                  <p className='text-sm text-gray-600'>{event.location}</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-2">
-                <Users className="h-5 w-5 text-purple-500" />
+              <div className='flex items-center space-x-2'>
+                <Users className='h-5 w-5 text-purple-500' />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">
+                  <p className='text-sm font-medium text-gray-900'>
                     Registrations
                   </p>
-                  <p className="text-sm text-gray-600">
+                  <p className='text-sm text-gray-600'>
                     {registrations.length}
                     {event.capacity && ` / ${event.capacity}`}
                   </p>
                 </div>
               </div>
-              <div className="flex items-center space-x-2">
-                <CheckCircle className="h-5 w-5 text-green-500" />
+              <div className='flex items-center space-x-2'>
+                <CheckCircle className='h-5 w-5 text-green-500' />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Attended</p>
-                  <p className="text-sm text-gray-600">
+                  <p className='text-sm font-medium text-gray-900'>Attended</p>
+                  <p className='text-sm text-gray-600'>
                     {
                       registrations.filter((r) => r.status === "ATTENDED")
                         .length
@@ -490,10 +486,10 @@ export default function EventRegistrationsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleAddRegistration} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="memberId">Member *</Label>
+              <form onSubmit={handleAddRegistration} className='space-y-4'>
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                  <div className='space-y-2'>
+                    <Label htmlFor='memberId'>Member *</Label>
                     <Select
                       value={newRegistration.memberId}
                       onValueChange={(value) =>
@@ -504,7 +500,7 @@ export default function EventRegistrationsPage() {
                       }
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a member" />
+                        <SelectValue placeholder='Select a member' />
                       </SelectTrigger>
                       <SelectContent>
                         {members.map((member) => (
@@ -517,10 +513,10 @@ export default function EventRegistrationsPage() {
                     </Select>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="notes">Notes</Label>
+                  <div className='space-y-2'>
+                    <Label htmlFor='notes'>Notes</Label>
                     <Input
-                      id="notes"
+                      id='notes'
                       value={newRegistration.notes}
                       onChange={(e) =>
                         setNewRegistration((prev) => ({
@@ -528,18 +524,18 @@ export default function EventRegistrationsPage() {
                           notes: e.target.value,
                         }))
                       }
-                      placeholder="Additional notes"
+                      placeholder='Additional notes'
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="emergencyName">
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                  <div className='space-y-2'>
+                    <Label htmlFor='emergencyName'>
                       Emergency Contact Name
                     </Label>
                     <Input
-                      id="emergencyName"
+                      id='emergencyName'
                       value={newRegistration.emergencyContact.name}
                       onChange={(e) =>
                         setNewRegistration((prev) => ({
@@ -550,16 +546,16 @@ export default function EventRegistrationsPage() {
                           },
                         }))
                       }
-                      placeholder="Emergency contact name"
+                      placeholder='Emergency contact name'
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="emergencyPhone">
+                  <div className='space-y-2'>
+                    <Label htmlFor='emergencyPhone'>
                       Emergency Contact Phone
                     </Label>
                     <Input
-                      id="emergencyPhone"
+                      id='emergencyPhone'
                       value={newRegistration.emergencyContact.phone}
                       onChange={(e) =>
                         setNewRegistration((prev) => ({
@@ -570,16 +566,16 @@ export default function EventRegistrationsPage() {
                           },
                         }))
                       }
-                      placeholder="Emergency contact phone"
+                      placeholder='Emergency contact phone'
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="dietary">Dietary Restrictions</Label>
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                  <div className='space-y-2'>
+                    <Label htmlFor='dietary'>Dietary Restrictions</Label>
                     <Input
-                      id="dietary"
+                      id='dietary'
                       value={newRegistration.dietaryRestrictions}
                       onChange={(e) =>
                         setNewRegistration((prev) => ({
@@ -587,14 +583,14 @@ export default function EventRegistrationsPage() {
                           dietaryRestrictions: e.target.value,
                         }))
                       }
-                      placeholder="Any dietary restrictions"
+                      placeholder='Any dietary restrictions'
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="special">Special Requirements</Label>
+                  <div className='space-y-2'>
+                    <Label htmlFor='special'>Special Requirements</Label>
                     <Input
-                      id="special"
+                      id='special'
                       value={newRegistration.specialRequirements}
                       onChange={(e) =>
                         setNewRegistration((prev) => ({
@@ -602,28 +598,28 @@ export default function EventRegistrationsPage() {
                           specialRequirements: e.target.value,
                         }))
                       }
-                      placeholder="Any special requirements"
+                      placeholder='Any special requirements'
                     />
                   </div>
                 </div>
 
-                <div className="flex space-x-2">
-                  <Button type="submit" disabled={isSubmitting}>
+                <div className='flex space-x-2'>
+                  <Button type='submit' disabled={isSubmitting}>
                     {isSubmitting ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2'></div>
                         Registering...
                       </>
                     ) : (
                       <>
-                        <UserPlus className="h-4 w-4 mr-2" />
+                        <UserPlus className='h-4 w-4 mr-2' />
                         Add Registration
                       </>
                     )}
                   </Button>
                   <Button
-                    type="button"
-                    variant="outline"
+                    type='button'
+                    variant='outline'
                     onClick={() => setShowAddForm(false)}
                     disabled={isSubmitting}
                   >
@@ -633,13 +629,13 @@ export default function EventRegistrationsPage() {
 
                 {/* Debug Information */}
                 {debugInfo && (
-                  <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <div className='mt-4 p-4 bg-red-50 border border-red-200 rounded-lg'>
                     <details>
-                      <summary className="cursor-pointer text-sm font-medium text-red-800 hover:text-red-900">
+                      <summary className='cursor-pointer text-sm font-medium text-red-800 hover:text-red-900'>
                         🔍 Click to view debug information
                       </summary>
-                      <div className="mt-3 p-3 bg-white border border-red-200 rounded text-xs font-mono">
-                        <div className="space-y-2">
+                      <div className='mt-3 p-3 bg-white border border-red-200 rounded text-xs font-mono'>
+                        <div className='space-y-2'>
                           <div>
                             <strong>Error:</strong> {debugInfo.error}
                           </div>
@@ -666,7 +662,7 @@ export default function EventRegistrationsPage() {
                           {debugInfo.registrationData && (
                             <div>
                               <strong>Registration Data:</strong>
-                              <pre className="mt-1 p-2 bg-gray-50 border rounded overflow-auto max-h-40">
+                              <pre className='mt-1 p-2 bg-gray-50 border rounded overflow-auto max-h-40'>
                                 {JSON.stringify(
                                   debugInfo.registrationData,
                                   null,
@@ -679,7 +675,7 @@ export default function EventRegistrationsPage() {
                           {debugInfo.responseData && (
                             <div>
                               <strong>Server Response:</strong>
-                              <pre className="mt-1 p-2 bg-gray-50 border rounded overflow-auto max-h-40">
+                              <pre className='mt-1 p-2 bg-gray-50 border rounded overflow-auto max-h-40'>
                                 {JSON.stringify(
                                   debugInfo.responseData,
                                   null,
@@ -692,7 +688,7 @@ export default function EventRegistrationsPage() {
                           {debugInfo.headers && (
                             <div>
                               <strong>Request Headers:</strong>
-                              <pre className="mt-1 p-2 bg-gray-50 border rounded overflow-auto max-h-40">
+                              <pre className='mt-1 p-2 bg-gray-50 border rounded overflow-auto max-h-40'>
                                 {JSON.stringify(debugInfo.headers, null, 2)}
                               </pre>
                             </div>
@@ -709,29 +705,29 @@ export default function EventRegistrationsPage() {
 
         {/* Filters */}
         <Card>
-          <CardContent className="pt-6">
-            <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
-              <div className="flex-1">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <CardContent className='pt-6'>
+            <div className='flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4'>
+              <div className='flex-1'>
+                <div className='relative'>
+                  <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4' />
                   <Input
-                    placeholder="Search registrations..."
+                    placeholder='Search registrations...'
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
+                    className='pl-10'
                   />
                 </div>
               </div>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-full md:w-48">
-                  <SelectValue placeholder="Filter by status" />
+                <SelectTrigger className='w-full md:w-48'>
+                  <SelectValue placeholder='Filter by status' />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="REGISTERED">Registered</SelectItem>
-                  <SelectItem value="ATTENDED">Attended</SelectItem>
-                  <SelectItem value="CANCELLED">Cancelled</SelectItem>
-                  <SelectItem value="NO_SHOW">No Show</SelectItem>
+                  <SelectItem value='all'>All Status</SelectItem>
+                  <SelectItem value='REGISTERED'>Registered</SelectItem>
+                  <SelectItem value='ATTENDED'>Attended</SelectItem>
+                  <SelectItem value='CANCELLED'>Cancelled</SelectItem>
+                  <SelectItem value='NO_SHOW'>No Show</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -739,28 +735,28 @@ export default function EventRegistrationsPage() {
         </Card>
 
         {/* Registrations List */}
-        <div className="space-y-4">
+        <div className='space-y-4'>
           {filteredRegistrations.length > 0 ? (
             filteredRegistrations.map((registration) => (
               <Card key={registration.id}>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div className="flex items-center space-x-2">
+                <CardContent className='p-6'>
+                  <div className='flex items-center justify-between'>
+                    <div className='flex items-center space-x-4'>
+                      <div className='flex items-center space-x-2'>
                         {getStatusIcon(registration.status)}
                         <div>
-                          <h4 className="font-medium text-gray-900">
+                          <h4 className='font-medium text-gray-900'>
                             {registration.member.firstName}{" "}
                             {registration.member.lastName}
                           </h4>
-                          <div className="flex items-center space-x-4 text-sm text-gray-600">
-                            <div className="flex items-center space-x-1">
-                              <Phone className="h-4 w-4" />
+                          <div className='flex items-center space-x-4 text-sm text-gray-600'>
+                            <div className='flex items-center space-x-1'>
+                              <Phone className='h-4 w-4' />
                               <span>{registration.member.phone}</span>
                             </div>
                             {registration.member.email && (
-                              <div className="flex items-center space-x-1">
-                                <Mail className="h-4 w-4" />
+                              <div className='flex items-center space-x-1'>
+                                <Mail className='h-4 w-4' />
                                 <span>{registration.member.email}</span>
                               </div>
                             )}
@@ -772,8 +768,8 @@ export default function EventRegistrationsPage() {
                       </Badge>
                     </div>
 
-                    <div className="flex items-center space-x-2">
-                      <div className="text-sm text-gray-500">
+                    <div className='flex items-center space-x-2'>
+                      <div className='text-sm text-gray-500'>
                         Registered{" "}
                         {format(
                           new Date(registration.registeredAt),
@@ -786,14 +782,14 @@ export default function EventRegistrationsPage() {
                           updateRegistrationStatus(registration.id, value)
                         }
                       >
-                        <SelectTrigger className="w-32">
+                        <SelectTrigger className='w-32'>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="REGISTERED">Registered</SelectItem>
-                          <SelectItem value="ATTENDED">Attended</SelectItem>
-                          <SelectItem value="CANCELLED">Cancelled</SelectItem>
-                          <SelectItem value="NO_SHOW">No Show</SelectItem>
+                          <SelectItem value='REGISTERED'>Registered</SelectItem>
+                          <SelectItem value='ATTENDED'>Attended</SelectItem>
+                          <SelectItem value='CANCELLED'>Cancelled</SelectItem>
+                          <SelectItem value='NO_SHOW'>No Show</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -803,24 +799,24 @@ export default function EventRegistrationsPage() {
                     registration.emergencyContact?.name ||
                     registration.dietaryRestrictions ||
                     registration.specialRequirements) && (
-                    <div className="mt-4 pt-4 border-t border-gray-200">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div className='mt-4 pt-4 border-t border-gray-200'>
+                      <div className='grid grid-cols-1 md:grid-cols-2 gap-4 text-sm'>
                         {registration.notes && (
                           <div>
-                            <span className="font-medium text-gray-900">
+                            <span className='font-medium text-gray-900'>
                               Notes:
                             </span>
-                            <p className="text-gray-600">
+                            <p className='text-gray-600'>
                               {registration.notes}
                             </p>
                           </div>
                         )}
                         {registration.emergencyContact?.name && (
                           <div>
-                            <span className="font-medium text-gray-900">
+                            <span className='font-medium text-gray-900'>
                               Emergency Contact:
                             </span>
-                            <p className="text-gray-600">
+                            <p className='text-gray-600'>
                               {registration.emergencyContact.name} -{" "}
                               {registration.emergencyContact.phone}
                             </p>
@@ -828,20 +824,20 @@ export default function EventRegistrationsPage() {
                         )}
                         {registration.dietaryRestrictions && (
                           <div>
-                            <span className="font-medium text-gray-900">
+                            <span className='font-medium text-gray-900'>
                               Dietary Restrictions:
                             </span>
-                            <p className="text-gray-600">
+                            <p className='text-gray-600'>
                               {registration.dietaryRestrictions}
                             </p>
                           </div>
                         )}
                         {registration.specialRequirements && (
                           <div>
-                            <span className="font-medium text-gray-900">
+                            <span className='font-medium text-gray-900'>
                               Special Requirements:
                             </span>
-                            <p className="text-gray-600">
+                            <p className='text-gray-600'>
                               {registration.specialRequirements}
                             </p>
                           </div>
@@ -854,19 +850,19 @@ export default function EventRegistrationsPage() {
             ))
           ) : (
             <Card>
-              <CardContent className="flex flex-col items-center justify-center py-12">
-                <Users className="h-12 w-12 text-gray-400 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <CardContent className='flex flex-col items-center justify-center py-12'>
+                <Users className='h-12 w-12 text-gray-400 mb-4' />
+                <h3 className='text-lg font-medium text-gray-900 mb-2'>
                   No registrations found
                 </h3>
-                <p className="text-gray-500 text-center mb-4">
+                <p className='text-gray-500 text-center mb-4'>
                   {searchTerm || statusFilter !== "all"
                     ? "No registrations match your search criteria"
                     : "No one has registered for this event yet"}
                 </p>
                 {!searchTerm && statusFilter === "all" && (
                   <Button onClick={() => setShowAddForm(true)}>
-                    <UserPlus className="h-4 w-4 mr-2" />
+                    <UserPlus className='h-4 w-4 mr-2' />
                     Add First Registration
                   </Button>
                 )}

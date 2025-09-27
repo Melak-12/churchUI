@@ -117,112 +117,111 @@ export function EventForm({
       recurrencePattern: data.recurrencePattern || undefined,
       recurrenceEndDate: data.recurrenceEndDate || undefined,
       resources: [],
-      reminders: [],
     };
     onSubmit(eventData);
   };
 
   return (
-    <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onFormSubmit)} className='space-y-6'>
       {/* Basic Information */}
       <Card>
         <CardHeader>
           <CardTitle>Event Information</CardTitle>
           <CardDescription>Basic details about the event</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="title">Event Title *</Label>
+        <CardContent className='space-y-4'>
+          <div className='space-y-2'>
+            <Label htmlFor='title'>Event Title *</Label>
             <Input
-              id="title"
+              id='title'
               {...register("title")}
-              placeholder="Enter event title"
+              placeholder='Enter event title'
             />
             {errors.title && (
-              <p className="text-sm text-red-600">{errors.title.message}</p>
+              <p className='text-sm text-red-600'>{errors.title.message}</p>
             )}
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+          <div className='space-y-2'>
+            <Label htmlFor='description'>Description</Label>
             <Textarea
-              id="description"
+              id='description'
               {...register("description")}
-              placeholder="Enter event description"
+              placeholder='Enter event description'
               rows={3}
             />
             {errors.description && (
-              <p className="text-sm text-red-600">
+              <p className='text-sm text-red-600'>
                 {errors.description.message}
               </p>
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="type">Event Type *</Label>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+            <div className='space-y-2'>
+              <Label htmlFor='type'>Event Type *</Label>
               <Select
                 value={watch("type")}
                 onValueChange={(value) => setValue("type", value as any)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select type" />
+                  <SelectValue placeholder='Select type' />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="SERVICE">Service</SelectItem>
-                  <SelectItem value="MEETING">Meeting</SelectItem>
-                  <SelectItem value="SPECIAL_OCCASION">
+                  <SelectItem value='SERVICE'>Service</SelectItem>
+                  <SelectItem value='MEETING'>Meeting</SelectItem>
+                  <SelectItem value='SPECIAL_OCCASION'>
                     Special Occasion
                   </SelectItem>
-                  <SelectItem value="CONFERENCE">Conference</SelectItem>
-                  <SelectItem value="SOCIAL">Social</SelectItem>
-                  <SelectItem value="OTHER">Other</SelectItem>
+                  <SelectItem value='CONFERENCE'>Conference</SelectItem>
+                  <SelectItem value='SOCIAL'>Social</SelectItem>
+                  <SelectItem value='OTHER'>Other</SelectItem>
                 </SelectContent>
               </Select>
               {errors.type && (
-                <p className="text-sm text-red-600">{errors.type.message}</p>
+                <p className='text-sm text-red-600'>{errors.type.message}</p>
               )}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="location">Location *</Label>
+            <div className='space-y-2'>
+              <Label htmlFor='location'>Location *</Label>
               <Input
-                id="location"
+                id='location'
                 {...register("location")}
-                placeholder="Enter location"
+                placeholder='Enter location'
               />
               {errors.location && (
-                <p className="text-sm text-red-600">
+                <p className='text-sm text-red-600'>
                   {errors.location.message}
                 </p>
               )}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="startDate">Start Date & Time *</Label>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+            <div className='space-y-2'>
+              <Label htmlFor='startDate'>Start Date & Time *</Label>
               <Input
-                id="startDate"
-                type="datetime-local"
+                id='startDate'
+                type='datetime-local'
                 {...register("startDate")}
               />
               {errors.startDate && (
-                <p className="text-sm text-red-600">
+                <p className='text-sm text-red-600'>
                   {errors.startDate.message}
                 </p>
               )}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="endDate">End Date & Time *</Label>
+            <div className='space-y-2'>
+              <Label htmlFor='endDate'>End Date & Time *</Label>
               <Input
-                id="endDate"
-                type="datetime-local"
+                id='endDate'
+                type='datetime-local'
                 {...register("endDate")}
               />
               {errors.endDate && (
-                <p className="text-sm text-red-600">{errors.endDate.message}</p>
+                <p className='text-sm text-red-600'>{errors.endDate.message}</p>
               )}
             </div>
           </div>
@@ -237,73 +236,73 @@ export function EventForm({
             Configure event registration and capacity
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center space-x-2">
+        <CardContent className='space-y-4'>
+          <div className='flex items-center space-x-2'>
             <Switch
-              id="registrationRequired"
+              id='registrationRequired'
               checked={registrationRequired}
               onCheckedChange={(checked) =>
                 setValue("registrationRequired", checked)
               }
             />
-            <Label htmlFor="registrationRequired">Registration Required</Label>
+            <Label htmlFor='registrationRequired'>Registration Required</Label>
           </div>
 
           {registrationRequired && (
             <>
-              <div className="space-y-2">
-                <Label htmlFor="capacity">Capacity</Label>
+              <div className='space-y-2'>
+                <Label htmlFor='capacity'>Capacity</Label>
                 <Input
-                  id="capacity"
-                  type="number"
+                  id='capacity'
+                  type='number'
                   {...register("capacity", { valueAsNumber: true })}
-                  placeholder="Maximum number of attendees"
+                  placeholder='Maximum number of attendees'
                 />
                 {errors.capacity && (
-                  <p className="text-sm text-red-600">
+                  <p className='text-sm text-red-600'>
                     {errors.capacity.message}
                   </p>
                 )}
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="registrationDeadline">
+              <div className='space-y-2'>
+                <Label htmlFor='registrationDeadline'>
                   Registration Deadline
                 </Label>
                 <Input
-                  id="registrationDeadline"
-                  type="datetime-local"
+                  id='registrationDeadline'
+                  type='datetime-local'
                   {...register("registrationDeadline")}
                 />
                 {errors.registrationDeadline && (
-                  <p className="text-sm text-red-600">
+                  <p className='text-sm text-red-600'>
                     {errors.registrationDeadline.message}
                   </p>
                 )}
               </div>
 
-              <div className="flex items-center space-x-2">
+              <div className='flex items-center space-x-2'>
                 <Switch
-                  id="allowWaitlist"
+                  id='allowWaitlist'
                   checked={allowWaitlist}
                   onCheckedChange={(checked) =>
                     setValue("allowWaitlist", checked)
                   }
                 />
-                <Label htmlFor="allowWaitlist">Allow Waitlist</Label>
+                <Label htmlFor='allowWaitlist'>Allow Waitlist</Label>
               </div>
 
               {allowWaitlist && (
-                <div className="space-y-2">
-                  <Label htmlFor="maxWaitlist">Max Waitlist Size</Label>
+                <div className='space-y-2'>
+                  <Label htmlFor='maxWaitlist'>Max Waitlist Size</Label>
                   <Input
-                    id="maxWaitlist"
-                    type="number"
+                    id='maxWaitlist'
+                    type='number'
                     {...register("maxWaitlist", { valueAsNumber: true })}
-                    placeholder="Maximum waitlist size"
+                    placeholder='Maximum waitlist size'
                   />
                   {errors.maxWaitlist && (
-                    <p className="text-sm text-red-600">
+                    <p className='text-sm text-red-600'>
                       {errors.maxWaitlist.message}
                     </p>
                   )}
@@ -320,20 +319,20 @@ export function EventForm({
           <CardTitle>Recurring Events</CardTitle>
           <CardDescription>Set up recurring events</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center space-x-2">
+        <CardContent className='space-y-4'>
+          <div className='flex items-center space-x-2'>
             <Switch
-              id="isRecurring"
+              id='isRecurring'
               checked={isRecurring}
               onCheckedChange={(checked) => setValue("isRecurring", checked)}
             />
-            <Label htmlFor="isRecurring">This is a recurring event</Label>
+            <Label htmlFor='isRecurring'>This is a recurring event</Label>
           </div>
 
           {isRecurring && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="recurrencePattern">Recurrence Pattern</Label>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+              <div className='space-y-2'>
+                <Label htmlFor='recurrencePattern'>Recurrence Pattern</Label>
                 <Select
                   value={watch("recurrencePattern") || ""}
                   onValueChange={(value) =>
@@ -341,31 +340,31 @@ export function EventForm({
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select pattern" />
+                    <SelectValue placeholder='Select pattern' />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="DAILY">Daily</SelectItem>
-                    <SelectItem value="WEEKLY">Weekly</SelectItem>
-                    <SelectItem value="MONTHLY">Monthly</SelectItem>
-                    <SelectItem value="YEARLY">Yearly</SelectItem>
+                    <SelectItem value='DAILY'>Daily</SelectItem>
+                    <SelectItem value='WEEKLY'>Weekly</SelectItem>
+                    <SelectItem value='MONTHLY'>Monthly</SelectItem>
+                    <SelectItem value='YEARLY'>Yearly</SelectItem>
                   </SelectContent>
                 </Select>
                 {errors.recurrencePattern && (
-                  <p className="text-sm text-red-600">
+                  <p className='text-sm text-red-600'>
                     {errors.recurrencePattern.message}
                   </p>
                 )}
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="recurrenceEndDate">End Date</Label>
+              <div className='space-y-2'>
+                <Label htmlFor='recurrenceEndDate'>End Date</Label>
                 <Input
-                  id="recurrenceEndDate"
-                  type="date"
+                  id='recurrenceEndDate'
+                  type='date'
                   {...register("recurrenceEndDate")}
                 />
                 {errors.recurrenceEndDate && (
-                  <p className="text-sm text-red-600">
+                  <p className='text-sm text-red-600'>
                     {errors.recurrenceEndDate.message}
                   </p>
                 )}
@@ -376,8 +375,8 @@ export function EventForm({
       </Card>
 
       {/* Submit Button */}
-      <div className="flex justify-end space-x-4">
-        <Button type="submit" disabled={loading}>
+      <div className='flex justify-end space-x-4'>
+        <Button type='submit' disabled={loading}>
           {loading ? "Saving..." : submitLabel}
         </Button>
       </div>

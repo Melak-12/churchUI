@@ -15,7 +15,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Plus, Users, BarChart3, Calendar, CheckIn } from "lucide-react";
+import {
+  Plus,
+  Users,
+  BarChart3,
+  Calendar,
+  Check,
+  Clock,
+  UserCheck,
+} from "lucide-react";
 import { Attendance, CreateAttendanceRequest } from "@/types";
 import apiClient from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
@@ -128,63 +136,72 @@ export default function AttendancePage() {
   };
 
   return (
-    <FeatureGuard feature="attendance">
+    <FeatureGuard feature='attendance'>
       <AuthGuard>
         <AppShell>
-          <div className="space-y-6">
-            {/* Header */}
-            <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
-              <div>
-                <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
-                  Attendance
-                </h1>
-                <p className="text-gray-600 text-sm lg:text-base">
-                  Track member attendance at services, events, and meetings
-                </p>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+          <div className='space-y-6'>
+            {/* Header Section */}
+            <div className='bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl p-6 border border-emerald-100 dark:border-emerald-800'>
+              <div className='flex items-center justify-between'>
+                <div>
+                  <div className='flex items-center space-x-3 mb-2'>
+                    <div className='p-2 bg-emerald-500 rounded-lg'>
+                      <UserCheck className='h-6 w-6 text-white' />
+                    </div>
+                    <h1 className='text-2xl font-bold text-foreground'>
+                      Attendance Tracker 📋
+                    </h1>
+                  </div>
+                  <p className='text-muted-foreground'>
+                    Keep track of member participation and engagement
+                  </p>
+                </div>
                 <Button
-                  size="sm"
-                  className="w-full sm:w-auto"
+                  className='shadow-lg'
                   onClick={() => setShowCreateForm(true)}
                 >
-                  <Plus className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Check In</span>
-                  <span className="sm:hidden">Check In</span>
+                  <Plus className='h-4 w-4 mr-2' />
+                  Quick Check-In
                 </Button>
               </div>
             </div>
 
-            <Tabs defaultValue="list" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="list" className="flex items-center gap-2">
-                  <Users className="h-4 w-4" />
-                  Records
-                </TabsTrigger>
-                <TabsTrigger
-                  value="dashboard"
-                  className="flex items-center gap-2"
-                >
-                  <BarChart3 className="h-4 w-4" />
-                  Dashboard
-                </TabsTrigger>
-                <TabsTrigger
-                  value="services"
-                  className="flex items-center gap-2"
-                >
-                  <Calendar className="h-4 w-4" />
-                  Services
-                </TabsTrigger>
-                <TabsTrigger
-                  value="checkin"
-                  className="flex items-center gap-2"
-                >
-                  <CheckIn className="h-4 w-4" />
-                  Quick Check-In
-                </TabsTrigger>
-              </TabsList>
+            <Tabs defaultValue='list' className='space-y-6'>
+              <div className='bg-card rounded-xl p-4 border'>
+                <TabsList className='grid w-full grid-cols-4'>
+                  <TabsTrigger value='list' className='flex items-center gap-2'>
+                    <Users className='h-4 w-4' />
+                    <span className='hidden sm:inline'>Records</span>
+                    <span className='sm:hidden'>List</span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value='dashboard'
+                    className='flex items-center gap-2'
+                  >
+                    <BarChart3 className='h-4 w-4' />
+                    <span className='hidden sm:inline'>Analytics</span>
+                    <span className='sm:hidden'>Stats</span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value='services'
+                    className='flex items-center gap-2'
+                  >
+                    <Calendar className='h-4 w-4' />
+                    <span className='hidden sm:inline'>Services</span>
+                    <span className='sm:hidden'>Services</span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value='checkin'
+                    className='flex items-center gap-2'
+                  >
+                    <Check className='h-4 w-4' />
+                    <span className='hidden sm:inline'>Check-In</span>
+                    <span className='sm:hidden'>Check</span>
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
-              <TabsContent value="list" className="space-y-4">
+              <TabsContent value='list' className='space-y-4'>
                 <AttendanceList
                   attendance={attendance}
                   loading={loading}
@@ -195,30 +212,48 @@ export default function AttendancePage() {
                 />
               </TabsContent>
 
-              <TabsContent value="dashboard" className="space-y-4">
+              <TabsContent value='dashboard' className='space-y-4'>
                 <AttendanceDashboard />
               </TabsContent>
 
-              <TabsContent value="services" className="space-y-4">
-                <div className="text-center py-8">
-                  <p className="text-gray-500">
-                    Service attendance tracking coming soon...
-                  </p>
+              <TabsContent value='services' className='space-y-4'>
+                <div className='bg-card rounded-xl border'>
+                  <div className='text-center py-12'>
+                    <div className='p-3 bg-blue-50 dark:bg-blue-900/20 rounded-full mb-4 w-fit mx-auto'>
+                      <Calendar className='h-8 w-8 text-blue-500' />
+                    </div>
+                    <h3 className='text-lg font-medium text-foreground mb-2'>
+                      Service Tracking Coming Soon! 🎯
+                    </h3>
+                    <p className='text-muted-foreground max-w-md mx-auto'>
+                      Enhanced service attendance tracking with automated
+                      check-ins and detailed analytics is in development.
+                    </p>
+                  </div>
                 </div>
               </TabsContent>
 
-              <TabsContent value="checkin" className="space-y-4">
-                <div className="text-center py-8">
-                  <p className="text-gray-500">
-                    Quick check-in interface coming soon...
-                  </p>
+              <TabsContent value='checkin' className='space-y-4'>
+                <div className='bg-card rounded-xl border'>
+                  <div className='text-center py-12'>
+                    <div className='p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-full mb-4 w-fit mx-auto'>
+                      <Check className='h-8 w-8 text-emerald-500' />
+                    </div>
+                    <h3 className='text-lg font-medium text-foreground mb-2'>
+                      Quick Check-In Interface! ⚡
+                    </h3>
+                    <p className='text-muted-foreground max-w-md mx-auto'>
+                      A streamlined check-in experience for faster member
+                      registration at events and services is coming soon.
+                    </p>
+                  </div>
                 </div>
               </TabsContent>
             </Tabs>
 
             {/* Create Attendance Dialog */}
             <Dialog open={showCreateForm} onOpenChange={setShowCreateForm}>
-              <DialogContent className="max-w-2xl">
+              <DialogContent className='max-w-2xl'>
                 <DialogHeader>
                   <DialogTitle>Check In Member</DialogTitle>
                 </DialogHeader>
@@ -234,7 +269,7 @@ export default function AttendancePage() {
               open={!!editingAttendance}
               onOpenChange={() => setEditingAttendance(null)}
             >
-              <DialogContent className="max-w-2xl">
+              <DialogContent className='max-w-2xl'>
                 <DialogHeader>
                   <DialogTitle>Edit Attendance Record</DialogTitle>
                 </DialogHeader>
