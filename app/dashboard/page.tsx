@@ -349,12 +349,13 @@ export default function Dashboard() {
         </div>
 
         {/* Feedback Tab */}
-        <div className="max-w-xl mx-auto mt-10">
-          <Card className="border rounded-none">
+        <div className='max-w-xl mx-auto mt-10'>
+          <Card className='border rounded-none'>
             <CardHeader>
               <CardTitle>Feedback</CardTitle>
               <CardDescription>
-                We value your input! Please rate your experience and share any feedback about the system.
+                We value your input! Please rate your experience and share any
+                feedback about the system.
               </CardDescription>
             </CardHeader>
             <CardContent>
