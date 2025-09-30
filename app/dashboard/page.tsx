@@ -28,7 +28,9 @@ import {
   Clock,
   MapPin,
 } from "lucide-react";
+
 import Link from "next/link";
+import { FeedbackForm } from "@/components/dashboard/feedback-form";
 
 export default function Dashboard() {
   const [members, setMembers] = useState<Member[]>([]);
@@ -342,6 +344,21 @@ export default function Dashboard() {
                   </Button>
                 </div>
               )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Feedback Tab */}
+        <div className="max-w-xl mx-auto mt-10">
+          <Card className="border rounded-none">
+            <CardHeader>
+              <CardTitle>Feedback</CardTitle>
+              <CardDescription>
+                We value your input! Please rate your experience and share any feedback about the system.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <FeedbackForm />
             </CardContent>
           </Card>
         </div>
