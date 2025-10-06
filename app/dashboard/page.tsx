@@ -178,7 +178,7 @@ export default function Dashboard() {
         {/* Communication Statistics */}
         <CommunicationStats />
 
-        <div className='grid grid-cols-1 xl:grid-cols-3 gap-6'>
+        <div className='grid grid-cols-1 xl:grid-cols-2 gap-6'>
           {/* Upcoming Events */}
           <Card>
             <CardHeader>
@@ -348,21 +348,22 @@ export default function Dashboard() {
           </Card>
         </div>
 
-        {/* Feedback Tab */}
-        <div className='max-w-xl mx-auto mt-10'>
-          <Card className='border rounded-none'>
-            <CardHeader>
-              <CardTitle>Feedback</CardTitle>
-              <CardDescription>
-                We value your input! Please rate your experience and share any
-                feedback about the system.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <FeedbackForm />
-            </CardContent>
-          </Card>
-        </div>
+        {/* Feedback Section */}
+        <Card className='border shadow-sm'>
+          <CardHeader>
+            <CardTitle className='flex items-center space-x-2'>
+              <MessageSquare className='h-5 w-5 text-purple-500' />
+              <span>Share Your Feedback</span>
+            </CardTitle>
+            <CardDescription>
+              We value your input! Please rate your experience and share any
+              feedback about the system.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FeedbackForm />
+          </CardContent>
+        </Card>
       </div>
     </AppShell>
   );

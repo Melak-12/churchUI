@@ -104,17 +104,15 @@ export function BudgetManager({ onBudgetUpdate }: BudgetManagerProps) {
       setLoading(true);
       setError("");
 
-      const params: any = {};
+      let url = "/api/financial/budgets";
       if (statusFilter !== "all") {
-        params.status = statusFilter;
+        url += `?status=${statusFilter}`;
       }
 
-      const response = await apiClient.get("/api/financial/budgets", {
-        params,
-      });
+      const response = await apiClient.get<{ budgets: Budget[] }>(url);
 
-      if (response.data?.success) {
-        setBudgets(response.data.data.budgets || []);
+      if (response.success) {
+        setBudgets(response.data?.budgets || []);
       }
     } catch (err: any) {
       console.error("❌ Budget fetch error:", err);
@@ -128,9 +126,11 @@ export function BudgetManager({ onBudgetUpdate }: BudgetManagerProps) {
 
   const fetchCurrentBudget = async () => {
     try {
-      const response = await apiClient.get("/api/financial/budgets/current");
-      if (response.data?.success && response.data.data.budget) {
-        setCurrentBudget(response.data.data.budget);
+      const response = await apiClient.get<{ budget: Budget }>(
+        "/api/financial/budgets/current"
+      );
+      if (response.success && response.data?.budget) {
+        setCurrentBudget(response.data.budget);
       }
     } catch (err: any) {
       console.error("❌ Current budget fetch error:", err);
@@ -221,35 +221,35 @@ export function BudgetManager({ onBudgetUpdate }: BudgetManagerProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className='flex justify-between items-center'>
         <div>
-          <h2 className="text-2xl font-bold">Budget Management</h2>
-          <p className="text-gray-600">
+          <h2 className='text-2xl font-bold'>Budget Management</h2>
+          <p className='text-gray-600'>
             Manage annual budgets and track performance
           </p>
         </div>
         <Button onClick={() => setShowBudgetForm(true)}>
-          <Plus className="w-4 h-4 mr-2" />
+          <Plus className='w-4 h-4 mr-2' />
           New Budget
         </Button>
       </div>
 
       {error && (
-        <Alert variant="destructive">
+        <Alert variant='destructive'>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
 
       {/* Current Budget Overview */}
       {currentBudget && (
-        <Card className="border-2 border-blue-200">
+        <Card className='border-2 border-blue-200'>
           <CardHeader>
-            <div className="flex items-center justify-between">
+            <div className='flex items-center justify-between'>
               <div>
-                <CardTitle className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-blue-600" />
+                <CardTitle className='flex items-center gap-2'>
+                  <Calendar className='w-5 h-5 text-blue-600' />
                   Current Active Budget
                 </CardTitle>
                 <CardDescription>{currentBudget.name}</CardDescription>
@@ -260,37 +260,37 @@ export function BudgetManager({ onBudgetUpdate }: BudgetManagerProps) {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="text-center">
-                <div className="flex items-center justify-center mb-2">
-                  <TrendingUp className="w-5 h-5 text-green-600 mr-1" />
-                  <span className="text-sm text-gray-600">Budgeted Income</span>
+            <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
+              <div className='text-center'>
+                <div className='flex items-center justify-center mb-2'>
+                  <TrendingUp className='w-5 h-5 text-green-600 mr-1' />
+                  <span className='text-sm text-gray-600'>Budgeted Income</span>
                 </div>
-                <p className="text-xl font-semibold text-green-600">
+                <p className='text-xl font-semibold text-green-600'>
                   {formatCurrency(currentBudget.totalBudgetedIncome)}
                 </p>
-                <p className="text-xs text-gray-500">
+                <p className='text-xs text-gray-500'>
                   Actual: {formatCurrency(currentBudget.totalActualIncome)}
                 </p>
               </div>
-              <div className="text-center">
-                <div className="flex items-center justify-center mb-2">
-                  <TrendingDown className="w-5 h-5 text-red-600 mr-1" />
-                  <span className="text-sm text-gray-600">
+              <div className='text-center'>
+                <div className='flex items-center justify-center mb-2'>
+                  <TrendingDown className='w-5 h-5 text-red-600 mr-1' />
+                  <span className='text-sm text-gray-600'>
                     Budgeted Expenses
                   </span>
                 </div>
-                <p className="text-xl font-semibold text-red-600">
+                <p className='text-xl font-semibold text-red-600'>
                   {formatCurrency(currentBudget.totalBudgetedExpenses)}
                 </p>
-                <p className="text-xs text-gray-500">
+                <p className='text-xs text-gray-500'>
                   Actual: {formatCurrency(currentBudget.totalActualExpenses)}
                 </p>
               </div>
-              <div className="text-center">
-                <div className="flex items-center justify-center mb-2">
-                  <DollarSign className="w-5 h-5 text-blue-600 mr-1" />
-                  <span className="text-sm text-gray-600">Budgeted Net</span>
+              <div className='text-center'>
+                <div className='flex items-center justify-center mb-2'>
+                  <DollarSign className='w-5 h-5 text-blue-600 mr-1' />
+                  <span className='text-sm text-gray-600'>Budgeted Net</span>
                 </div>
                 <p
                   className={`text-xl font-semibold ${
@@ -306,7 +306,7 @@ export function BudgetManager({ onBudgetUpdate }: BudgetManagerProps) {
                       currentBudget.totalBudgetedExpenses
                   )}
                 </p>
-                <p className="text-xs text-gray-500">
+                <p className='text-xs text-gray-500'>
                   Actual:{" "}
                   {formatCurrency(
                     currentBudget.totalActualIncome -
@@ -314,15 +314,15 @@ export function BudgetManager({ onBudgetUpdate }: BudgetManagerProps) {
                   )}
                 </p>
               </div>
-              <div className="text-center">
-                <div className="flex items-center justify-center mb-2">
-                  <Calculator className="w-5 h-5 text-purple-600 mr-1" />
-                  <span className="text-sm text-gray-600">Fiscal Year</span>
+              <div className='text-center'>
+                <div className='flex items-center justify-center mb-2'>
+                  <Calculator className='w-5 h-5 text-purple-600 mr-1' />
+                  <span className='text-sm text-gray-600'>Fiscal Year</span>
                 </div>
-                <p className="text-xl font-semibold text-purple-600">
+                <p className='text-xl font-semibold text-purple-600'>
                   {currentBudget.fiscalYear}
                 </p>
-                <p className="text-xs text-gray-500">
+                <p className='text-xs text-gray-500'>
                   {new Date(currentBudget.startDate).toLocaleDateString()} -{" "}
                   {new Date(currentBudget.endDate).toLocaleDateString()}
                 </p>
@@ -333,17 +333,17 @@ export function BudgetManager({ onBudgetUpdate }: BudgetManagerProps) {
       )}
 
       {/* Filter */}
-      <div className="flex space-x-4">
+      <div className='flex space-x-4'>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-48">
-            <SelectValue placeholder="Filter by status" />
+          <SelectTrigger className='w-48'>
+            <SelectValue placeholder='Filter by status' />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            <SelectItem value="DRAFT">Draft</SelectItem>
-            <SelectItem value="ACTIVE">Active</SelectItem>
-            <SelectItem value="CLOSED">Closed</SelectItem>
-            <SelectItem value="ARCHIVED">Archived</SelectItem>
+            <SelectItem value='all'>All Status</SelectItem>
+            <SelectItem value='DRAFT'>Draft</SelectItem>
+            <SelectItem value='ACTIVE'>Active</SelectItem>
+            <SelectItem value='CLOSED'>Closed</SelectItem>
+            <SelectItem value='ARCHIVED'>Archived</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -356,20 +356,20 @@ export function BudgetManager({ onBudgetUpdate }: BudgetManagerProps) {
         </CardHeader>
         <CardContent>
           {loading ? (
-            <div className="flex items-center justify-center h-32">
-              <Loader2 className="w-8 h-8 animate-spin" />
+            <div className='flex items-center justify-center h-32'>
+              <Loader2 className='w-8 h-8 animate-spin' />
             </div>
           ) : budgets.length === 0 ? (
-            <div className="text-center py-8">
-              <Calculator className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <div className='text-center py-8'>
+              <Calculator className='w-12 h-12 text-gray-400 mx-auto mb-4' />
+              <h3 className='text-lg font-semibold text-gray-900 mb-2'>
                 No budgets found
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className='text-gray-600 mb-4'>
                 Create your first budget to get started.
               </p>
               <Button onClick={() => setShowBudgetForm(true)}>
-                <Plus className="w-4 h-4 mr-2" />
+                <Plus className='w-4 h-4 mr-2' />
                 Create Budget
               </Button>
             </div>
@@ -391,9 +391,9 @@ export function BudgetManager({ onBudgetUpdate }: BudgetManagerProps) {
                   <TableRow key={budget._id}>
                     <TableCell>
                       <div>
-                        <div className="font-medium">{budget.name}</div>
+                        <div className='font-medium'>{budget.name}</div>
                         {budget.description && (
-                          <div className="text-sm text-gray-500 truncate max-w-xs">
+                          <div className='text-sm text-gray-500 truncate max-w-xs'>
                             {budget.description}
                           </div>
                         )}
@@ -401,11 +401,11 @@ export function BudgetManager({ onBudgetUpdate }: BudgetManagerProps) {
                     </TableCell>
                     <TableCell>{budget.fiscalYear}</TableCell>
                     <TableCell>
-                      <div className="text-sm">
+                      <div className='text-sm'>
                         <div>
                           {new Date(budget.startDate).toLocaleDateString()}
                         </div>
-                        <div className="text-gray-500">
+                        <div className='text-gray-500'>
                           to {new Date(budget.endDate).toLocaleDateString()}
                         </div>
                       </div>
@@ -438,18 +438,18 @@ export function BudgetManager({ onBudgetUpdate }: BudgetManagerProps) {
                       </span>
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center space-x-2">
+                      <div className='flex items-center space-x-2'>
                         <Dialog>
                           <DialogTrigger asChild>
                             <Button
-                              variant="ghost"
-                              size="sm"
+                              variant='ghost'
+                              size='sm'
                               onClick={() => setSelectedBudget(budget)}
                             >
-                              <Eye className="w-4 h-4" />
+                              <Eye className='w-4 h-4' />
                             </Button>
                           </DialogTrigger>
-                          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                          <DialogContent className='max-w-4xl max-h-[80vh] overflow-y-auto'>
                             <DialogHeader>
                               <DialogTitle>
                                 Budget Details: {selectedBudget?.name}
@@ -460,31 +460,31 @@ export function BudgetManager({ onBudgetUpdate }: BudgetManagerProps) {
                               </DialogDescription>
                             </DialogHeader>
                             {selectedBudget && (
-                              <div className="space-y-6">
+                              <div className='space-y-6'>
                                 {/* Budget Summary */}
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                  <div className="text-center">
-                                    <p className="text-sm text-gray-500">
+                                <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
+                                  <div className='text-center'>
+                                    <p className='text-sm text-gray-500'>
                                       Total Income
                                     </p>
-                                    <p className="text-lg font-semibold text-green-600">
+                                    <p className='text-lg font-semibold text-green-600'>
                                       {formatCurrency(
                                         selectedBudget.totalBudgetedIncome
                                       )}
                                     </p>
                                   </div>
-                                  <div className="text-center">
-                                    <p className="text-sm text-gray-500">
+                                  <div className='text-center'>
+                                    <p className='text-sm text-gray-500'>
                                       Total Expenses
                                     </p>
-                                    <p className="text-lg font-semibold text-red-600">
+                                    <p className='text-lg font-semibold text-red-600'>
                                       {formatCurrency(
                                         selectedBudget.totalBudgetedExpenses
                                       )}
                                     </p>
                                   </div>
-                                  <div className="text-center">
-                                    <p className="text-sm text-gray-500">
+                                  <div className='text-center'>
+                                    <p className='text-sm text-gray-500'>
                                       Net Budget
                                     </p>
                                     <p
@@ -502,8 +502,8 @@ export function BudgetManager({ onBudgetUpdate }: BudgetManagerProps) {
                                       )}
                                     </p>
                                   </div>
-                                  <div className="text-center">
-                                    <p className="text-sm text-gray-500">
+                                  <div className='text-center'>
+                                    <p className='text-sm text-gray-500'>
                                       Actual Net
                                     </p>
                                     <p
@@ -525,7 +525,7 @@ export function BudgetManager({ onBudgetUpdate }: BudgetManagerProps) {
 
                                 {/* Category Details */}
                                 <div>
-                                  <h4 className="text-lg font-medium mb-3">
+                                  <h4 className='text-lg font-medium mb-3'>
                                     Budget Categories
                                   </h4>
                                   <Table>
@@ -544,7 +544,7 @@ export function BudgetManager({ onBudgetUpdate }: BudgetManagerProps) {
                                         (categoryBudget, index) => (
                                           <TableRow key={index}>
                                             <TableCell>
-                                              <div className="flex items-center space-x-2">
+                                              <div className='flex items-center space-x-2'>
                                                 <span
                                                   className={`w-3 h-3 rounded-full ${
                                                     categoryBudget.category
@@ -592,7 +592,7 @@ export function BudgetManager({ onBudgetUpdate }: BudgetManagerProps) {
                                               </span>
                                             </TableCell>
                                             <TableCell>
-                                              <span className="text-sm text-gray-600">
+                                              <span className='text-sm text-gray-600'>
                                                 {categoryBudget.notes || "-"}
                                               </span>
                                             </TableCell>
@@ -610,20 +610,20 @@ export function BudgetManager({ onBudgetUpdate }: BudgetManagerProps) {
                         {budget.approvalStatus === "PENDING" && (
                           <>
                             <Button
-                              variant="ghost"
-                              size="sm"
-                              className="text-green-600 hover:text-green-700"
+                              variant='ghost'
+                              size='sm'
+                              className='text-green-600 hover:text-green-700'
                               onClick={() => handleApproveBudget(budget._id)}
                             >
-                              <Check className="w-4 h-4" />
+                              <Check className='w-4 h-4' />
                             </Button>
                             <Button
-                              variant="ghost"
-                              size="sm"
-                              className="text-red-600 hover:text-red-700"
+                              variant='ghost'
+                              size='sm'
+                              className='text-red-600 hover:text-red-700'
                               onClick={() => handleRejectBudget(budget._id)}
                             >
-                              <X className="w-4 h-4" />
+                              <X className='w-4 h-4' />
                             </Button>
                           </>
                         )}
@@ -639,4 +639,3 @@ export function BudgetManager({ onBudgetUpdate }: BudgetManagerProps) {
     </div>
   );
 }
-
