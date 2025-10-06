@@ -42,7 +42,7 @@ export default function ActiveVotesPage() {
     <AppShell>
       <div className='space-y-6'>
         {/* Header Section */}
-        <div className='bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-xl p-6 border border-blue-100 dark:border-blue-800'>
+        <div className='bg-card rounded-xl p-6 border shadow-sm'>
           <div className='flex items-center space-x-3 mb-2'>
             <div className='p-2 bg-blue-500 rounded-lg'>
               <VoteIcon className='h-6 w-6 text-white' />
@@ -58,7 +58,7 @@ export default function ActiveVotesPage() {
 
         {/* Quick Stats */}
         <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-          <Card className='border-l-4 border-l-green-500'>
+          <Card>
             <CardContent className='p-4'>
               <div className='flex items-center justify-between'>
                 <div>
@@ -72,7 +72,7 @@ export default function ActiveVotesPage() {
             </CardContent>
           </Card>
 
-          <Card className='border-l-4 border-l-blue-500'>
+          <Card>
             <CardContent className='p-4'>
               <div className='flex items-center justify-between'>
                 <div>
@@ -86,7 +86,7 @@ export default function ActiveVotesPage() {
             </CardContent>
           </Card>
 
-          <Card className='border-l-4 border-l-purple-500'>
+          <Card>
             <CardContent className='p-4'>
               <div className='flex items-center justify-between'>
                 <div>

@@ -231,7 +231,7 @@ export default function EventsPage() {
       <AppShell>
         <div className='space-y-6'>
           {/* Header Section */}
-          <div className='bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-6 border border-green-100 dark:border-green-800'>
+          <div className='bg-card rounded-xl p-6 border shadow-sm'>
             <div className='flex items-center justify-between'>
               <div>
                 <div className='flex items-center space-x-3 mb-2'>
@@ -247,7 +247,7 @@ export default function EventsPage() {
                 </p>
               </div>
               {isAdmin && (
-                <Button asChild className='shadow-lg'>
+                <Button asChild className='shadow-sm'>
                   <Link href='/events/new'>
                     <Plus className='h-4 w-4 mr-2' />
                     Create Event
@@ -259,7 +259,7 @@ export default function EventsPage() {
 
           {/* Quick Stats */}
           <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-            <Card className='border-l-4 border-l-blue-500'>
+            <Card>
               <CardContent className='p-4'>
                 <div className='flex items-center justify-between'>
                   <div>
@@ -278,7 +278,7 @@ export default function EventsPage() {
               </CardContent>
             </Card>
 
-            <Card className='border-l-4 border-l-green-500'>
+            <Card>
               <CardContent className='p-4'>
                 <div className='flex items-center justify-between'>
                   <div>
@@ -295,7 +295,7 @@ export default function EventsPage() {
               </CardContent>
             </Card>
 
-            <Card className='border-l-4 border-l-purple-500'>
+            <Card>
               <CardContent className='p-4'>
                 <div className='flex items-center justify-between'>
                   <div>
@@ -313,60 +313,63 @@ export default function EventsPage() {
           </div>
 
           {/* Search and Filters */}
-          <div className='bg-card rounded-xl p-4 border'>
-            <div className='flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between'>
-              <div className='relative flex-1 max-w-md'>
-                <Search className='h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground' />
-                <Input
-                  placeholder='Search events...'
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className='pl-10'
-                />
+                    {/* Filters */}
+          <Card className='border-none shadow-sm'>
+            <CardContent className='p-6'>
+              <div className='flex flex-col lg:flex-row gap-4 lg:items-center'>
+                <div className='relative flex-1 max-w-md'>
+                  <Search className='h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground' />
+                  <Input
+                    placeholder='🔍 Search events by name...'
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className='pl-10 bg-white dark:bg-gray-800 border-none shadow-sm'
+                  />
+                </div>
+                <div className='flex flex-col sm:flex-row gap-3'>
+                  <Button
+                    variant='outline'
+                    size='sm'
+                    className='justify-start bg-white dark:bg-gray-800 shadow-sm'
+                    asChild
+                  >
+                    <Link href='/events/calendar'>
+                      <Calendar className='h-4 w-4 mr-2' />
+                      Calendar View
+                    </Link>
+                  </Button>
+                  <Select value={filterStatus} onValueChange={setFilterStatus}>
+                    <SelectTrigger className='w-full sm:w-[160px] bg-white dark:bg-gray-800 border-none shadow-sm'>
+                      <SelectValue placeholder='📊 Status' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value='all'>📊 All Status</SelectItem>
+                      <SelectItem value='DRAFT'>📝 Draft</SelectItem>
+                      <SelectItem value='PUBLISHED'>✅ Published</SelectItem>
+                      <SelectItem value='CANCELLED'>❌ Cancelled</SelectItem>
+                      <SelectItem value='COMPLETED'>🏁 Completed</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select value={filterType} onValueChange={setFilterType}>
+                    <SelectTrigger className='w-full sm:w-[180px] bg-white dark:bg-gray-800 border-none shadow-sm'>
+                      <SelectValue placeholder='🎯 Event Type' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value='all'>🎯 All Types</SelectItem>
+                      <SelectItem value='SERVICE'>⛪ Service</SelectItem>
+                      <SelectItem value='MEETING'>💼 Meeting</SelectItem>
+                      <SelectItem value='SPECIAL_OCCASION'>
+                        🎊 Special Occasion
+                      </SelectItem>
+                      <SelectItem value='CONFERENCE'>🎤 Conference</SelectItem>
+                      <SelectItem value='SOCIAL'>🎉 Social</SelectItem>
+                      <SelectItem value='OTHER'>📌 Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              <div className='flex flex-col sm:flex-row gap-2 sm:gap-3'>
-                <Button
-                  variant='outline'
-                  size='sm'
-                  className='justify-start'
-                  asChild
-                >
-                  <Link href='/events/calendar'>
-                    <Calendar className='h-4 w-4 mr-2' />
-                    Calendar View
-                  </Link>
-                </Button>
-                <Select value={filterStatus} onValueChange={setFilterStatus}>
-                  <SelectTrigger className='w-full sm:w-[140px]'>
-                    <SelectValue placeholder='Status' />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value='all'>All Status</SelectItem>
-                    <SelectItem value='DRAFT'>Draft</SelectItem>
-                    <SelectItem value='PUBLISHED'>Published</SelectItem>
-                    <SelectItem value='CANCELLED'>Cancelled</SelectItem>
-                    <SelectItem value='COMPLETED'>Completed</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select value={filterType} onValueChange={setFilterType}>
-                  <SelectTrigger className='w-full sm:w-[140px]'>
-                    <SelectValue placeholder='Type' />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value='all'>All Types</SelectItem>
-                    <SelectItem value='SERVICE'>Service</SelectItem>
-                    <SelectItem value='MEETING'>Meeting</SelectItem>
-                    <SelectItem value='SPECIAL_OCCASION'>
-                      Special Occasion
-                    </SelectItem>
-                    <SelectItem value='CONFERENCE'>Conference</SelectItem>
-                    <SelectItem value='SOCIAL'>Social</SelectItem>
-                    <SelectItem value='OTHER'>Other</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           {/* Events List */}
           <Tabs defaultValue='upcoming' className='space-y-4 sm:space-y-6'>
@@ -415,7 +418,7 @@ export default function EventsPage() {
                         : "Check back soon for exciting community activities and gatherings."}
                     </p>
                     {isAdmin && (
-                      <Button className='shadow-lg' asChild>
+                      <Button className='shadow-sm' asChild>
                         <Link href='/events/new'>
                           <Plus className='h-4 w-4 mr-2' />
                           Create Your First Event
@@ -518,7 +521,7 @@ function EventCard({
   };
 
   return (
-    <Card className='hover:shadow-lg transition-all duration-300 border-l-4 border-l-blue-500'>
+    <Card className='hover:shadow-md transition-all duration-300'>
       <CardContent className='p-6'>
         <div className='flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-4 lg:space-y-0'>
           <div className='flex-1 min-w-0'>

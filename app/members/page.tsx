@@ -145,22 +145,25 @@ export default function MembersPage() {
     <AppShell>
       <div className='space-y-6'>
         {/* Header Section */}
-        <div className='bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-6 border border-blue-100 dark:border-blue-800'>
+        <div className='bg-card rounded-xl p-6 border shadow-sm'>
           <div className='flex items-center justify-between'>
             <div>
               <div className='flex items-center space-x-3 mb-2'>
-                <div className='p-2 bg-blue-500 rounded-lg'>
+                <div className='p-2 bg-blue-500 rounded-lg shadow-md'>
                   <Users className='h-6 w-6 text-white' />
                 </div>
                 <h1 className='text-2xl font-bold text-foreground'>
-                  Community Members
+                  Community Members 👥
                 </h1>
               </div>
               <p className='text-muted-foreground'>
-                Connect with your church family • {members.length} members total
+                Connect with your church family • 
+                <span className='font-semibold text-blue-600 dark:text-blue-400 ml-1'>
+                  {members.length} members
+                </span> total
               </p>
             </div>
-            <Button asChild className='shadow-lg'>
+            <Button asChild className='shadow-sm'>
               <Link href='/members/new'>
                 <UserPlus className='h-4 w-4 mr-2' />
                 Add Member
@@ -171,44 +174,46 @@ export default function MembersPage() {
 
         {/* Quick Stats */}
         <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
-          <Card className='border-l-4 border-l-green-500'>
-            <CardContent className='p-4'>
+          <Card className='border border-green-100 dark:border-green-900 shadow-md'>
+            <CardContent className='p-5'>
               <div className='flex items-center justify-between'>
                 <div>
-                  <p className='text-sm text-muted-foreground'>Paid Members</p>
-                  <p className='text-2xl font-bold text-green-600'>
+                  <p className='text-sm font-medium text-muted-foreground mb-1'>💚 Paid Members</p>
+                  <p className='text-3xl font-bold text-green-600 dark:text-green-400'>
                     {members.filter((m) => m.status === "PAID").length}
                   </p>
+                  <p className='text-xs text-muted-foreground mt-1'>Active & Current</p>
                 </div>
-                <Heart className='h-8 w-8 text-green-500' />
+                <div className='p-3 bg-green-500 rounded-lg shadow-md'>
+                  <Heart className='h-6 w-6 text-white' />
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className='border-l-4 border-l-orange-500'>
-            <CardContent className='p-4'>
+          <Card className='border border-orange-100 dark:border-orange-900 shadow-md'>
+            <CardContent className='p-5'>
               <div className='flex items-center justify-between'>
                 <div>
-                  <p className='text-sm text-muted-foreground'>
-                    Need Follow-up
-                  </p>
-                  <p className='text-2xl font-bold text-orange-600'>
+                  <p className='text-sm font-medium text-muted-foreground mb-1'>⚠️ Need Follow-up</p>
+                  <p className='text-3xl font-bold text-orange-600 dark:text-orange-400'>
                     {members.filter((m) => m.status === "DELINQUENT").length}
                   </p>
+                  <p className='text-xs text-muted-foreground mt-1'>Requires Attention</p>
                 </div>
-                <AlertCircle className='h-8 w-8 text-orange-500' />
+                <div className='p-3 bg-orange-500 rounded-lg shadow-md'>
+                  <AlertCircle className='h-6 w-6 text-white' />
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className='border-l-4 border-l-blue-500'>
-            <CardContent className='p-4'>
+          <Card className='border border-blue-100 dark:border-blue-900 shadow-md'>
+            <CardContent className='p-5'>
               <div className='flex items-center justify-between'>
                 <div>
-                  <p className='text-sm text-muted-foreground'>
-                    New This Month
-                  </p>
-                  <p className='text-2xl font-bold text-blue-600'>
+                  <p className='text-sm font-medium text-muted-foreground mb-1'>🆕 New This Month</p>
+                  <p className='text-3xl font-bold text-blue-600 dark:text-blue-400'>
                     {
                       members.filter((m) => {
                         const joinDate = new Date(m.createdAt);
@@ -218,51 +223,57 @@ export default function MembersPage() {
                       }).length
                     }
                   </p>
+                  <p className='text-xs text-muted-foreground mt-1'>Recent Joins</p>
                 </div>
-                <UserPlus className='h-8 w-8 text-blue-500' />
+                <div className='p-3 bg-blue-500 rounded-lg shadow-md'>
+                  <UserPlus className='h-6 w-6 text-white' />
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className='border-l-4 border-l-purple-500'>
-            <CardContent className='p-4'>
+          <Card className='border border-purple-100 dark:border-purple-900 shadow-md'>
+            <CardContent className='p-5'>
               <div className='flex items-center justify-between'>
                 <div>
-                  <p className='text-sm text-muted-foreground'>Total Members</p>
-                  <p className='text-2xl font-bold text-purple-600'>
+                  <p className='text-sm font-medium text-muted-foreground mb-1'>👨‍👩‍👧‍👦 Total Members</p>
+                  <p className='text-3xl font-bold text-purple-600 dark:text-purple-400'>
                     {members.length}
                   </p>
+                  <p className='text-xs text-muted-foreground mt-1'>Our Community</p>
                 </div>
-                <Users className='h-8 w-8 text-purple-500' />
+                <div className='p-3 bg-purple-500 rounded-lg shadow-md'>
+                  <Users className='h-6 w-6 text-white' />
+                </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Search and Filters */}
-        <Card>
+        <Card className='border-none shadow-sm'>
           <CardContent className='p-6'>
             <div className='flex flex-col md:flex-row gap-4 items-center justify-between'>
-              <div className='flex flex-1 items-center space-x-4'>
+              <div className='flex flex-1 items-center space-x-4 w-full md:w-auto'>
                 <div className='relative flex-1 max-w-md'>
-                  <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground' />
+                  <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground' />
                   <Input
-                    placeholder='Search members by name, email, or phone...'
+                    placeholder='🔍 Search by name, email, or phone...'
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className='pl-10'
+                    className='pl-10 bg-white dark:bg-gray-800 border-none shadow-sm'
                   />
                 </div>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className='w-40'>
+                  <SelectTrigger className='w-48 bg-white dark:bg-gray-800 border-none shadow-sm'>
                     <Filter className='h-4 w-4 mr-2' />
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value='all'>All Members</SelectItem>
-                    <SelectItem value='PAID'>Paid</SelectItem>
-                    <SelectItem value='DELINQUENT'>Need Follow-up</SelectItem>
-                    <SelectItem value='PENDING'>Pending</SelectItem>
+                    <SelectItem value='all'>📊 All Members</SelectItem>
+                    <SelectItem value='PAID'>💚 Paid</SelectItem>
+                    <SelectItem value='DELINQUENT'>⚠️ Need Follow-up</SelectItem>
+                    <SelectItem value='PENDING'>⏳ Pending</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -271,15 +282,19 @@ export default function MembersPage() {
                   variant={viewMode === "grid" ? "default" : "outline"}
                   size='sm'
                   onClick={() => setViewMode("grid")}
+                  className='shadow-sm'
                 >
-                  <Grid className='h-4 w-4' />
+                  <Grid className='h-4 w-4 mr-2' />
+                  <span className='hidden sm:inline'>Grid</span>
                 </Button>
                 <Button
                   variant={viewMode === "list" ? "default" : "outline"}
                   size='sm'
                   onClick={() => setViewMode("list")}
+                  className='shadow-sm'
                 >
-                  <List className='h-4 w-4' />
+                  <List className='h-4 w-4 mr-2' />
+                  <span className='hidden sm:inline'>List</span>
                 </Button>
               </div>
             </div>
@@ -292,72 +307,78 @@ export default function MembersPage() {
             {filteredMembers.map((member) => (
               <Card
                 key={member.id}
-                className='hover:shadow-lg transition-all duration-200 border-2 hover:border-primary/20 group'
+                className='group hover:shadow-lg transition-all duration-300 overflow-hidden'
               >
-                <CardContent className='p-6'>
+                <div className='bg-muted/50 p-4'>
                   <div className='flex items-start space-x-4'>
-                    <Avatar className='h-12 w-12 border-2 border-primary/20'>
-                      <AvatarFallback className='bg-primary/10 text-primary font-semibold'>
+                    <Avatar className='h-16 w-16 border-4 border-white dark:border-gray-800 shadow-sm'>
+                      <AvatarFallback className='bg-primary text-white font-bold text-lg'>
                         {getInitials(member.firstName, member.lastName)}
                       </AvatarFallback>
                     </Avatar>
                     <div className='flex-1 min-w-0'>
-                      <div className='flex items-center justify-between mb-2'>
-                        <h3 className='font-semibold text-foreground truncate'>
+                      <div className='flex items-start justify-between mb-2'>
+                        <h3 className='font-bold text-lg text-foreground truncate'>
                           {member.firstName} {member.lastName}
                         </h3>
-                        <Badge className={getStatusColor(member.status)}>
+                        <Badge className={`${getStatusColor(member.status)} text-xs px-2 py-1 shadow-sm`}>
                           {member.status.charAt(0) +
                             member.status.slice(1).toLowerCase()}
                         </Badge>
                       </div>
-
-                      <div className='space-y-2 text-sm text-muted-foreground'>
-                        <div className='flex items-center space-x-2'>
-                          <Mail className='h-4 w-4' />
-                          <span className='truncate'>
-                            {member.email || "No email"}
-                          </span>
-                        </div>
-                        <div className='flex items-center space-x-2'>
-                          <Phone className='h-4 w-4' />
-                          <span>{member.phone}</span>
-                        </div>
-                        {member.address && (
-                          <div className='flex items-center space-x-2'>
-                            <MapPin className='h-4 w-4' />
-                            <span className='truncate'>{member.address}</span>
-                          </div>
-                        )}
-                        <div className='flex items-center space-x-2'>
-                          <Calendar className='h-4 w-4' />
-                          <span>
-                            Joined{" "}
-                            {new Date(member.createdAt).toLocaleDateString()}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className='mt-4 pt-4 border-t'>
-                        <div className='flex space-x-2'>
-                          <Button
-                            size='sm'
-                            variant='outline'
-                            className='flex-1'
-                            asChild
-                          >
-                            <Link href={`/members/${member.id}`}>
-                              View Profile
-                            </Link>
-                          </Button>
-                          <Button size='sm' variant='outline' asChild>
-                            <Link href={`mailto:${member.email}`}>
-                              <Mail className='h-4 w-4' />
-                            </Link>
-                          </Button>
-                        </div>
-                      </div>
                     </div>
+                  </div>
+                </div>
+
+                <CardContent className='p-5 space-y-3'>
+                  <div className='space-y-2.5'>
+                    <div className='flex items-center space-x-3 p-2 rounded-lg'>
+                      <div className='p-1.5 bg-blue-500 rounded'>
+                        <Mail className='h-3.5 w-3.5 text-white' />
+                      </div>
+                      <span className='text-sm truncate flex-1'>
+                        {member.email || "No email"}
+                      </span>
+                    </div>
+                    <div className='flex items-center space-x-3 p-2 rounded-lg'>
+                      <div className='p-1.5 bg-green-500 rounded'>
+                        <Phone className='h-3.5 w-3.5 text-white' />
+                      </div>
+                      <span className='text-sm font-medium'>{member.phone}</span>
+                    </div>
+                    {member.address && (
+                      <div className='flex items-center space-x-3 p-2 rounded-lg'>
+                        <div className='p-1.5 bg-purple-500 rounded'>
+                          <MapPin className='h-3.5 w-3.5 text-white' />
+                        </div>
+                        <span className='text-sm truncate flex-1'>{member.address}</span>
+                      </div>
+                    )}
+                    <div className='flex items-center space-x-3 p-2 rounded-lg'>
+                      <div className='p-1.5 bg-orange-500 rounded'>
+                        <Calendar className='h-3.5 w-3.5 text-white' />
+                      </div>
+                      <span className='text-sm'>
+                        Joined {new Date(member.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className='pt-3 border-t flex gap-2'>
+                    <Button
+                      size='sm'
+                      className='flex-1 shadow-sm'
+                      asChild
+                    >
+                      <Link href={`/members/${member.id}`}>
+                        👤 View Profile
+                      </Link>
+                    </Button>
+                    <Button size='sm' variant='outline' className='shadow-sm' asChild>
+                      <Link href={`mailto:${member.email}`}>
+                        <Mail className='h-4 w-4' />
+                      </Link>
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -365,48 +386,54 @@ export default function MembersPage() {
           </div>
         ) : (
           // List View - More compact for quick scanning
-          <Card>
+          <Card className='overflow-hidden shadow-sm'>
             <CardContent className='p-0'>
               <div className='divide-y'>
                 {filteredMembers.map((member) => (
                   <div
                     key={member.id}
-                    className='p-4 hover:bg-accent/50 transition-colors'
+                    className='p-5 hover:bg-muted/50 transition-all duration-200 group'
                   >
                     <div className='flex items-center justify-between'>
-                      <div className='flex items-center space-x-4'>
-                        <Avatar className='h-10 w-10'>
-                          <AvatarFallback className='bg-primary/10 text-primary font-medium'>
+                      <div className='flex items-center space-x-4 flex-1'>
+                        <Avatar className='h-12 w-12 border-2 border-blue-200 dark:border-blue-800 shadow-md'>
+                          <AvatarFallback className='bg-primary text-white font-semibold'>
                             {getInitials(member.firstName, member.lastName)}
                           </AvatarFallback>
                         </Avatar>
-                        <div>
-                          <div className='flex items-center space-x-3'>
-                            <h3 className='font-medium text-foreground'>
+                        <div className='flex-1 min-w-0'>
+                          <div className='flex items-center space-x-3 mb-1'>
+                            <h3 className='font-semibold text-foreground text-lg'>
                               {member.firstName} {member.lastName}
                             </h3>
-                            <Badge className={getStatusColor(member.status)}>
+                            <Badge className={`${getStatusColor(member.status)} text-xs px-2.5 py-0.5`}>
                               {member.status.charAt(0) +
                                 member.status.slice(1).toLowerCase()}
                             </Badge>
                           </div>
-                          <div className='flex items-center space-x-4 text-sm text-muted-foreground'>
-                            <span>{member.email}</span>
-                            <span>{member.phone}</span>
-                            <span>
-                              Joined{" "}
-                              {new Date(member.createdAt).toLocaleDateString()}
+                          <div className='flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground'>
+                            <span className='flex items-center gap-1'>
+                              <Mail className='h-3.5 w-3.5' />
+                              {member.email || "No email"}
+                            </span>
+                            <span className='flex items-center gap-1'>
+                              <Phone className='h-3.5 w-3.5' />
+                              {member.phone}
+                            </span>
+                            <span className='flex items-center gap-1'>
+                              <Calendar className='h-3.5 w-3.5' />
+                              Joined {new Date(member.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                             </span>
                           </div>
                         </div>
                       </div>
-                      <div className='flex items-center space-x-2'>
-                        <Button size='sm' variant='outline' asChild>
+                      <div className='flex items-center space-x-2 ml-4'>
+                        <Button size='sm' className='shadow-sm' asChild>
                           <Link href={`/members/${member.id}`}>
-                            View Profile
+                            👤 View Profile
                           </Link>
                         </Button>
-                        <Button size='sm' variant='outline' asChild>
+                        <Button size='sm' variant='outline' className='shadow-sm' asChild>
                           <Link href={`mailto:${member.email}`}>
                             <Mail className='h-4 w-4' />
                           </Link>
@@ -421,19 +448,21 @@ export default function MembersPage() {
         )}
 
         {filteredMembers.length === 0 && (
-          <Card>
+          <Card className='border-dashed border-2'>
             <CardContent className='p-12 text-center'>
-              <Users className='h-12 w-12 text-muted-foreground mx-auto mb-4' />
-              <h3 className='text-lg font-semibold text-foreground mb-2'>
-                No members found
+              <div className='p-4 bg-blue-100 dark:bg-blue-900/20 rounded-full w-fit mx-auto mb-4'>
+                <Users className='h-16 w-16 text-blue-500' />
+              </div>
+              <h3 className='text-xl font-bold text-foreground mb-2'>
+                {search || statusFilter !== "all" ? "No Members Found" : "No Members Yet"}
               </h3>
-              <p className='text-muted-foreground mb-4'>
+              <p className='text-muted-foreground mb-6 max-w-md mx-auto'>
                 {search || statusFilter !== "all"
-                  ? "Try adjusting your search or filters"
-                  : "Get started by adding your first member"}
+                  ? "Try adjusting your search or filters to find the members you're looking for. 🔍"
+                  : "Start building your community by adding your first member! 🎉"}
               </p>
               {!search && statusFilter === "all" && (
-                <Button asChild>
+                <Button asChild className='shadow-sm'>
                   <Link href='/members/new'>
                     <UserPlus className='h-4 w-4 mr-2' />
                     Add First Member

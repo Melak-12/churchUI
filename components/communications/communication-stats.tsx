@@ -57,7 +57,7 @@ export function CommunicationStats() {
   if (loading) {
     return (
       <Card className='overflow-hidden'>
-        <CardHeader className='bg-gradient-to-r from-purple-500 to-pink-500 text-white'>
+        <CardHeader className='bg-primary text-white'>
           <CardTitle className='flex items-center space-x-2'>
             <MessageSquare className='h-6 w-6' />
             <span>📱 Messages & Outreach</span>
@@ -83,7 +83,7 @@ export function CommunicationStats() {
   if (error) {
     return (
       <Card className='overflow-hidden'>
-        <CardHeader className='bg-gradient-to-r from-purple-500 to-pink-500 text-white'>
+        <CardHeader className='bg-primary text-white'>
           <CardTitle className='flex items-center space-x-2'>
             <MessageSquare className='h-6 w-6' />
             <span>📱 Messages & Outreach</span>
@@ -127,7 +127,7 @@ export function CommunicationStats() {
         {/* Unified Stats Grid */}
         <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'>
           {/* Total Campaigns */}
-          <div className='bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 rounded-lg p-6 border border-blue-200 dark:border-blue-800'>
+          <div className='bg-blue-50 dark:bg-blue-950 rounded-lg p-6 border'>
             <div className='flex items-center justify-between mb-3'>
               <div className='p-3 bg-blue-500 dark:bg-blue-600 rounded-lg shadow-md'>
                 <Users className='h-6 w-6 text-white' />
@@ -149,7 +149,7 @@ export function CommunicationStats() {
           </div>
 
           {/* Messages Sent & Delivered */}
-          <div className='bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 rounded-lg p-6 border border-green-200 dark:border-green-800'>
+          <div className='bg-green-50 dark:bg-green-950 rounded-lg p-6 border'>
             <div className='flex items-center justify-between mb-3'>
               <div className='p-3 bg-green-500 dark:bg-green-600 rounded-lg shadow-md'>
                 <Send className='h-6 w-6 text-white' />
@@ -174,7 +174,7 @@ export function CommunicationStats() {
           </div>
 
           {/* Success Rate */}
-          <div className='bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 rounded-lg p-6 border border-purple-200 dark:border-purple-800'>
+          <div className='bg-purple-50 dark:bg-purple-950 rounded-lg p-6 border'>
             <div className='flex items-center justify-between mb-3'>
               <div className='p-3 bg-purple-500 dark:bg-purple-600 rounded-lg shadow-md'>
                 <TrendingUp className='h-6 w-6 text-white' />
@@ -212,7 +212,7 @@ export function CommunicationStats() {
         </div>
 
         {/* Status Summary Bar */}
-        <div className='bg-gradient-to-r from-muted/50 to-muted/30 rounded-lg p-4 border'>
+        <div className='bg-muted/50 rounded-lg p-4 border'>
           <div className='flex flex-wrap items-center justify-between gap-4'>
             <div className='flex items-center space-x-2'>
               <MessageSquare className='h-5 w-5 text-muted-foreground' />

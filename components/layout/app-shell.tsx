@@ -100,7 +100,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Sidebar */}
       <div
         className={cn(
-          "fixed top-0 left-0 h-full w-64 bg-card shadow-lg z-50 transform transition-transform duration-200 ease-in-out lg:translate-x-0",
+          "fixed top-0 left-0 h-full w-64 bg-card shadow-md z-50 transform transition-transform duration-200 ease-in-out lg:translate-x-0",
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >

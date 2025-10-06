@@ -67,11 +67,11 @@ export default function LoginPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-background to-blue-50 dark:from-slate-900 dark:via-background dark:to-slate-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo and Header */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+          <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
             <Church className="h-8 w-8 text-white" />
           </div>
           <h1 className="text-2xl font-bold text-foreground mb-2">
@@ -80,7 +80,7 @@ export default function LoginPage() {
           <p className="text-muted-foreground">Sign in to your account</p>
         </div>
 
-        <Card className="shadow-xl border backdrop-blur-sm bg-card/95">
+        <Card className="shadow-md border backdrop-blur-sm bg-card/95">
           <CardHeader className="space-y-1 pb-6">
             <CardTitle className="text-xl text-center">Welcome Back</CardTitle>
             <CardDescription className="text-center">

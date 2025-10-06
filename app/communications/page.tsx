@@ -287,7 +287,7 @@ export default function CommunicationsPage() {
       <AppShell>
         <div className='space-y-6'>
           {/* Header Section */}
-          <div className='bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-xl p-6 border border-purple-100 dark:border-purple-800'>
+          <div className='bg-card rounded-xl p-6 border shadow-sm'>
             <div className='flex items-center justify-between'>
               <div>
                 <div className='flex items-center space-x-3 mb-2'>
@@ -304,7 +304,7 @@ export default function CommunicationsPage() {
               </div>
               <div className='flex items-center gap-2'>
                 <TwilioTest />
-                <Button className='shadow-lg' asChild>
+                <Button className='shadow-sm' asChild>
                   <Link href='/communications/new'>
                     <Plus className='h-4 w-4 mr-2' />
                     Create Campaign
@@ -316,7 +316,7 @@ export default function CommunicationsPage() {
 
           {/* Quick Stats */}
           <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
-            <Card className='border-l-4 border-l-green-500'>
+            <Card>
               <CardContent className='p-4'>
                 <div className='flex items-center justify-between'>
                   <div>
@@ -330,7 +330,7 @@ export default function CommunicationsPage() {
               </CardContent>
             </Card>
 
-            <Card className='border-l-4 border-l-blue-500'>
+            <Card>
               <CardContent className='p-4'>
                 <div className='flex items-center justify-between'>
                   <div>
@@ -347,7 +347,7 @@ export default function CommunicationsPage() {
               </CardContent>
             </Card>
 
-            <Card className='border-l-4 border-l-yellow-500'>
+            <Card>
               <CardContent className='p-4'>
                 <div className='flex items-center justify-between'>
                   <div>
@@ -364,7 +364,7 @@ export default function CommunicationsPage() {
               </CardContent>
             </Card>
 
-            <Card className='border-l-4 border-l-purple-500'>
+            <Card>
               <CardContent className='p-4'>
                 <div className='flex items-center justify-between'>
                   <div>
@@ -460,7 +460,7 @@ export default function CommunicationsPage() {
                     ? "Start reaching your community with personalized SMS campaigns. From event reminders to prayer requests!"
                     : `No campaigns found with "${statusFilter.toLowerCase()}" status. Try adjusting your filter or create a new campaign.`}
                 </p>
-                <Button className='shadow-lg' asChild>
+                <Button className='shadow-sm' asChild>
                   <Link href='/communications/new'>
                     <Plus className='h-4 w-4 mr-2' />
                     {statusFilter === "ALL"

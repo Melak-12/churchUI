@@ -48,21 +48,21 @@ export default function VotingPage() {
     <FeatureGuard feature='voting'>
       <AppShell>
         <div className='space-y-6'>
-          {/* Cohesive Header */}
-          <div className='space-y-6'>
-            {/* Title and New Vote Button - Integrated */}
+          {/* Modern Header */}
+          <div className='bg-card rounded-xl p-6 border shadow-sm'>
             <div className='flex items-start justify-between'>
               <div>
-                <h1 className='text-2xl font-bold text-gray-900'>Voting</h1>
-                <p className='text-gray-600 mt-1'>
-                  Manage community votes and elections
+                <div className='flex items-center space-x-3 mb-2'>
+                  <div className='p-2 bg-indigo-500 rounded-lg'>
+                    <VoteIcon className='h-6 w-6 text-white' />
+                  </div>
+                  <h1 className='text-2xl font-bold'>Voting & Decisions 🗳️</h1>
+                </div>
+                <p className='text-muted-foreground'>
+                  Manage community votes and elections democratically
                 </p>
               </div>
-              <Button
-                asChild
-                variant='outline'
-                className='h-9 text-gray-700 hover:text-gray-900 hover:bg-gray-50'
-              >
+              <Button asChild className='shadow-sm'>
                 <Link href='/voting/new' className='flex items-center gap-2'>
                   <Plus className='h-4 w-4' />
                   <span className='hidden sm:inline'>New Vote</span>
@@ -70,38 +70,47 @@ export default function VotingPage() {
                 </Link>
               </Button>
             </div>
-
-            {/* Filters and Stats - Integrated */}
-            <div className='flex items-center justify-between'>
-              <div className='flex items-center gap-3'>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className='w-36 h-9 border-gray-300'>
-                    <div className='flex items-center gap-2'>
-                      <Filter className='h-4 w-4 text-gray-500' />
-                      <SelectValue placeholder='All votes' />
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value='ALL'>All Votes</SelectItem>
-                    <SelectItem value='SCHEDULED'>Scheduled</SelectItem>
-                    <SelectItem value='ACTIVE'>Active</SelectItem>
-                    <SelectItem value='CLOSED'>Closed</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className='flex items-center gap-2'>
-                <span className='text-sm text-gray-600'>
-                  {votes.length} vote{votes.length !== 1 ? "s" : ""}
-                </span>
-                {statusFilter !== "ALL" && (
-                  <Badge variant='secondary' className='px-2 py-1 text-xs'>
-                    {statusFilter.toLowerCase()}
-                  </Badge>
-                )}
-              </div>
-            </div>
           </div>
+
+          {/* Filters and Stats */}
+          <Card className='border-none shadow-sm'>
+            <CardContent className='p-6'>
+              <div className='flex items-center justify-between flex-wrap gap-4'>
+                <div className='flex items-center gap-3'>
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger className='w-40 bg-white dark:bg-gray-800 border-none shadow-sm'>
+                      <div className='flex items-center gap-2'>
+                        <Filter className='h-4 w-4 text-muted-foreground' />
+                        <SelectValue placeholder='All votes' />
+                      </div>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value='ALL'>🗳️ All Votes</SelectItem>
+                      <SelectItem value='SCHEDULED'>📅 Scheduled</SelectItem>
+                      <SelectItem value='ACTIVE'>✅ Active</SelectItem>
+                      <SelectItem value='CLOSED'>🔒 Closed</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className='flex items-center gap-3'>
+                  <div className='text-sm bg-white dark:bg-gray-800 px-4 py-2 rounded-lg shadow-sm'>
+                    <span className='font-semibold text-indigo-600 dark:text-indigo-400'>
+                      {votes.length}
+                    </span>
+                    <span className='text-muted-foreground ml-1'>
+                      vote{votes.length !== 1 ? "s" : ""}
+                    </span>
+                  </div>
+                  {statusFilter !== "ALL" && (
+                    <Badge className='bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 px-3 py-1.5 text-xs font-medium'>
+                      {statusFilter.toLowerCase()}
+                    </Badge>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Loading State */}
           {loading && (

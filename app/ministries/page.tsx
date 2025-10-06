@@ -129,15 +129,15 @@ export default function MinistriesPage() {
         <AppShell>
           <div className='space-y-6'>
             {/* Header Section */}
-            <div className='bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-xl p-6 border border-orange-100 dark:border-orange-800'>
+            <div className='bg-card rounded-xl p-6 border shadow-sm'>
               <div className='flex items-center justify-between'>
                 <div>
                   <div className='flex items-center space-x-3 mb-2'>
-                    <div className='p-2 bg-orange-500 rounded-lg'>
+                    <div className='p-2 bg-green-500 rounded-lg'>
                       <Heart className='h-6 w-6 text-white' />
                     </div>
                     <h1 className='text-2xl font-bold text-foreground'>
-                      Ministry Hub ❤️
+                      Ministry Hub
                     </h1>
                   </div>
                   <p className='text-muted-foreground'>
@@ -145,7 +145,7 @@ export default function MinistriesPage() {
                   </p>
                 </div>
                 <Button
-                  className='shadow-lg'
+                  className='shadow-sm'
                   onClick={() => setShowCreateForm(true)}
                 >
                   <Plus className='h-4 w-4 mr-2' />

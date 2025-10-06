@@ -120,69 +120,84 @@ export function MinistryList({
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-8">
-        <Loader2 className="h-8 w-8 animate-spin" />
-        <span className="ml-2">Loading ministries...</span>
+      <div className='flex items-center justify-center py-8'>
+        <Loader2 className='h-8 w-8 animate-spin' />
+        <span className='ml-2'>Loading ministries...</span>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      {/* Filters */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span>Ministries</span>
+    <div className='space-y-6'>
+      {/* Modern Filters Card */}
+      <Card className='border-none shadow-sm'>
+        <CardHeader className='pb-4'>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center space-x-3'>
+              <div className='p-2 bg-orange-500 rounded-lg'>
+                <Search className='h-5 w-5 text-white' />
+              </div>
+              <div>
+                <CardTitle className='text-lg'>Find Ministries</CardTitle>
+                <p className='text-sm text-muted-foreground'>
+                  {filteredMinistries.length} of {ministries.length} ministries
+                </p>
+              </div>
+            </div>
             <Button
-              variant="outline"
-              size="sm"
+              variant='outline'
+              size='sm'
               onClick={onRefresh}
               disabled={loading}
+              className='bg-white dark:bg-gray-800 shadow-sm'
             >
-              <RefreshCw className="h-4 w-4 mr-2" />
+              <RefreshCw
+                className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`}
+              />
               Refresh
             </Button>
-          </CardTitle>
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <div className='flex flex-col sm:flex-row gap-3'>
+            <div className='flex-1'>
+              <div className='relative'>
+                <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4' />
                 <Input
-                  placeholder="Search ministries..."
+                  placeholder='🔍 Search ministries by name...'
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className='pl-10 bg-white dark:bg-gray-800 border-none shadow-sm'
                 />
               </div>
             </div>
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="w-full sm:w-48">
-                <SelectValue placeholder="Category" />
+              <SelectTrigger className='w-full sm:w-48 bg-white dark:bg-gray-800 border-none shadow-sm'>
+                <SelectValue placeholder='📂 Category' />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                <SelectItem value="WORSHIP">Worship</SelectItem>
-                <SelectItem value="CHILDREN">Children</SelectItem>
-                <SelectItem value="YOUTH">Youth</SelectItem>
-                <SelectItem value="ADULTS">Adults</SelectItem>
-                <SelectItem value="SENIORS">Seniors</SelectItem>
-                <SelectItem value="OUTREACH">Outreach</SelectItem>
-                <SelectItem value="ADMINISTRATION">Administration</SelectItem>
-                <SelectItem value="OTHER">Other</SelectItem>
+                <SelectItem value='all'>📂 All Categories</SelectItem>
+                <SelectItem value='WORSHIP'>🎵 Worship</SelectItem>
+                <SelectItem value='CHILDREN'>👶 Children</SelectItem>
+                <SelectItem value='YOUTH'>🎓 Youth</SelectItem>
+                <SelectItem value='ADULTS'>👔 Adults</SelectItem>
+                <SelectItem value='SENIORS'>👴 Seniors</SelectItem>
+                <SelectItem value='OUTREACH'>🌍 Outreach</SelectItem>
+                <SelectItem value='ADMINISTRATION'>
+                  💼 Administration
+                </SelectItem>
+                <SelectItem value='OTHER'>📌 Other</SelectItem>
               </SelectContent>
             </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-full sm:w-48">
-                <SelectValue placeholder="Status" />
+              <SelectTrigger className='w-full sm:w-48 bg-white dark:bg-gray-800 border-none shadow-sm'>
+                <SelectValue placeholder='🎯 Status' />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="ACTIVE">Active</SelectItem>
-                <SelectItem value="INACTIVE">Inactive</SelectItem>
-                <SelectItem value="PLANNING">Planning</SelectItem>
+                <SelectItem value='all'>🎯 All Status</SelectItem>
+                <SelectItem value='ACTIVE'>✅ Active</SelectItem>
+                <SelectItem value='INACTIVE'>⏸️ Inactive</SelectItem>
+                <SelectItem value='PLANNING'>📋 Planning</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -191,107 +206,137 @@ export function MinistryList({
 
       {/* Results */}
       {filteredMinistries.length === 0 ? (
-        <Alert>
-          <AlertDescription>
-            {ministries.length === 0
-              ? "No ministries found. Create your first ministry to get started."
-              : "No ministries match your current filters."}
-          </AlertDescription>
-        </Alert>
+        <Card className='border-dashed border-2'>
+          <CardContent className='text-center py-12'>
+            <div className='p-4 bg-orange-100 dark:bg-orange-900/20 rounded-full w-fit mx-auto mb-4'>
+              <Users className='h-12 w-12 text-orange-500' />
+            </div>
+            <h3 className='text-lg font-semibold mb-2'>
+              {ministries.length === 0
+                ? "No Ministries Yet"
+                : "No Matches Found"}
+            </h3>
+            <p className='text-muted-foreground max-w-md mx-auto'>
+              {ministries.length === 0
+                ? "Create your first ministry to start serving the community! ❤️"
+                : "Try adjusting your search or filter criteria. 🔍"}
+            </p>
+          </CardContent>
+        </Card>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
           {filteredMinistries.map((ministry) => (
             <Card
               key={ministry.id}
-              className="hover:shadow-md transition-shadow"
+              className='group hover:shadow-2xl transition-all duration-300 overflow-hidden'
             >
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-1">
-                    <CardTitle className="text-lg">{ministry.name}</CardTitle>
-                    <div className="flex items-center gap-2">
-                      <Badge className={getCategoryColor(ministry.category)}>
+              <CardHeader className='pb-3 bg-muted/50'>
+                <div className='flex items-start justify-between'>
+                  <div className='space-y-2 flex-1'>
+                    <CardTitle className='text-lg flex items-center gap-2'>
+                      <span>❤️</span>
+                      <span>{ministry.name}</span>
+                    </CardTitle>
+                    <div className='flex flex-wrap items-center gap-2'>
+                      <Badge
+                        className={`${getCategoryColor(
+                          ministry.category
+                        )} text-xs font-medium px-2 py-1`}
+                      >
                         {ministry.category.replace("_", " ")}
                       </Badge>
-                      <Badge className={getStatusColor(ministry.status)}>
+                      <Badge
+                        className={`${getStatusColor(
+                          ministry.status
+                        )} text-xs px-2 py-1`}
+                      >
                         {ministry.status}
                       </Badge>
                     </div>
                   </div>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm">
-                        <MoreHorizontal className="h-4 w-4" />
+                      <Button
+                        variant='ghost'
+                        size='sm'
+                        className='hover:bg-white dark:hover:bg-gray-800'
+                      >
+                        <MoreHorizontal className='h-4 w-4' />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => onEdit(ministry)}>
-                        <Edit className="h-4 w-4 mr-2" />
+                    <DropdownMenuContent align='end' className='w-40'>
+                      <DropdownMenuItem
+                        onClick={() => onEdit(ministry)}
+                        className='cursor-pointer'
+                      >
+                        <Edit className='h-4 w-4 mr-2 text-blue-500' />
                         Edit
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => onDelete(ministry.id)}
-                        className="text-red-600"
+                        className='text-red-600 cursor-pointer'
                       >
-                        <Trash2 className="h-4 w-4 mr-2" />
+                        <Trash2 className='h-4 w-4 mr-2' />
                         Delete
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
                 {ministry.description && (
-                  <CardDescription className="line-clamp-2">
+                  <CardDescription className='line-clamp-2 mt-2 text-sm'>
                     {ministry.description}
                   </CardDescription>
                 )}
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className='space-y-3 pt-4'>
                 {/* Leader */}
-                <div className="flex items-center gap-2 text-sm">
-                  <Users className="h-4 w-4 text-gray-500" />
-                  <span className="text-gray-600">Leader:</span>
-                  <span className="font-medium">
+                <div className='flex items-center gap-2 text-sm p-2 bg-blue-50 dark:bg-blue-950/30 rounded-lg'>
+                  <Users className='h-4 w-4 text-blue-600' />
+                  <span className='text-muted-foreground'>Leader:</span>
+                  <span className='font-semibold'>
                     {ministry.leader.firstName} {ministry.leader.lastName}
                   </span>
                 </div>
 
                 {/* Members Count */}
-                <div className="flex items-center gap-2 text-sm">
-                  <Users className="h-4 w-4 text-gray-500" />
-                  <span className="text-gray-600">Members:</span>
-                  <span className="font-medium">
+                <div className='flex items-center gap-2 text-sm p-2 bg-green-50 dark:bg-green-950/30 rounded-lg'>
+                  <Users className='h-4 w-4 text-green-600' />
+                  <span className='text-muted-foreground'>Members:</span>
+                  <span className='font-semibold'>
                     {ministry.memberCount || ministry.members.length}
                   </span>
                 </div>
 
                 {/* Meeting Schedule */}
                 {ministry.meetingSchedule && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <Calendar className="h-4 w-4 text-gray-500" />
-                    <span className="text-gray-600">Meets:</span>
-                    <span className="font-medium">
-                      {ministry.meetingSchedule.frequency
-                        .replace("_", " ")
-                        .toLowerCase()}
-                      {ministry.meetingSchedule.dayOfWeek !== undefined && (
-                        <span>
-                          {" "}
-                          on {getDayName(ministry.meetingSchedule.dayOfWeek)}
-                        </span>
-                      )}
-                      {ministry.meetingSchedule.time && (
-                        <span> at {ministry.meetingSchedule.time}</span>
-                      )}
-                    </span>
+                  <div className='flex items-center gap-2 text-sm p-2 bg-purple-50 dark:bg-purple-950/30 rounded-lg'>
+                    <Calendar className='h-4 w-4 text-purple-600' />
+                    <div className='flex-1'>
+                      <span className='text-muted-foreground'>Meets: </span>
+                      <span className='font-semibold'>
+                        {ministry.meetingSchedule.frequency
+                          .replace("_", " ")
+                          .toLowerCase()}
+                        {ministry.meetingSchedule.dayOfWeek !== undefined && (
+                          <span>
+                            {" "}
+                            on {getDayName(ministry.meetingSchedule.dayOfWeek)}
+                          </span>
+                        )}
+                        {ministry.meetingSchedule.time && (
+                          <span> at {ministry.meetingSchedule.time}</span>
+                        )}
+                      </span>
+                    </div>
                   </div>
                 )}
 
                 {/* Location */}
                 {ministry.meetingSchedule?.location && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <MapPin className="h-4 w-4 text-gray-500" />
-                    <span className="text-gray-600">Location:</span>
-                    <span className="font-medium">
+                  <div className='flex items-center gap-2 text-sm p-2 bg-amber-50 dark:bg-amber-950/30 rounded-lg'>
+                    <MapPin className='h-4 w-4 text-amber-600' />
+                    <span className='text-muted-foreground'>Location:</span>
+                    <span className='font-semibold truncate'>
                       {ministry.meetingSchedule.location}
                     </span>
                   </div>
@@ -299,44 +344,61 @@ export function MinistryList({
 
                 {/* Budget */}
                 {ministry.budget && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <DollarSign className="h-4 w-4 text-gray-500" />
-                    <span className="text-gray-600">Budget:</span>
-                    <span className="font-medium">
-                      {formatCurrency(
-                        ministry.budget.allocated,
-                        ministry.budget.currency
-                      )}
-                    </span>
-                    {ministry.budget.spent > 0 && (
-                      <span className="text-gray-500">
-                        (Spent:{" "}
+                  <div className='bg-emerald-50 dark:bg-emerald-950/30 p-3 rounded-lg'>
+                    <div className='flex items-center gap-2 text-sm mb-1'>
+                      <DollarSign className='h-4 w-4 text-emerald-600' />
+                      <span className='text-muted-foreground'>Budget:</span>
+                      <span className='font-bold text-emerald-700 dark:text-emerald-400'>
                         {formatCurrency(
-                          ministry.budget.spent,
+                          ministry.budget.allocated,
                           ministry.budget.currency
                         )}
-                        )
                       </span>
+                    </div>
+                    {ministry.budget.spent > 0 && (
+                      <div className='text-xs text-muted-foreground ml-6'>
+                        Spent:{" "}
+                        <span className='font-medium'>
+                          {formatCurrency(
+                            ministry.budget.spent,
+                            ministry.budget.currency
+                          )}
+                        </span>
+                        {" • "}
+                        <span className='text-amber-600 dark:text-amber-400 font-medium'>
+                          {Math.round(
+                            (ministry.budget.spent /
+                              ministry.budget.allocated) *
+                              100
+                          )}
+                          % used
+                        </span>
+                      </div>
                     )}
                   </div>
                 )}
 
                 {/* Goals */}
                 {ministry.goals && ministry.goals.length > 0 && (
-                  <div className="space-y-1">
-                    <span className="text-sm text-gray-600">Goals:</span>
-                    <div className="flex flex-wrap gap-1">
+                  <div className='space-y-2'>
+                    <span className='text-xs font-semibold text-muted-foreground uppercase tracking-wide'>
+                      🎯 Goals
+                    </span>
+                    <div className='flex flex-wrap gap-1.5'>
                       {ministry.goals.slice(0, 2).map((goal, index) => (
                         <Badge
                           key={index}
-                          variant="outline"
-                          className="text-xs"
+                          variant='outline'
+                          className='text-xs bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800'
                         >
                           {goal}
                         </Badge>
                       ))}
                       {ministry.goals.length > 2 && (
-                        <Badge variant="outline" className="text-xs">
+                        <Badge
+                          variant='outline'
+                          className='text-xs bg-gray-50 dark:bg-gray-900'
+                        >
                           +{ministry.goals.length - 2} more
                         </Badge>
                       )}

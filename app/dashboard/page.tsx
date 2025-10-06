@@ -101,7 +101,7 @@ export default function Dashboard() {
     <AppShell>
       <div className='space-y-6'>
         {/* Header */}
-        <div className='bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg p-6 mb-6'>
+        <div className='bg-card rounded-lg p-6 mb-6 border shadow-sm'>
           <div className='flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0'>
             <div>
               <h1 className='text-3xl font-bold text-foreground mb-2'>

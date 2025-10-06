@@ -132,9 +132,9 @@ export default function CalendarPage() {
   if (loading) {
     return (
       <AppShell>
-        <div className="flex items-center justify-center h-64">
-          <div className="flex items-center space-x-2">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+        <div className='flex items-center justify-center h-64'>
+          <div className='flex items-center space-x-2'>
+            <div className='animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600'></div>
             <span>Loading calendar...</span>
           </div>
         </div>
@@ -145,10 +145,10 @@ export default function CalendarPage() {
   if (error) {
     return (
       <AppShell>
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <p className="text-red-600">{error}</p>
-            <Button onClick={fetchEvents} className="mt-4">
+        <div className='flex items-center justify-center h-64'>
+          <div className='text-center'>
+            <p className='text-red-600'>{error}</p>
+            <Button onClick={fetchEvents} className='mt-4'>
               Try Again
             </Button>
           </div>
@@ -159,27 +159,27 @@ export default function CalendarPage() {
 
   return (
     <AppShell>
-      <div className="h-full flex flex-col">
+      <div className='h-full flex flex-col'>
         {/* Google Calendar-like Header */}
-        <div className="bg-white border-b border-gray-200 px-4 sm:px-6 py-3 sm:py-4">
-          <div className="flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between">
+        <div className='bg-white border-b border-gray-200 px-4 sm:px-6 py-3 sm:py-4'>
+          <div className='flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between'>
             {/* Left side - Logo and Title */}
-            <div className="flex items-center space-x-4">
+            <div className='flex items-center space-x-4'>
               <Button
-                variant="ghost"
-                size="sm"
-                className="lg:hidden"
+                variant='ghost'
+                size='sm'
+                className='lg:hidden'
                 onClick={() => setShowSidebar(!showSidebar)}
               >
-                <Menu className="h-5 w-5" />
+                <Menu className='h-5 w-5' />
               </Button>
-              <div className="flex items-center space-x-3">
-                <CalendarIcon className="h-6 w-6 sm:h-7 sm:w-7 text-blue-600" />
+              <div className='flex items-center space-x-3'>
+                <CalendarIcon className='h-6 w-6 sm:h-7 sm:w-7 text-blue-600' />
                 <div>
-                  <h1 className="text-xl sm:text-2xl font-semibold text-gray-900">
+                  <h1 className='text-xl sm:text-2xl font-semibold text-gray-900'>
                     Calendar
                   </h1>
-                  <p className="text-xs sm:text-sm text-gray-600 hidden sm:block">
+                  <p className='text-xs sm:text-sm text-gray-600 hidden sm:block'>
                     Church Events
                   </p>
                 </div>
@@ -187,27 +187,27 @@ export default function CalendarPage() {
             </div>
 
             {/* Right side - Actions */}
-            <div className="flex items-center space-x-2 sm:space-x-3">
+            <div className='flex items-center space-x-2 sm:space-x-3'>
               <Button
-                variant="outline"
-                size="sm"
-                className="hidden sm:flex"
+                variant='outline'
+                size='sm'
+                className='hidden sm:flex'
                 asChild
               >
-                <Link href="/events">
-                  <List className="h-4 w-4 mr-2" />
+                <Link href='/events'>
+                  <List className='h-4 w-4 mr-2' />
                   List View
                 </Link>
               </Button>
               <Button
-                size="sm"
-                className="bg-blue-600 hover:bg-blue-700"
+                size='sm'
+                className='bg-blue-600 hover:bg-blue-700'
                 asChild
               >
-                <Link href="/events/new">
-                  <Plus className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Create</span>
-                  <span className="sm:hidden">New</span>
+                <Link href='/events/new'>
+                  <Plus className='h-4 w-4 mr-2' />
+                  <span className='hidden sm:inline'>Create</span>
+                  <span className='sm:hidden'>New</span>
                 </Link>
               </Button>
             </div>
@@ -215,62 +215,62 @@ export default function CalendarPage() {
         </div>
 
         {/* Calendar Navigation Bar */}
-        <div className="bg-white border-b border-gray-200 px-4 sm:px-6 py-3">
-          <div className="flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between">
+        <div className='bg-white border-b border-gray-200 px-4 sm:px-6 py-3'>
+          <div className='flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between'>
             {/* Navigation Controls */}
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              <div className="flex items-center space-x-1">
+            <div className='flex items-center space-x-2 sm:space-x-4'>
+              <div className='flex items-center space-x-1'>
                 <Button
-                  variant="ghost"
-                  size="sm"
+                  variant='ghost'
+                  size='sm'
                   onClick={() => navigateMonth("prev")}
-                  className="h-8 w-8 p-0"
+                  className='h-8 w-8 p-0'
                 >
-                  <ChevronLeft className="h-4 w-4" />
+                  <ChevronLeft className='h-4 w-4' />
                 </Button>
                 <Button
-                  variant="ghost"
-                  size="sm"
+                  variant='ghost'
+                  size='sm'
                   onClick={() => navigateMonth("next")}
-                  className="h-8 w-8 p-0"
+                  className='h-8 w-8 p-0'
                 >
-                  <ChevronRight className="h-4 w-4" />
+                  <ChevronRight className='h-4 w-4' />
                 </Button>
               </div>
 
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
+              <h2 className='text-lg sm:text-xl font-semibold text-gray-900'>
                 {format(currentDate, "MMMM yyyy")}
               </h2>
 
               <Button
-                variant="outline"
-                size="sm"
+                variant='outline'
+                size='sm'
                 onClick={goToToday}
-                className="text-xs sm:text-sm"
+                className='text-xs sm:text-sm'
               >
                 Today
               </Button>
             </div>
 
             {/* View Mode Selector */}
-            <div className="flex items-center space-x-2">
-              <div className="flex items-center border border-gray-300 rounded-lg p-1">
+            <div className='flex items-center space-x-2'>
+              <div className='flex items-center border border-gray-300 rounded-lg p-1'>
                 <Button
                   variant={viewMode === "month" ? "default" : "ghost"}
-                  size="sm"
+                  size='sm'
                   onClick={() => setViewMode("month")}
-                  className="h-7 px-3 text-xs"
+                  className='h-7 px-3 text-xs'
                 >
-                  <Grid3x3 className="h-3 w-3 mr-1" />
+                  <Grid3x3 className='h-3 w-3 mr-1' />
                   Month
                 </Button>
                 <Button
                   variant={viewMode === "week" ? "default" : "ghost"}
-                  size="sm"
+                  size='sm'
                   onClick={() => setViewMode("week")}
-                  className="h-7 px-3 text-xs"
+                  className='h-7 px-3 text-xs'
                 >
-                  <List className="h-3 w-3 mr-1" />
+                  <List className='h-3 w-3 mr-1' />
                   Week
                 </Button>
               </div>
@@ -279,26 +279,26 @@ export default function CalendarPage() {
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 flex overflow-hidden">
+        <div className='flex-1 flex overflow-hidden'>
           {/* Mobile Sidebar Overlay */}
           {showSidebar && (
-            <div className="fixed inset-0 z-50 lg:hidden">
+            <div className='fixed inset-0 z-50 lg:hidden'>
               <div
-                className="absolute inset-0 bg-black bg-opacity-50"
+                className='absolute inset-0 bg-black bg-opacity-50'
                 onClick={() => setShowSidebar(false)}
               />
-              <div className="absolute left-0 top-0 h-full w-80 bg-white shadow-xl">
-                <div className="flex items-center justify-between p-4 border-b">
-                  <h3 className="text-lg font-semibold">Upcoming Events</h3>
+              <div className='absolute left-0 top-0 h-full w-80 bg-white shadow-md'>
+                <div className='flex items-center justify-between p-4 border-b'>
+                  <h3 className='text-lg font-semibold'>Upcoming Events</h3>
                   <Button
-                    variant="ghost"
-                    size="sm"
+                    variant='ghost'
+                    size='sm'
                     onClick={() => setShowSidebar(false)}
                   >
-                    <X className="h-4 w-4" />
+                    <X className='h-4 w-4' />
                   </Button>
                 </div>
-                <div className="p-4 overflow-y-auto">
+                <div className='p-4 overflow-y-auto'>
                   <UpcomingEventsList events={events} />
                 </div>
               </div>
@@ -306,37 +306,37 @@ export default function CalendarPage() {
           )}
 
           {/* Desktop Sidebar */}
-          <div className="hidden lg:flex lg:flex-col lg:w-80 lg:border-r lg:border-gray-200 lg:bg-gray-50">
-            <div className="p-4 border-b border-gray-200 bg-white">
-              <h3 className="text-lg font-semibold text-gray-900">
+          <div className='hidden lg:flex lg:flex-col lg:w-80 lg:border-r lg:border-gray-200 lg:bg-gray-50'>
+            <div className='p-4 border-b border-gray-200 bg-white'>
+              <h3 className='text-lg font-semibold text-gray-900'>
                 Upcoming Events
               </h3>
             </div>
-            <div className="flex-1 p-4 overflow-y-auto">
+            <div className='flex-1 p-4 overflow-y-auto'>
               <UpcomingEventsList events={events} />
             </div>
           </div>
 
           {/* Calendar Grid */}
-          <div className="flex-1 bg-white overflow-auto">
-            <div className="min-w-full">
+          <div className='flex-1 bg-white overflow-auto'>
+            <div className='min-w-full'>
               {/* Day Headers */}
-              <div className="grid grid-cols-7 border-b border-gray-200 bg-gray-50">
+              <div className='grid grid-cols-7 border-b border-gray-200 bg-gray-50'>
                 {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
                   (day, index) => (
                     <div
                       key={day}
-                      className="p-2 sm:p-3 text-center text-xs sm:text-sm font-medium text-gray-600 border-r border-gray-200 last:border-r-0"
+                      className='p-2 sm:p-3 text-center text-xs sm:text-sm font-medium text-gray-600 border-r border-gray-200 last:border-r-0'
                     >
-                      <span className="hidden sm:inline">{day}</span>
-                      <span className="sm:hidden">{day.charAt(0)}</span>
+                      <span className='hidden sm:inline'>{day}</span>
+                      <span className='sm:hidden'>{day.charAt(0)}</span>
                     </div>
                   )
                 )}
               </div>
 
               {/* Calendar Days Grid */}
-              <div className="grid grid-cols-7">
+              <div className='grid grid-cols-7'>
                 {calendarDays.map((day, dayIdx) => {
                   const dayEvents = getEventsForDate(day);
                   const isCurrentMonth = isSameMonth(day, currentDate);
@@ -358,7 +358,7 @@ export default function CalendarPage() {
                       `}
                     >
                       {/* Date Number */}
-                      <div className="flex items-center justify-between mb-1">
+                      <div className='flex items-center justify-between mb-1'>
                         <span
                           className={`
                             text-xs sm:text-sm font-medium
@@ -372,14 +372,14 @@ export default function CalendarPage() {
                           {format(day, "d")}
                         </span>
                         {dayEvents.length > 0 && (
-                          <div className="text-xs text-gray-500 hidden sm:block">
+                          <div className='text-xs text-gray-500 hidden sm:block'>
                             {dayEvents.length}
                           </div>
                         )}
                       </div>
 
                       {/* Events */}
-                      <div className="space-y-1">
+                      <div className='space-y-1'>
                         {dayEvents
                           .slice(0, viewMode === "month" ? 2 : 4)
                           .map((event, eventIdx) => (
@@ -387,7 +387,7 @@ export default function CalendarPage() {
                               key={eventIdx}
                               className={`
                               text-xs rounded-md px-1 py-0.5 sm:px-2 sm:py-1 cursor-pointer
-                              truncate border-l-2 transition-all hover:shadow-sm
+                              truncate transition-all hover:shadow-sm
                               ${getEventTypeColorLight(event.type)}
                             `}
                               onClick={() => {
@@ -398,16 +398,16 @@ export default function CalendarPage() {
                                 );
                               }}
                             >
-                              <div className="font-medium truncate">
+                              <div className='font-medium truncate'>
                                 {event.title}
                               </div>
-                              <div className="text-xs opacity-75 hidden sm:block">
+                              <div className='text-xs opacity-75 hidden sm:block'>
                                 {format(new Date(event.startDate), "h:mm a")}
                               </div>
                             </div>
                           ))}
                         {dayEvents.length > (viewMode === "month" ? 2 : 4) && (
-                          <div className="text-xs text-gray-500 px-1 hover:text-gray-700 cursor-pointer">
+                          <div className='text-xs text-gray-500 px-1 hover:text-gray-700 cursor-pointer'>
                             +{dayEvents.length - (viewMode === "month" ? 2 : 4)}{" "}
                             more
                           </div>
@@ -416,8 +416,8 @@ export default function CalendarPage() {
 
                       {/* Mobile Event Indicator */}
                       {dayEvents.length > 0 && (
-                        <div className="sm:hidden absolute bottom-1 right-1">
-                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                        <div className='sm:hidden absolute bottom-1 right-1'>
+                          <div className='w-2 h-2 bg-blue-500 rounded-full'></div>
                         </div>
                       )}
                     </div>
@@ -456,17 +456,17 @@ function UpcomingEventsList({ events }: { events: Event[] }) {
 
   if (upcomingEvents.length === 0) {
     return (
-      <div className="text-center py-8">
-        <CalendarIcon className="h-10 w-10 text-gray-400 mx-auto mb-4" />
-        <h3 className="text-base font-medium text-gray-900 mb-2">
+      <div className='text-center py-8'>
+        <CalendarIcon className='h-10 w-10 text-gray-400 mx-auto mb-4' />
+        <h3 className='text-base font-medium text-gray-900 mb-2'>
           No upcoming events
         </h3>
-        <p className="text-sm text-gray-500 mb-4">
+        <p className='text-sm text-gray-500 mb-4'>
           Create your first event to get started
         </p>
-        <Button size="sm" asChild>
-          <Link href="/events/new">
-            <Plus className="h-4 w-4 mr-2" />
+        <Button size='sm' asChild>
+          <Link href='/events/new'>
+            <Plus className='h-4 w-4 mr-2' />
             Create Event
           </Link>
         </Button>
@@ -475,11 +475,11 @@ function UpcomingEventsList({ events }: { events: Event[] }) {
   }
 
   return (
-    <div className="space-y-3">
+    <div className='space-y-3'>
       {/* Event Type Legend */}
-      <div className="mb-6">
-        <h4 className="text-sm font-medium text-gray-900 mb-3">Event Types</h4>
-        <div className="grid grid-cols-1 gap-2">
+      <div className='mb-6'>
+        <h4 className='text-sm font-medium text-gray-900 mb-3'>Event Types</h4>
+        <div className='grid grid-cols-1 gap-2'>
           {[
             { type: "SERVICE", label: "Service", color: "bg-blue-500" },
             { type: "MEETING", label: "Meeting", color: "bg-green-500" },
@@ -492,9 +492,9 @@ function UpcomingEventsList({ events }: { events: Event[] }) {
             { type: "SOCIAL", label: "Social", color: "bg-pink-500" },
             { type: "OTHER", label: "Other", color: "bg-gray-500" },
           ].map(({ type, label, color }) => (
-            <div key={type} className="flex items-center space-x-2">
+            <div key={type} className='flex items-center space-x-2'>
               <div className={`w-2.5 h-2.5 rounded-full ${color}`}></div>
-              <span className="text-xs text-gray-600">{label}</span>
+              <span className='text-xs text-gray-600'>{label}</span>
             </div>
           ))}
         </div>
@@ -502,15 +502,15 @@ function UpcomingEventsList({ events }: { events: Event[] }) {
 
       {/* Upcoming Events */}
       <div>
-        <h4 className="text-sm font-medium text-gray-900 mb-3">
+        <h4 className='text-sm font-medium text-gray-900 mb-3'>
           Next {upcomingEvents.length} Events
         </h4>
-        <div className="space-y-2">
+        <div className='space-y-2'>
           {upcomingEvents.map((event) => (
             <Link
               key={getDocumentId(event)}
               href={`/events/${getDocumentId(event)}`}
-              className="block"
+              className='block'
             >
               <div
                 className={`
@@ -518,32 +518,32 @@ function UpcomingEventsList({ events }: { events: Event[] }) {
                 ${getEventTypeColorLight(event.type)}
               `}
               >
-                <div className="flex items-start justify-between mb-1">
-                  <h5 className="font-medium text-sm truncate pr-2">
+                <div className='flex items-start justify-between mb-1'>
+                  <h5 className='font-medium text-sm truncate pr-2'>
                     {event.title}
                   </h5>
                   <Badge
-                    variant="outline"
-                    className="text-xs px-1 py-0 shrink-0"
+                    variant='outline'
+                    className='text-xs px-1 py-0 shrink-0'
                   >
                     {event.type.replace("_", " ")}
                   </Badge>
                 </div>
 
-                <div className="space-y-1 text-xs opacity-75">
-                  <div className="flex items-center space-x-1">
-                    <Clock className="h-3 w-3" />
+                <div className='space-y-1 text-xs opacity-75'>
+                  <div className='flex items-center space-x-1'>
+                    <Clock className='h-3 w-3' />
                     <span>
                       {format(new Date(event.startDate), "MMM d, h:mm a")}
                     </span>
                   </div>
-                  <div className="flex items-center space-x-1">
-                    <MapPin className="h-3 w-3" />
-                    <span className="truncate">{event.location}</span>
+                  <div className='flex items-center space-x-1'>
+                    <MapPin className='h-3 w-3' />
+                    <span className='truncate'>{event.location}</span>
                   </div>
                   {event.capacity && (
-                    <div className="flex items-center space-x-1">
-                      <Users className="h-3 w-3" />
+                    <div className='flex items-center space-x-1'>
+                      <Users className='h-3 w-3' />
                       <span>
                         {event.registrationCount || 0}/{event.capacity}
                       </span>

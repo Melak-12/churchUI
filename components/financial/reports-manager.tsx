@@ -600,7 +600,7 @@ export function ReportsManager({ onReportGenerated }: ReportsManagerProps) {
           return (
             <Card
               key={reportType.id}
-              className="hover:shadow-lg transition-shadow"
+              className="hover:shadow-md transition-shadow"
             >
               <CardHeader>
                 <CardTitle className="flex items-center gap-3">

@@ -141,7 +141,7 @@ export default function AttendancePage() {
         <AppShell>
           <div className='space-y-6'>
             {/* Header Section */}
-            <div className='bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl p-6 border border-emerald-100 dark:border-emerald-800'>
+            <div className='bg-card rounded-xl p-6 border shadow-sm'>
               <div className='flex items-center justify-between'>
                 <div>
                   <div className='flex items-center space-x-3 mb-2'>
@@ -157,7 +157,7 @@ export default function AttendancePage() {
                   </p>
                 </div>
                 <Button
-                  className='shadow-lg'
+                  className='shadow-sm'
                   onClick={() => setShowCreateForm(true)}
                 >
                   <Plus className='h-4 w-4 mr-2' />
