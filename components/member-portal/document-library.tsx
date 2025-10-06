@@ -101,12 +101,12 @@ export function DocumentLibrary() {
       if (searchTerm) params.append("search", searchTerm);
       params.append("limit", "50");
 
-      const response = await apiClient.get(
+      const response = await apiClient.get<{ documents: any[] }>(
         `/api/member-portal/documents?${params}`
       );
 
-      if (response.data.success) {
-        setDocuments(response.data.data.documents);
+      if (response.success && response.data) {
+        setDocuments((response.data as { documents: any[] }).documents);
       }
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to load documents");
@@ -117,12 +117,12 @@ export function DocumentLibrary() {
 
   const fetchCategories = async () => {
     try {
-      const response = await apiClient.get(
+      const response = await apiClient.get<{ categories: DocumentCategory[] }>(
         "/api/member-portal/documents/categories"
       );
 
-      if (response.data.success) {
-        setCategories(response.data.data.categories);
+      if (response.success && response.data) {
+        setCategories((response.data as { categories: DocumentCategory[] }).categories);
       }
     } catch (err: any) {
       console.error("Failed to load categories:", err);
@@ -131,15 +131,25 @@ export function DocumentLibrary() {
 
   const handleDownload = async (documentId: string, fileName: string) => {
     try {
-      const response = await apiClient.get(
-        `/api/member-portal/documents/${documentId}/download`,
+      // Use fetch directly for blob downloads since apiClient.get doesn't support responseType
+      const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/member-portal/documents/${documentId}/download`,
         {
-          responseType: "blob",
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
         }
       );
 
+      if (!response.ok) {
+        throw new Error('Download failed');
+      }
+
+      const blob = await response.blob();
+
       // Create blob link to download
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", fileName);

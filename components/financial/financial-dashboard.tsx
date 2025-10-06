@@ -104,10 +104,10 @@ export function FinancialDashboard() {
 
       const [statsResponse, paymentsResponse, membersResponse] =
         await Promise.all([
-          apiClient.get(
+          apiClient.get<FinancialStats>(
             `/api/financial/financial/summary?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`
           ),
-          apiClient.get(
+          apiClient.get<{ payments: any[] }>(
             `/api/financial/payments?limit=10&startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`
           ),
           apiClient.getMembers({ limit: 1000 }), // Get all members for payment form
@@ -117,12 +117,12 @@ export function FinancialDashboard() {
       console.log("💰 Payments response:", paymentsResponse);
       console.log("👥 Members response:", membersResponse);
 
-      if (statsResponse.data.success) {
-        setStats(statsResponse.data.data);
+      if (statsResponse.success && statsResponse.data) {
+        setStats(statsResponse.data as FinancialStats);
       }
 
-      if (paymentsResponse.data.success) {
-        setRecentPayments(paymentsResponse.data.data.payments);
+      if (paymentsResponse.success && paymentsResponse.data) {
+        setRecentPayments((paymentsResponse.data as { payments: any[] }).payments);
       }
 
       if (membersResponse.members) {

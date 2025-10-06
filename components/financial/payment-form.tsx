@@ -95,11 +95,13 @@ export function PaymentForm({
   const selectedMethod = form.watch("method");
 
   const onSubmit = async (data: PaymentFormData) => {
+    let paymentData: any = null;
+    
     try {
       setIsLoading(true);
       setError("");
 
-      const paymentData = {
+      paymentData = {
         memberId: data.memberId,
         type: data.type,
         amount: data.amount,
@@ -114,17 +116,17 @@ export function PaymentForm({
         },
       };
 
-      const response = await apiClient.post(
+      const response = await apiClient.post<{ payment: any }>(
         "/api/financial/payments",
         paymentData
       );
 
-      if (response.data.success) {
+      if (response.success && response.data) {
         setSuccess(true);
         form.reset();
-        onSuccess?.(response.data.data.payment);
+        onSuccess?.((response.data as { payment: any }).payment);
       } else {
-        setError(response.data.message || "Failed to record payment");
+        setError(response.message || "Failed to record payment");
       }
     } catch (err: any) {
       console.error("❌ Payment creation error:", err);
