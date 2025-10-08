@@ -69,10 +69,18 @@ export function AttendanceList({
       (record?.member?.firstName || "")
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
-      (record?.member?.lastName || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (record?.event?.title || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (record?.ministry?.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (record?.smallGroup?.name || "").toLowerCase().includes(searchTerm.toLowerCase());
+      (record?.member?.lastName || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      (record?.event?.title || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      (record?.ministry?.name || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      (record?.smallGroup?.name || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
 
     const matchesType =
       typeFilter === "all" ||
@@ -148,7 +156,8 @@ export function AttendanceList({
               <div>
                 <CardTitle className='text-lg'>Search & Filter</CardTitle>
                 <p className='text-sm text-muted-foreground'>
-                  {filteredAttendance.length} of {(attendance || []).length} records
+                  {filteredAttendance.length} of {(attendance || []).length}{" "}
+                  records
                 </p>
               </div>
             </div>

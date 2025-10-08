@@ -62,7 +62,9 @@ export function MinistryList({
   const filteredMinistries = (ministries || []).filter((ministry) => {
     const matchesSearch =
       (ministry?.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (ministry?.description || "").toLowerCase().includes(searchTerm.toLowerCase());
+      (ministry?.description || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
     const matchesCategory =
       categoryFilter === "all" || ministry?.category === categoryFilter;
     const matchesStatus =
@@ -140,7 +142,8 @@ export function MinistryList({
               <div>
                 <CardTitle className='text-lg'>Find Ministries</CardTitle>
                 <p className='text-sm text-muted-foreground'>
-                  {filteredMinistries.length} of {(ministries || []).length} ministries
+                  {filteredMinistries.length} of {(ministries || []).length}{" "}
+                  ministries
                 </p>
               </div>
             </div>
