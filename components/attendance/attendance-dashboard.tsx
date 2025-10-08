@@ -428,7 +428,8 @@ export function AttendanceDashboard() {
                   <div className='space-y-1'>
                     <div className='flex items-center gap-2'>
                       <span className='font-medium'>
-                        {record.member.firstName} {record.member.lastName}
+                        {record.member.firstName || ""}{" "}
+                        {record.member.lastName || ""}
                       </span>
                       {record.service && (
                         <Badge

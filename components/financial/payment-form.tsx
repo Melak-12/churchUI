@@ -64,7 +64,7 @@ const paymentSchema = z.object({
 type PaymentFormData = z.infer<typeof paymentSchema>;
 
 interface PaymentFormProps {
-  members: Array<{ id: string; firstName: string; lastName: string }>;
+  members: Array<{ id: string; firstName?: string; lastName?: string }>;
   onSuccess?: (payment: any) => void;
   onCancel?: () => void;
 }
@@ -96,7 +96,7 @@ export function PaymentForm({
 
   const onSubmit = async (data: PaymentFormData) => {
     let paymentData: any = null;
-    
+
     try {
       setIsLoading(true);
       setError("");
@@ -155,21 +155,21 @@ export function PaymentForm({
   if (success) {
     return (
       <Card>
-        <CardContent className="pt-6">
-          <div className="text-center">
-            <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">
+        <CardContent className='pt-6'>
+          <div className='text-center'>
+            <CheckCircle className='w-12 h-12 text-green-500 mx-auto mb-4' />
+            <h3 className='text-lg font-semibold mb-2'>
               Payment Recorded Successfully
             </h3>
-            <p className="text-gray-600 mb-4">
+            <p className='text-gray-600 mb-4'>
               The payment has been recorded and processed.
             </p>
-            <div className="space-x-2">
+            <div className='space-x-2'>
               <Button onClick={() => setSuccess(false)}>
                 Record Another Payment
               </Button>
               {onCancel && (
-                <Button variant="outline" onClick={onCancel}>
+                <Button variant='outline' onClick={onCancel}>
                   Close
                 </Button>
               )}
@@ -183,25 +183,25 @@ export function PaymentForm({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <DollarSign className="w-5 h-5" />
+        <CardTitle className='flex items-center gap-2'>
+          <DollarSign className='w-5 h-5' />
           Record Payment
         </CardTitle>
         <CardDescription>Record a new payment from a member</CardDescription>
       </CardHeader>
       <CardContent>
         {error && (
-          <Alert variant="destructive" className="mb-6">
+          <Alert variant='destructive' className='mb-6'>
             <AlertDescription>
-              <div className="space-y-2">
-                <div className="font-semibold">❌ Error: {error}</div>
+              <div className='space-y-2'>
+                <div className='font-semibold'>❌ Error: {error}</div>
                 {debugInfo && (
-                  <details className="mt-2">
-                    <summary className="cursor-pointer text-sm font-medium hover:text-red-800">
+                  <details className='mt-2'>
+                    <summary className='cursor-pointer text-sm font-medium hover:text-red-800'>
                       🔍 Click to view debug information
                     </summary>
-                    <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded text-xs font-mono">
-                      <div className="space-y-1">
+                    <div className='mt-2 p-3 bg-red-50 border border-red-200 rounded text-xs font-mono'>
+                      <div className='space-y-1'>
                         <div>
                           <strong>Status:</strong> {debugInfo.status}{" "}
                           {debugInfo.statusText}
@@ -218,7 +218,7 @@ export function PaymentForm({
                         {debugInfo.paymentData && (
                           <div>
                             <strong>Payment Data:</strong>
-                            <pre className="mt-1 p-2 bg-white border rounded overflow-auto max-h-40">
+                            <pre className='mt-1 p-2 bg-white border rounded overflow-auto max-h-40'>
                               {JSON.stringify(debugInfo.paymentData, null, 2)}
                             </pre>
                           </div>
@@ -226,7 +226,7 @@ export function PaymentForm({
                         {debugInfo.responseData && (
                           <div>
                             <strong>Response Data:</strong>
-                            <pre className="mt-1 p-2 bg-white border rounded overflow-auto max-h-40">
+                            <pre className='mt-1 p-2 bg-white border rounded overflow-auto max-h-40'>
                               {JSON.stringify(debugInfo.responseData, null, 2)}
                             </pre>
                           </div>
@@ -241,13 +241,13 @@ export function PaymentForm({
         )}
 
         {/* Debug Information for Members */}
-        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+        <div className='mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg'>
           <details>
-            <summary className="cursor-pointer text-sm font-medium text-blue-800 hover:text-blue-900">
+            <summary className='cursor-pointer text-sm font-medium text-blue-800 hover:text-blue-900'>
               🔍 Debug: Members Data
             </summary>
-            <div className="mt-2 p-2 bg-white border border-blue-200 rounded text-xs font-mono">
-              <div className="space-y-1">
+            <div className='mt-2 p-2 bg-white border border-blue-200 rounded text-xs font-mono'>
+              <div className='space-y-1'>
                 <div>
                   <strong>Members Count:</strong> {members?.length || 0}
                 </div>
@@ -257,7 +257,7 @@ export function PaymentForm({
                 <div>
                   <strong>Members Data:</strong>
                 </div>
-                <pre className="mt-1 p-2 bg-gray-50 border rounded overflow-auto max-h-40">
+                <pre className='mt-1 p-2 bg-gray-50 border rounded overflow-auto max-h-40'>
                   {JSON.stringify(members, null, 2)}
                 </pre>
               </div>
@@ -266,29 +266,29 @@ export function PaymentForm({
         </div>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
               <FormField
                 control={form.control}
-                name="memberId"
+                name='memberId'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Member</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select member" />
+                          <SelectValue placeholder='Select member' />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         {members && members.length > 0 ? (
                           members.map((member) => (
                             <SelectItem key={member.id} value={member.id}>
-                              {member.firstName} {member.lastName}
+                              {member.firstName || ""} {member.lastName || ""}
                             </SelectItem>
                           ))
                         ) : (
-                          <SelectItem value="no-members" disabled>
+                          <SelectItem value='no-members' disabled>
                             {members === undefined
                               ? "Loading members..."
                               : "No members available"}
@@ -303,7 +303,7 @@ export function PaymentForm({
 
               <FormField
                 control={form.control}
-                name="type"
+                name='type'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Payment Type</FormLabel>
@@ -314,14 +314,14 @@ export function PaymentForm({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="TITHE">Tithe</SelectItem>
-                        <SelectItem value="OFFERING">Offering</SelectItem>
-                        <SelectItem value="DUES">Dues</SelectItem>
-                        <SelectItem value="SPECIAL_OFFERING">
+                        <SelectItem value='TITHE'>Tithe</SelectItem>
+                        <SelectItem value='OFFERING'>Offering</SelectItem>
+                        <SelectItem value='DUES'>Dues</SelectItem>
+                        <SelectItem value='SPECIAL_OFFERING'>
                           Special Offering
                         </SelectItem>
-                        <SelectItem value="EVENT_FEE">Event Fee</SelectItem>
-                        <SelectItem value="OTHER">Other</SelectItem>
+                        <SelectItem value='EVENT_FEE'>Event Fee</SelectItem>
+                        <SelectItem value='OTHER'>Other</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -331,16 +331,16 @@ export function PaymentForm({
 
               <FormField
                 control={form.control}
-                name="amount"
+                name='amount'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Amount ($)</FormLabel>
                     <FormControl>
                       <Input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        placeholder="0.00"
+                        type='number'
+                        step='0.01'
+                        min='0'
+                        placeholder='0.00'
                         {...field}
                         onChange={(e) =>
                           field.onChange(parseFloat(e.target.value) || 0)
@@ -354,7 +354,7 @@ export function PaymentForm({
 
               <FormField
                 control={form.control}
-                name="method"
+                name='method'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Payment Method</FormLabel>
@@ -365,14 +365,14 @@ export function PaymentForm({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="CASH">Cash</SelectItem>
-                        <SelectItem value="CHECK">Check</SelectItem>
-                        <SelectItem value="CREDIT_CARD">Credit Card</SelectItem>
-                        <SelectItem value="BANK_TRANSFER">
+                        <SelectItem value='CASH'>Cash</SelectItem>
+                        <SelectItem value='CHECK'>Check</SelectItem>
+                        <SelectItem value='CREDIT_CARD'>Credit Card</SelectItem>
+                        <SelectItem value='BANK_TRANSFER'>
                           Bank Transfer
                         </SelectItem>
-                        <SelectItem value="ONLINE">Online</SelectItem>
-                        <SelectItem value="MOBILE">Mobile Payment</SelectItem>
+                        <SelectItem value='ONLINE'>Online</SelectItem>
+                        <SelectItem value='MOBILE'>Mobile Payment</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -382,12 +382,12 @@ export function PaymentForm({
 
               <FormField
                 control={form.control}
-                name="paymentDate"
+                name='paymentDate'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Payment Date</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <Input type='date' {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -396,13 +396,13 @@ export function PaymentForm({
 
               <FormField
                 control={form.control}
-                name="category"
+                name='category'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Category (Optional)</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="e.g., Building Fund, Missions"
+                        placeholder='e.g., Building Fund, Missions'
                         {...field}
                       />
                     </FormControl>
@@ -414,15 +414,15 @@ export function PaymentForm({
 
             {/* Method-specific fields */}
             {selectedMethod === "CHECK" && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                 <FormField
                   control={form.control}
-                  name="checkNumber"
+                  name='checkNumber'
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Check Number</FormLabel>
                       <FormControl>
-                        <Input placeholder="Check number" {...field} />
+                        <Input placeholder='Check number' {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -431,12 +431,12 @@ export function PaymentForm({
 
                 <FormField
                   control={form.control}
-                  name="bankName"
+                  name='bankName'
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Bank Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Bank name" {...field} />
+                        <Input placeholder='Bank name' {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -447,13 +447,13 @@ export function PaymentForm({
 
             <FormField
               control={form.control}
-              name="description"
+              name='description'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Description (Optional)</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Additional details about the payment"
+                      placeholder='Additional details about the payment'
                       {...field}
                     />
                   </FormControl>
@@ -464,26 +464,26 @@ export function PaymentForm({
 
             <FormField
               control={form.control}
-              name="notes"
+              name='notes'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Notes (Optional)</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Internal notes" {...field} />
+                    <Textarea placeholder='Internal notes' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <div className="flex justify-end space-x-2">
+            <div className='flex justify-end space-x-2'>
               {onCancel && (
-                <Button type="button" variant="outline" onClick={onCancel}>
+                <Button type='button' variant='outline' onClick={onCancel}>
                   Cancel
                 </Button>
               )}
-              <Button type="submit" disabled={isLoading}>
-                {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+              <Button type='submit' disabled={isLoading}>
+                {isLoading && <Loader2 className='w-4 h-4 mr-2 animate-spin' />}
                 Record Payment
               </Button>
             </div>

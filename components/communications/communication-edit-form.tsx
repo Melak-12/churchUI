@@ -235,8 +235,12 @@ export function CommunicationEditForm({
 
   const filteredMembers = customMembers.filter(
     (member) =>
-      member.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      member.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (member.firstName || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      (member.lastName || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
       member.phone.includes(searchTerm)
   );
 

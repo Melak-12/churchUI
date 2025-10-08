@@ -246,7 +246,8 @@ export function AttendanceList({
                       <div className='flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950 px-3 py-2 rounded-lg'>
                         <User className='h-5 w-5 text-emerald-600' />
                         <span className='font-semibold text-lg'>
-                          {record.member.firstName} {record.member.lastName}
+                          {record.member.firstName || ""}{" "}
+                          {record.member.lastName || ""}
                         </span>
                       </div>
                       <Badge

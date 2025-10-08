@@ -1,8 +1,8 @@
 export interface Member {
   id: string;
   _id?: string; // For backward compatibility with API responses
-  firstName: string;
-  lastName: string;
+  firstName?: string;
+  lastName?: string;
   phone: string; // E.164 format
   email?: string;
   address?: string;
