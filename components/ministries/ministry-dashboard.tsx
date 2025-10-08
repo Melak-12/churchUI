@@ -72,8 +72,10 @@ export function MinistryDashboard() {
 
   const filteredMinistries =
     selectedCategory === "all"
-      ? (ministries || [])
-      : (ministries || []).filter((ministry) => ministry.category === selectedCategory);
+      ? ministries || []
+      : (ministries || []).filter(
+          (ministry) => ministry.category === selectedCategory
+        );
 
   const formatCurrency = (amount: number, currency: string = "USD") => {
     return new Intl.NumberFormat("en-US", {
@@ -100,72 +102,72 @@ export function MinistryDashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-8">
-        <Loader2 className="h-8 w-8 animate-spin" />
-        <span className="ml-2">Loading ministry dashboard...</span>
+      <div className='flex items-center justify-center py-8'>
+        <Loader2 className='h-8 w-8 animate-spin' />
+        <span className='ml-2'>Loading ministry dashboard...</span>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       {/* Overview Stats */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>
               Total Ministries
             </CardTitle>
-            <BarChart3 className="h-4 w-4 text-muted-foreground" />
+            <BarChart3 className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className='text-2xl font-bold'>
               {stats?.totalMinistries || 0}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className='text-xs text-muted-foreground'>
               Active church ministries
             </p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Members</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>Total Members</CardTitle>
+            <Users className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats?.totalMembers || 0}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className='text-2xl font-bold'>{stats?.totalMembers || 0}</div>
+            <p className='text-xs text-muted-foreground'>
               Across all ministries
             </p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Budget</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>Total Budget</CardTitle>
+            <DollarSign className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className='text-2xl font-bold'>
               {formatCurrency(stats?.totalBudget || 0)}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className='text-xs text-muted-foreground'>
               Allocated across ministries
             </p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Budget Spent</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>Budget Spent</CardTitle>
+            <TrendingUp className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className='text-2xl font-bold'>
               {formatCurrency(stats?.totalSpent || 0)}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className='text-xs text-muted-foreground'>
               {stats?.totalBudget
                 ? `${Math.round(
                     (stats.totalSpent / stats.totalBudget) * 100
@@ -186,27 +188,27 @@ export function MinistryDashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
               {stats.byCategory.map((category) => (
-                <div key={category.category} className="space-y-2">
-                  <div className="flex items-center justify-between">
+                <div key={category.category} className='space-y-2'>
+                  <div className='flex items-center justify-between'>
                     <Badge className={getCategoryColor(category.category)}>
                       {category.category.replace("_", " ")}
                     </Badge>
-                    <span className="text-sm font-medium">
+                    <span className='text-sm font-medium'>
                       {category.count}
                     </span>
                   </div>
-                  <div className="space-y-1 text-sm text-muted-foreground">
-                    <div className="flex justify-between">
+                  <div className='space-y-1 text-sm text-muted-foreground'>
+                    <div className='flex justify-between'>
                       <span>Members:</span>
                       <span>{category.totalMembers}</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className='flex justify-between'>
                       <span>Budget:</span>
                       <span>{formatCurrency(category.totalBudget)}</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className='flex justify-between'>
                       <span>Spent:</span>
                       <span>{formatCurrency(category.totalSpent)}</span>
                     </div>
@@ -221,33 +223,33 @@ export function MinistryDashboard() {
       {/* Ministry List with Filter */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className='flex items-center justify-between'>
             <div>
               <CardTitle>Ministries</CardTitle>
               <CardDescription>Detailed view of all ministries</CardDescription>
             </div>
-            <div className="flex items-center gap-2">
+            <div className='flex items-center gap-2'>
               <Select
                 value={selectedCategory}
                 onValueChange={setSelectedCategory}
               >
-                <SelectTrigger className="w-48">
-                  <SelectValue placeholder="Filter by category" />
+                <SelectTrigger className='w-48'>
+                  <SelectValue placeholder='Filter by category' />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
-                  <SelectItem value="WORSHIP">Worship</SelectItem>
-                  <SelectItem value="CHILDREN">Children</SelectItem>
-                  <SelectItem value="YOUTH">Youth</SelectItem>
-                  <SelectItem value="ADULTS">Adults</SelectItem>
-                  <SelectItem value="SENIORS">Seniors</SelectItem>
-                  <SelectItem value="OUTREACH">Outreach</SelectItem>
-                  <SelectItem value="ADMINISTRATION">Administration</SelectItem>
-                  <SelectItem value="OTHER">Other</SelectItem>
+                  <SelectItem value='all'>All Categories</SelectItem>
+                  <SelectItem value='WORSHIP'>Worship</SelectItem>
+                  <SelectItem value='CHILDREN'>Children</SelectItem>
+                  <SelectItem value='YOUTH'>Youth</SelectItem>
+                  <SelectItem value='ADULTS'>Adults</SelectItem>
+                  <SelectItem value='SENIORS'>Seniors</SelectItem>
+                  <SelectItem value='OUTREACH'>Outreach</SelectItem>
+                  <SelectItem value='ADMINISTRATION'>Administration</SelectItem>
+                  <SelectItem value='OTHER'>Other</SelectItem>
                 </SelectContent>
               </Select>
-              <Button variant="outline" size="sm" onClick={fetchData}>
-                <Calendar className="h-4 w-4 mr-2" />
+              <Button variant='outline' size='sm' onClick={fetchData}>
+                <Calendar className='h-4 w-4 mr-2' />
                 Refresh
               </Button>
             </div>
@@ -255,48 +257,48 @@ export function MinistryDashboard() {
         </CardHeader>
         <CardContent>
           {filteredMinistries.length === 0 ? (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground">
+            <div className='text-center py-8'>
+              <p className='text-muted-foreground'>
                 {ministries.length === 0
                   ? "No ministries found. Create your first ministry to get started."
                   : "No ministries match the selected category."}
               </p>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className='space-y-4'>
               {filteredMinistries.map((ministry) => (
                 <div
                   key={ministry.id}
-                  className="flex items-center justify-between p-4 border rounded-lg"
+                  className='flex items-center justify-between p-4 border rounded-lg'
                 >
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-medium">{ministry.name}</h3>
+                  <div className='space-y-1'>
+                    <div className='flex items-center gap-2'>
+                      <h3 className='font-medium'>{ministry.name}</h3>
                       <Badge className={getCategoryColor(ministry.category)}>
                         {ministry.category.replace("_", " ")}
                       </Badge>
-                      <Badge variant="outline">{ministry.status}</Badge>
+                      <Badge variant='outline'>{ministry.status}</Badge>
                     </div>
-                    <p className="text-sm text-muted-foreground">
+                    <p className='text-sm text-muted-foreground'>
                       Leader: {ministry.leader.firstName}{" "}
                       {ministry.leader.lastName}
                     </p>
                     {ministry.description && (
-                      <p className="text-sm text-muted-foreground line-clamp-1">
+                      <p className='text-sm text-muted-foreground line-clamp-1'>
                         {ministry.description}
                       </p>
                     )}
                   </div>
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <div className="text-center">
-                      <div className="font-medium">
+                  <div className='flex items-center gap-4 text-sm text-muted-foreground'>
+                    <div className='text-center'>
+                      <div className='font-medium'>
                         {ministry.memberCount || ministry.members.length}
                       </div>
                       <div>Members</div>
                     </div>
                     {ministry.budget && (
-                      <div className="text-center">
-                        <div className="font-medium">
+                      <div className='text-center'>
+                        <div className='font-medium'>
                           {formatCurrency(
                             ministry.budget.allocated,
                             ministry.budget.currency
@@ -306,8 +308,8 @@ export function MinistryDashboard() {
                       </div>
                     )}
                     {ministry.meetingSchedule && (
-                      <div className="text-center">
-                        <div className="font-medium">
+                      <div className='text-center'>
+                        <div className='font-medium'>
                           {ministry.meetingSchedule.frequency.replace("_", " ")}
                         </div>
                         <div>Meetings</div>
