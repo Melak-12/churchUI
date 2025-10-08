@@ -41,9 +41,10 @@ export default function AttendancePage() {
     try {
       setLoading(true);
       const response = await apiClient.getAttendance();
-      setAttendance(response.attendance);
+      setAttendance(response?.attendance || []);
     } catch (error) {
       console.error("Error fetching attendance:", error);
+      setAttendance([]); // Set empty array on error
       toast({
         title: "Error",
         description: "Failed to fetch attendance records",

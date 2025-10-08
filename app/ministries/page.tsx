@@ -35,9 +35,10 @@ export default function MinistriesPage() {
     try {
       setLoading(true);
       const response = await apiClient.getMinistries();
-      setMinistries(response.ministries);
+      setMinistries(response?.ministries || []);
     } catch (error) {
       console.error("Error fetching ministries:", error);
+      setMinistries([]); // Set empty array on error
       toast({
         title: "Error",
         description: "Failed to fetch ministries",

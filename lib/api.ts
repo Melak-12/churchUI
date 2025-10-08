@@ -1036,7 +1036,7 @@ class ApiClient {
       ministries: Ministry[];
       pagination?: any;
     }>(endpoint);
-    return response.data!;
+    return response.data || { ministries: [], pagination: undefined };
   }
 
   async getMinistry(
@@ -1269,7 +1269,7 @@ class ApiClient {
       attendance: Attendance[];
       pagination?: any;
     }>(endpoint);
-    return response.data!;
+    return response.data || { attendance: [], pagination: undefined };
   }
 
   async getAttendanceRecord(id: string): Promise<Attendance> {
