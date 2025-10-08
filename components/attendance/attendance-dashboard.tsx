@@ -98,10 +98,11 @@ export function AttendanceDashboard() {
         apiClient.getAttendanceStats(),
       ]);
 
-      setAttendance(attendanceResponse.attendance);
+      setAttendance(attendanceResponse?.attendance || []);
       setStats(statsResponse);
     } catch (error) {
       console.error("Error fetching attendance data:", error);
+      setAttendance([]); // Set empty array on error
     } finally {
       setLoading(false);
     }
@@ -243,12 +244,12 @@ export function AttendanceDashboard() {
           </CardHeader>
           <CardContent>
             <div className='text-2xl font-bold'>
-              {attendance.filter((a) => a.checkOutTime).length}
+              {(attendance || []).filter((a) => a.checkOutTime).length}
             </div>
             <p className='text-xs text-muted-foreground'>
               {stats?.totalAttendance
                 ? `${Math.round(
-                    (attendance.filter((a) => a.checkOutTime).length /
+                    ((attendance || []).filter((a) => a.checkOutTime).length /
                       stats.totalAttendance) *
                       100
                   )}% of check-ins`
@@ -265,7 +266,7 @@ export function AttendanceDashboard() {
           <CardContent>
             <div className='text-2xl font-bold'>
               {(() => {
-                const checkedOut = attendance.filter((a) => a.duration);
+                const checkedOut = (attendance || []).filter((a) => a.duration);
                 if (checkedOut.length === 0) return "N/A";
                 const avgDuration =
                   checkedOut.reduce((sum, a) => sum + (a.duration || 0), 0) /

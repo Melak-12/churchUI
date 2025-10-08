@@ -56,10 +56,11 @@ export function MinistryDashboard() {
         apiClient.getMinistryStats(),
       ]);
 
-      setMinistries(ministriesResponse.ministries);
+      setMinistries(ministriesResponse?.ministries || []);
       setStats(statsResponse);
     } catch (error) {
       console.error("Error fetching ministry data:", error);
+      setMinistries([]); // Set empty array on error
     } finally {
       setLoading(false);
     }
@@ -71,8 +72,8 @@ export function MinistryDashboard() {
 
   const filteredMinistries =
     selectedCategory === "all"
-      ? ministries
-      : ministries.filter((ministry) => ministry.category === selectedCategory);
+      ? (ministries || [])
+      : (ministries || []).filter((ministry) => ministry.category === selectedCategory);
 
   const formatCurrency = (amount: number, currency: string = "USD") => {
     return new Intl.NumberFormat("en-US", {
