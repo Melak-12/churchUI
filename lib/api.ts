@@ -1033,9 +1033,9 @@ class ApiClient {
       : "/api/ministries";
 
     const response = await this.request<any>(endpoint);
-    return { 
-      ministries: response.data || [], 
-      pagination: response.pagination 
+    return {
+      ministries: response.data || [],
+      pagination: response.pagination,
     };
   }
 
@@ -1266,9 +1266,9 @@ class ApiClient {
       : "/api/attendance";
 
     const response = await this.request<any>(endpoint);
-    return { 
-      attendance: response.data || [], 
-      pagination: response.pagination 
+    return {
+      attendance: response.data || [],
+      pagination: response.pagination,
     };
   }
 
