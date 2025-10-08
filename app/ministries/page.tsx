@@ -23,11 +23,11 @@ import {
 } from "@/types";
 import apiClient from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
+import Link from "next/link";
 
 export default function MinistriesPage() {
   const [ministries, setMinistries] = useState<Ministry[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingMinistry, setEditingMinistry] = useState<Ministry | null>(null);
   const { toast } = useToast();
 
@@ -52,25 +52,6 @@ export default function MinistriesPage() {
   useEffect(() => {
     fetchMinistries();
   }, [fetchMinistries]);
-
-  const handleCreateMinistry = async (data: CreateMinistryRequest) => {
-    try {
-      await apiClient.createMinistry(data);
-      toast({
-        title: "Success",
-        description: "Ministry created successfully",
-      });
-      setShowCreateForm(false);
-      fetchMinistries();
-    } catch (error) {
-      console.error("Error creating ministry:", error);
-      toast({
-        title: "Error",
-        description: "Failed to create ministry",
-        variant: "destructive",
-      });
-    }
-  };
 
   const handleUpdateMinistry = async (
     id: string,
@@ -145,12 +126,11 @@ export default function MinistriesPage() {
                     Serving our community together through various ministries
                   </p>
                 </div>
-                <Button
-                  className='shadow-sm'
-                  onClick={() => setShowCreateForm(true)}
-                >
-                  <Plus className='h-4 w-4 mr-2' />
-                  New Ministry
+                <Button className='shadow-sm' asChild>
+                  <Link href='/ministries/new'>
+                    <Plus className='h-4 w-4 mr-2' />
+                    New Ministry
+                  </Link>
                 </Button>
               </div>
             </div>
@@ -213,19 +193,6 @@ export default function MinistriesPage() {
                 </div>
               </TabsContent>
             </Tabs>
-
-            {/* Create Ministry Dialog */}
-            <Dialog open={showCreateForm} onOpenChange={setShowCreateForm}>
-              <DialogContent className='max-w-2xl'>
-                <DialogHeader>
-                  <DialogTitle>Create New Ministry</DialogTitle>
-                </DialogHeader>
-                <MinistryForm
-                  onSubmit={handleCreateMinistry}
-                  onCancel={() => setShowCreateForm(false)}
-                />
-              </DialogContent>
-            </Dialog>
 
             {/* Edit Ministry Dialog */}
             <Dialog

@@ -27,11 +27,11 @@ import {
 import { Attendance, CreateAttendanceRequest } from "@/types";
 import apiClient from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
+import Link from "next/link";
 
 export default function AttendancePage() {
   const [attendance, setAttendance] = useState<Attendance[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingAttendance, setEditingAttendance] = useState<Attendance | null>(
     null
   );
@@ -58,25 +58,6 @@ export default function AttendancePage() {
   useEffect(() => {
     fetchAttendance();
   }, [fetchAttendance]);
-
-  const handleCreateAttendance = async (data: CreateAttendanceRequest) => {
-    try {
-      await apiClient.createAttendance(data);
-      toast({
-        title: "Success",
-        description: "Attendance record created successfully",
-      });
-      setShowCreateForm(false);
-      fetchAttendance();
-    } catch (error) {
-      console.error("Error creating attendance:", error);
-      toast({
-        title: "Error",
-        description: "Failed to create attendance record",
-        variant: "destructive",
-      });
-    }
-  };
 
   const handleUpdateAttendance = async (
     id: string,
@@ -157,12 +138,11 @@ export default function AttendancePage() {
                     Keep track of member participation and engagement
                   </p>
                 </div>
-                <Button
-                  className='shadow-sm'
-                  onClick={() => setShowCreateForm(true)}
-                >
-                  <Plus className='h-4 w-4 mr-2' />
-                  Quick Check-In
+                <Button className='shadow-sm' asChild>
+                  <Link href='/attendance/new'>
+                    <Plus className='h-4 w-4 mr-2' />
+                    Quick Check-In
+                  </Link>
                 </Button>
               </div>
             </div>
@@ -251,19 +231,6 @@ export default function AttendancePage() {
                 </div>
               </TabsContent>
             </Tabs>
-
-            {/* Create Attendance Dialog */}
-            <Dialog open={showCreateForm} onOpenChange={setShowCreateForm}>
-              <DialogContent className='max-w-2xl'>
-                <DialogHeader>
-                  <DialogTitle>Check In Member</DialogTitle>
-                </DialogHeader>
-                <AttendanceForm
-                  onSubmit={handleCreateAttendance}
-                  onCancel={() => setShowCreateForm(false)}
-                />
-              </DialogContent>
-            </Dialog>
 
             {/* Edit Attendance Dialog */}
             <Dialog
