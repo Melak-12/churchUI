@@ -1032,11 +1032,11 @@ class ApiClient {
       ? `/api/ministries?${queryString}`
       : "/api/ministries";
 
-    const response = await this.request<{
-      ministries: Ministry[];
-      pagination?: any;
-    }>(endpoint);
-    return response.data || { ministries: [], pagination: undefined };
+    const response = await this.request<any>(endpoint);
+    return { 
+      ministries: response.data || [], 
+      pagination: response.pagination 
+    };
   }
 
   async getMinistry(
@@ -1265,11 +1265,11 @@ class ApiClient {
       ? `/api/attendance?${queryString}`
       : "/api/attendance";
 
-    const response = await this.request<{
-      attendance: Attendance[];
-      pagination?: any;
-    }>(endpoint);
-    return response.data || { attendance: [], pagination: undefined };
+    const response = await this.request<any>(endpoint);
+    return { 
+      attendance: response.data || [], 
+      pagination: response.pagination 
+    };
   }
 
   async getAttendanceRecord(id: string): Promise<Attendance> {
