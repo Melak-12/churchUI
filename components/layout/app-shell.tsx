@@ -49,6 +49,11 @@ const getAdminNavItems = (features: any) => [
           label: "Communications",
           icon: MessageSquare,
         },
+        {
+          href: "/test-bulk-sms",
+          label: "Test Bulk SMS",
+          icon: MessageSquare,
+        },
       ]
     : []),
   ...(features.financial

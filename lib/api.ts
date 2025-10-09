@@ -492,6 +492,17 @@ class ApiClient {
     return response.data!;
   }
 
+  async testBulkSms(phoneNumber: string, messages: any[]): Promise<any> {
+    const response = await this.request<any>(
+      "/api/communications/test-bulk-sms",
+      {
+        method: "POST",
+        body: JSON.stringify({ phoneNumber, messages }),
+      }
+    );
+    return response.data!;
+  }
+
   async getMemberStats(): Promise<any> {
     const response = await this.request<any>("/api/members/stats");
     return response.data!;
