@@ -91,10 +91,10 @@ export function FamilyManagement() {
       setLoading(true);
       setError("");
 
-      const response = await apiClient.get("/api/member-portal/family");
+      const response = await apiClient.get<{ family: any }>("/api/member-portal/family");
 
-      if (response.data.success) {
-        setFamily(response.data.data.family);
+      if (response.success && response.data) {
+        setFamily((response.data as { family: any }).family);
       }
     } catch (err: any) {
       setError(

@@ -25,6 +25,10 @@ import {
   MinistryQuery,
   SmallGroupQuery,
   AttendanceQuery,
+  Feedback,
+  CreateFeedbackRequest,
+  FeedbackQuery,
+  FeedbackStats,
 } from "@/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
@@ -488,6 +492,17 @@ class ApiClient {
   async getTwilioStatus(): Promise<any> {
     const response = await this.request<any>(
       "/api/communications/twilio-status"
+    );
+    return response.data!;
+  }
+
+  async testBulkSms(phoneNumber: string, messages: any[]): Promise<any> {
+    const response = await this.request<any>(
+      "/api/communications/test-bulk-sms",
+      {
+        method: "POST",
+        body: JSON.stringify({ phoneNumber, messages }),
+      }
     );
     return response.data!;
   }
@@ -1032,11 +1047,11 @@ class ApiClient {
       ? `/api/ministries?${queryString}`
       : "/api/ministries";
 
-    const response = await this.request<{
-      ministries: Ministry[];
-      pagination?: any;
-    }>(endpoint);
-    return response.data!;
+    const response = await this.request<any>(endpoint);
+    return {
+      ministries: response.data || [],
+      pagination: response.pagination,
+    };
   }
 
   async getMinistry(
@@ -1265,11 +1280,11 @@ class ApiClient {
       ? `/api/attendance?${queryString}`
       : "/api/attendance";
 
-    const response = await this.request<{
-      attendance: Attendance[];
-      pagination?: any;
-    }>(endpoint);
-    return response.data!;
+    const response = await this.request<any>(endpoint);
+    return {
+      attendance: response.data || [],
+      pagination: response.pagination,
+    };
   }
 
   async getAttendanceRecord(id: string): Promise<Attendance> {
@@ -1365,6 +1380,88 @@ class ApiClient {
       }
     );
     return response.data!;
+  }
+
+  // ==================== Feedback Methods ====================
+
+  async submitFeedback(data: CreateFeedbackRequest): Promise<Feedback> {
+    const response = await this.request<{ feedback: Feedback }>(
+      "/api/feedback",
+      {
+        method: "POST",
+        body: JSON.stringify(data),
+      }
+    );
+    return response.data!.feedback;
+  }
+
+  async getMyFeedback(): Promise<Feedback[]> {
+    const response = await this.request<{ feedbacks: Feedback[] }>(
+      "/api/feedback/my-feedback"
+    );
+    return response.data!.feedbacks;
+  }
+
+  async getAllFeedback(
+    query?: FeedbackQuery
+  ): Promise<{ feedbacks: Feedback[]; pagination?: any }> {
+    const queryString = query
+      ? new URLSearchParams(query as any).toString()
+      : "";
+    const endpoint = queryString
+      ? `/api/feedback?${queryString}`
+      : "/api/feedback";
+
+    const response = await this.request<{ feedbacks: Feedback[] }>(endpoint);
+    return {
+      feedbacks: response.data!.feedbacks,
+      pagination: response.pagination,
+    };
+  }
+
+  async getFeedbackStats(): Promise<FeedbackStats> {
+    const response = await this.request<{ stats: FeedbackStats }>(
+      "/api/feedback/stats"
+    );
+    return response.data!.stats;
+  }
+
+  async getFeedbackById(id: string): Promise<Feedback> {
+    const response = await this.request<{ feedback: Feedback }>(
+      `/api/feedback/${id}`
+    );
+    return response.data!.feedback;
+  }
+
+  async markFeedbackAsReviewed(
+    id: string,
+    adminNotes?: string
+  ): Promise<Feedback> {
+    const response = await this.request<{ feedback: Feedback }>(
+      `/api/feedback/${id}/review`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({ adminNotes }),
+      }
+    );
+    return response.data!.feedback;
+  }
+
+  async resolveFeedback(id: string, adminNotes?: string): Promise<Feedback> {
+    const response = await this.request<{ feedback: Feedback }>(
+      `/api/feedback/${id}/resolve`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({ adminNotes }),
+      }
+    );
+    return response.data!.feedback;
+  }
+
+  async archiveFeedback(id: string): Promise<void> {
+    await this.request(`/api/feedback/${id}`, {
+      method: "DELETE",
+    });
   }
 }
 

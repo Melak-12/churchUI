@@ -265,7 +265,7 @@ export default function Dashboard() {
                     >
                       <div>
                         <div className='font-medium'>
-                          {member.firstName} {member.lastName}
+                          {member.firstName || ""} {member.lastName || ""}
                         </div>
                         <div className='text-sm text-gray-500'>
                           {member.phone}
