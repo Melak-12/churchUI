@@ -7,6 +7,7 @@ import { FeatureGuard } from "@/components/auth/feature-guard";
 import { MinistryDashboard } from "@/components/ministries/ministry-dashboard";
 import { MinistryList } from "@/components/ministries/ministry-list";
 import { MinistryForm } from "@/components/ministries/ministry-form";
+import { MinistrySettings } from "@/components/ministries/ministry-settings";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import {
@@ -106,63 +107,63 @@ export default function MinistriesPage() {
   };
 
   return (
-    <FeatureGuard feature='ministries'>
+    <FeatureGuard feature="ministries">
       <AuthGuard>
         <AppShell>
-          <div className='space-y-6'>
+          <div className="space-y-6">
             {/* Header Section */}
-            <div className='bg-card rounded-xl p-6 border shadow-sm'>
-              <div className='flex items-center justify-between'>
+            <div className="bg-card rounded-xl p-6 border shadow-sm">
+              <div className="flex items-center justify-between">
                 <div>
-                  <div className='flex items-center space-x-3 mb-2'>
-                    <div className='p-2 bg-green-500 rounded-lg'>
-                      <Heart className='h-6 w-6 text-white' />
+                  <div className="flex items-center space-x-3 mb-2">
+                    <div className="p-2 bg-green-500 rounded-lg">
+                      <Heart className="h-6 w-6 text-white" />
                     </div>
-                    <h1 className='text-2xl font-bold text-foreground'>
+                    <h1 className="text-2xl font-bold text-foreground">
                       Ministry Hub
                     </h1>
                   </div>
-                  <p className='text-muted-foreground'>
+                  <p className="text-muted-foreground">
                     Serving our community together through various ministries
                   </p>
                 </div>
-                <Button className='shadow-sm' asChild>
-                  <Link href='/ministries/new'>
-                    <Plus className='h-4 w-4 mr-2' />
+                <Button className="shadow-sm" asChild>
+                  <Link href="/ministries/new">
+                    <Plus className="h-4 w-4 mr-2" />
                     New Ministry
                   </Link>
                 </Button>
               </div>
             </div>
 
-            <Tabs defaultValue='list' className='space-y-6'>
-              <div className='bg-card rounded-xl p-4 border'>
-                <TabsList className='grid w-full grid-cols-3'>
-                  <TabsTrigger value='list' className='flex items-center gap-2'>
-                    <Users className='h-4 w-4' />
-                    <span className='hidden sm:inline'>Ministries</span>
-                    <span className='sm:hidden'>List</span>
+            <Tabs defaultValue="list" className="space-y-6">
+              <div className="bg-card rounded-xl p-4 border">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="list" className="flex items-center gap-2">
+                    <Users className="h-4 w-4" />
+                    <span className="hidden sm:inline">Ministries</span>
+                    <span className="sm:hidden">List</span>
                   </TabsTrigger>
                   <TabsTrigger
-                    value='dashboard'
-                    className='flex items-center gap-2'
+                    value="dashboard"
+                    className="flex items-center gap-2"
                   >
-                    <BarChart3 className='h-4 w-4' />
-                    <span className='hidden sm:inline'>Dashboard</span>
-                    <span className='sm:hidden'>Stats</span>
+                    <BarChart3 className="h-4 w-4" />
+                    <span className="hidden sm:inline">Dashboard</span>
+                    <span className="sm:hidden">Stats</span>
                   </TabsTrigger>
                   <TabsTrigger
-                    value='settings'
-                    className='flex items-center gap-2'
+                    value="settings"
+                    className="flex items-center gap-2"
                   >
-                    <Settings className='h-4 w-4' />
-                    <span className='hidden sm:inline'>Settings</span>
-                    <span className='sm:hidden'>Config</span>
+                    <Settings className="h-4 w-4" />
+                    <span className="hidden sm:inline">Settings</span>
+                    <span className="sm:hidden">Config</span>
                   </TabsTrigger>
                 </TabsList>
               </div>
 
-              <TabsContent value='list' className='space-y-4'>
+              <TabsContent value="list" className="space-y-4">
                 <MinistryList
                   ministries={ministries}
                   loading={loading}
@@ -172,25 +173,12 @@ export default function MinistriesPage() {
                 />
               </TabsContent>
 
-              <TabsContent value='dashboard' className='space-y-4'>
+              <TabsContent value="dashboard" className="space-y-4">
                 <MinistryDashboard />
               </TabsContent>
 
-              <TabsContent value='settings' className='space-y-4'>
-                <div className='bg-card rounded-xl border'>
-                  <div className='text-center py-12'>
-                    <div className='p-3 bg-orange-50 dark:bg-orange-900/20 rounded-full mb-4 w-fit mx-auto'>
-                      <Settings className='h-8 w-8 text-orange-500' />
-                    </div>
-                    <h3 className='text-lg font-medium text-foreground mb-2'>
-                      Coming Soon! 🚧
-                    </h3>
-                    <p className='text-muted-foreground max-w-md mx-auto'>
-                      Ministry configuration options are being developed. Check
-                      back soon for advanced settings and customization options.
-                    </p>
-                  </div>
-                </div>
+              <TabsContent value="settings" className="space-y-4">
+                <MinistrySettings />
               </TabsContent>
             </Tabs>
 
@@ -199,7 +187,7 @@ export default function MinistriesPage() {
               open={!!editingMinistry}
               onOpenChange={() => setEditingMinistry(null)}
             >
-              <DialogContent className='max-w-2xl'>
+              <DialogContent className="max-w-2xl">
                 <DialogHeader>
                   <DialogTitle>Edit Ministry</DialogTitle>
                 </DialogHeader>
