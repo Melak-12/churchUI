@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { AppShell } from "@/components/layout/app-shell";
 import {
@@ -16,7 +16,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
-import { mockSettings } from "@/lib/mock-data";
+import { useToast } from "@/hooks/use-toast";
+import apiClient from "@/lib/api";
+import { Settings } from "@/types";
 import {
   Save,
   Upload,
@@ -26,12 +28,122 @@ import {
   Phone,
   Smartphone,
   ToggleLeft,
+  Loader2,
 } from "lucide-react";
 import { useFeatures } from "@/contexts/features-context";
 
 export default function SettingsPage() {
-  const [settings, setSettings] = useState(mockSettings);
+  const [settings, setSettings] = useState<Settings>({
+    organizationName: "",
+    primaryColor: "#3B82F6",
+    consentText: "",
+    smsFooter: "",
+    twilioSenderId: "",
+    androidSenderId: "",
+    androidApiKey: "",
+    androidSecret: "",
+    androidRateLimit: 60,
+    androidEndpoint: "https://api.androidsms.com/v1/send",
+    privacyPolicyUrl: "",
+    features: {
+      events: true,
+      financial: true,
+      communications: true,
+      voting: true,
+      memberPortal: true,
+      ministries: true,
+      attendance: true,
+      dataCollection: true,
+    },
+  });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const { features, updateFeatures } = useFeatures();
+  const { toast } = useToast();
+
+  // Load settings from API
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const response = await apiClient.getSettings();
+        setSettings(response);
+        // Update features context with loaded settings
+        if (response.features) {
+          updateFeatures(response.features);
+        }
+      } catch (error) {
+        console.error("Failed to load settings:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load settings",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadSettings();
+  }, [updateFeatures, toast]);
+
+  const saveSettings = async (settingsToSave: Settings) => {
+    setSaving(true);
+    try {
+      const response = await apiClient.updateSettings(settingsToSave);
+      toast({
+        title: "Success",
+        description: "Settings saved successfully",
+      });
+      // Update features context
+      if (settingsToSave.features) {
+        updateFeatures(settingsToSave.features);
+      }
+    } catch (error) {
+      console.error("Failed to save settings:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save settings",
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const saveFeatures = async () => {
+    const updatedSettings = { ...settings, features };
+    await saveSettings(updatedSettings);
+  };
+
+  const saveBranding = async () => {
+    await saveSettings(settings);
+  };
+
+  const saveCommunications = async () => {
+    await saveSettings(settings);
+  };
+
+  const saveTwilio = async () => {
+    await saveSettings(settings);
+  };
+
+  const saveAndroidSms = async () => {
+    await saveSettings(settings);
+  };
+
+  const saveLegal = async () => {
+    await saveSettings(settings);
+  };
+
+  if (loading) {
+    return (
+      <AppShell>
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+      </AppShell>
+    );
+  }
 
   return (
     <AppShell>
@@ -132,8 +244,12 @@ export default function SettingsPage() {
                   </div>
                 </div>
 
-                <Button>
-                  <Save className="h-4 w-4 mr-2" />
+                <Button onClick={saveBranding} disabled={saving}>
+                  {saving ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <Save className="h-4 w-4 mr-2" />
+                  )}
                   Save Branding
                 </Button>
               </CardContent>
@@ -238,10 +354,64 @@ export default function SettingsPage() {
                       }
                     />
                   </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="ministries-toggle">Ministries</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Manage church ministries and small groups
+                      </p>
+                    </div>
+                    <Switch
+                      id="ministries-toggle"
+                      checked={features.ministries}
+                      onCheckedChange={(checked) =>
+                        updateFeatures({ ministries: checked })
+                      }
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="attendance-toggle">Attendance</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Track member attendance and participation
+                      </p>
+                    </div>
+                    <Switch
+                      id="attendance-toggle"
+                      checked={features.attendance}
+                      onCheckedChange={(checked) =>
+                        updateFeatures({ attendance: checked })
+                      }
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="data-collection-toggle">
+                        Data Collection
+                      </Label>
+                      <p className="text-sm text-muted-foreground">
+                        Collect and manage member data through surveys and forms
+                      </p>
+                    </div>
+                    <Switch
+                      id="data-collection-toggle"
+                      checked={features.dataCollection}
+                      onCheckedChange={(checked) =>
+                        updateFeatures({ dataCollection: checked })
+                      }
+                    />
+                  </div>
                 </div>
 
-                <Button>
-                  <Save className="h-4 w-4 mr-2" />
+                <Button onClick={saveFeatures} disabled={saving}>
+                  {saving ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <Save className="h-4 w-4 mr-2" />
+                  )}
                   Save Feature Settings
                 </Button>
               </CardContent>
@@ -286,8 +456,12 @@ export default function SettingsPage() {
                   />
                 </div>
 
-                <Button>
-                  <Save className="h-4 w-4 mr-2" />
+                <Button onClick={saveCommunications} disabled={saving}>
+                  {saving ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <Save className="h-4 w-4 mr-2" />
+                  )}
                   Save Communication Settings
                 </Button>
               </CardContent>
@@ -353,8 +527,12 @@ export default function SettingsPage() {
                   />
                 </div>
 
-                <Button>
-                  <Save className="h-4 w-4 mr-2" />
+                <Button onClick={saveTwilio} disabled={saving}>
+                  {saving ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <Save className="h-4 w-4 mr-2" />
+                  )}
                   Save Twilio Settings
                 </Button>
               </CardContent>
@@ -396,6 +574,13 @@ export default function SettingsPage() {
                     <Input
                       id="androidApiKey"
                       type="password"
+                      value={settings.androidApiKey || ""}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings,
+                          androidApiKey: e.target.value,
+                        })
+                      }
                       placeholder="••••••••••••••••••••••••••••••••••••"
                     />
                   </div>
@@ -404,6 +589,13 @@ export default function SettingsPage() {
                     <Input
                       id="androidSecret"
                       type="password"
+                      value={settings.androidSecret || ""}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings,
+                          androidSecret: e.target.value,
+                        })
+                      }
                       placeholder="••••••••••••••••••••••••••••••••••••"
                     />
                   </div>
@@ -416,7 +608,13 @@ export default function SettingsPage() {
                   <Input
                     id="androidRateLimit"
                     type="number"
-                    defaultValue="60"
+                    value={settings.androidRateLimit || 60}
+                    onChange={(e) =>
+                      setSettings({
+                        ...settings,
+                        androidRateLimit: parseInt(e.target.value) || 60,
+                      })
+                    }
                     min="1"
                     max="1000"
                   />
@@ -426,8 +624,14 @@ export default function SettingsPage() {
                   <Label htmlFor="androidEndpoint">API Endpoint</Label>
                   <Input
                     id="androidEndpoint"
+                    value={settings.androidEndpoint || ""}
+                    onChange={(e) =>
+                      setSettings({
+                        ...settings,
+                        androidEndpoint: e.target.value,
+                      })
+                    }
                     placeholder="https://api.androidsms.com/v1/send"
-                    defaultValue="https://api.androidsms.com/v1/send"
                   />
                 </div>
 
@@ -443,8 +647,12 @@ export default function SettingsPage() {
                   </ul>
                 </div>
 
-                <Button>
-                  <Save className="h-4 w-4 mr-2" />
+                <Button onClick={saveAndroidSms} disabled={saving}>
+                  {saving ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <Save className="h-4 w-4 mr-2" />
+                  )}
                   Save Android SMS Settings
                 </Button>
               </CardContent>
@@ -490,8 +698,12 @@ export default function SettingsPage() {
                   </ul>
                 </div>
 
-                <Button>
-                  <Save className="h-4 w-4 mr-2" />
+                <Button onClick={saveLegal} disabled={saving}>
+                  {saving ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <Save className="h-4 w-4 mr-2" />
+                  )}
                   Save Legal Settings
                 </Button>
               </CardContent>

@@ -18,6 +18,7 @@ interface FeaturesContextType {
     memberPortal: boolean;
     ministries: boolean;
     attendance: boolean;
+    dataCollection: boolean;
   };
   updateFeatures: (
     newFeatures: Partial<FeaturesContextType["features"]>
