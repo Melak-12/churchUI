@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/layout/app-shell";
+import { FeatureGuard } from "@/components/feature-guard";
 import {
   Card,
   CardContent,
@@ -125,253 +126,253 @@ export default function DataCollectionPage() {
   };
 
   return (
-    <AppShell>
-      <div className="space-y-6 max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">
-              Data Collection Campaigns
-            </h1>
-            <p className="text-gray-500 mt-1">
-              Collect and update member information via SMS conversations
-            </p>
-          </div>
-          <Link href="/data-collection/new">
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              New Campaign
-            </Button>
-          </Link>
-        </div>
-
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-500">Total Campaigns</p>
-                  <p className="text-2xl font-bold">{campaigns.length}</p>
-                </div>
-                <MessageSquare className="h-8 w-8 text-blue-500" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-500">Active</p>
-                  <p className="text-2xl font-bold">
-                    {campaigns.filter((c) => c.status === "ACTIVE").length}
-                  </p>
-                </div>
-                <Play className="h-8 w-8 text-green-500" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-500">Completed</p>
-                  <p className="text-2xl font-bold">
-                    {campaigns.filter((c) => c.status === "COMPLETED").length}
-                  </p>
-                </div>
-                <CheckCircle className="h-8 w-8 text-blue-500" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-500">Pending Approval</p>
-                  <p className="text-2xl font-bold">
-                    {campaigns.reduce(
-                      (sum, c) => sum + c.stats.pendingApproval,
-                      0
-                    )}
-                  </p>
-                </div>
-                <Clock className="h-8 w-8 text-yellow-500" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Filters */}
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex gap-4">
-              <div className="flex-1">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                  <Input
-                    placeholder="Search campaigns..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-48">
-                  <SelectValue placeholder="All Statuses" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Statuses</SelectItem>
-                  <SelectItem value="DRAFT">Draft</SelectItem>
-                  <SelectItem value="ACTIVE">Active</SelectItem>
-                  <SelectItem value="PAUSED">Paused</SelectItem>
-                  <SelectItem value="COMPLETED">Completed</SelectItem>
-                </SelectContent>
-              </Select>
+    <FeatureGuard feature="dataCollection">
+      <AppShell>
+        <div className="space-y-6 max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">
+                Data Collection Campaigns
+              </h1>
+              <p className="text-gray-500 mt-1">
+                Collect and update member information via SMS conversations
+              </p>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Campaigns List */}
-        {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+            <Link href="/data-collection/new">
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                New Campaign
+              </Button>
+            </Link>
           </div>
-        ) : filteredCampaigns.length === 0 ? (
+
+          {/* Stats Overview */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-500">Total Campaigns</p>
+                    <p className="text-2xl font-bold">{campaigns.length}</p>
+                  </div>
+                  <MessageSquare className="h-8 w-8 text-blue-500" />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-500">Active</p>
+                    <p className="text-2xl font-bold">
+                      {campaigns.filter((c) => c.status === "ACTIVE").length}
+                    </p>
+                  </div>
+                  <Play className="h-8 w-8 text-green-500" />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-500">Completed</p>
+                    <p className="text-2xl font-bold">
+                      {campaigns.filter((c) => c.status === "COMPLETED").length}
+                    </p>
+                  </div>
+                  <CheckCircle className="h-8 w-8 text-blue-500" />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-500">Pending Approval</p>
+                    <p className="text-2xl font-bold">
+                      {campaigns.reduce(
+                        (sum, c) => sum + c.stats.pendingApproval,
+                        0
+                      )}
+                    </p>
+                  </div>
+                  <Clock className="h-8 w-8 text-yellow-500" />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Filters */}
           <Card>
-            <CardContent className="py-12">
-              <div className="text-center">
-                <MessageSquare className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  No campaigns yet
-                </h3>
-                <p className="text-gray-500 mb-4">
-                  Create your first data collection campaign to get started
-                </p>
-                <Link href="/data-collection/new">
-                  <Button>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Create Campaign
-                  </Button>
-                </Link>
+            <CardContent className="pt-6">
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Input
+                      placeholder="Search campaigns..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                </div>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-48">
+                    <SelectValue placeholder="All Statuses" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Statuses</SelectItem>
+                    <SelectItem value="DRAFT">Draft</SelectItem>
+                    <SelectItem value="ACTIVE">Active</SelectItem>
+                    <SelectItem value="PAUSED">Paused</SelectItem>
+                    <SelectItem value="COMPLETED">Completed</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </CardContent>
           </Card>
-        ) : (
-          <div className="space-y-4">
-            {filteredCampaigns.map((campaign) => {
-              const StatusIcon = statusIcons[campaign.status];
-              return (
-                <Card
-                  key={campaign.id}
-                  className="hover:shadow-md transition-shadow"
-                >
-                  <CardContent className="pt-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="text-lg font-semibold">
-                            {campaign.name}
-                          </h3>
-                          <Badge className={statusColors[campaign.status]}>
-                            <StatusIcon className="h-3 w-3 mr-1" />
-                            {campaign.status}
-                          </Badge>
-                          <Badge variant="outline">{campaign.type}</Badge>
+
+          {/* Campaigns List */}
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+            </div>
+          ) : filteredCampaigns.length === 0 ? (
+            <Card>
+              <CardContent className="py-12">
+                <div className="text-center">
+                  <MessageSquare className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    No campaigns yet
+                  </h3>
+                  <p className="text-gray-500 mb-4">
+                    Create your first data collection campaign to get started
+                  </p>
+                  <Link href="/data-collection/new">
+                    <Button>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Create Campaign
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="space-y-4">
+              {filteredCampaigns.map((campaign) => {
+                const StatusIcon = statusIcons[campaign.status];
+                return (
+                  <Card
+                    key={campaign.id}
+                    className="hover:shadow-md transition-shadow"
+                  >
+                    <CardContent className="pt-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h3 className="text-lg font-semibold">
+                              {campaign.name}
+                            </h3>
+                            <Badge className={statusColors[campaign.status]}>
+                              <StatusIcon className="h-3 w-3 mr-1" />
+                              {campaign.status}
+                            </Badge>
+                            <Badge variant="outline">{campaign.type}</Badge>
+                          </div>
+                          {campaign.description && (
+                            <p className="text-sm text-gray-500">
+                              {campaign.description}
+                            </p>
+                          )}
                         </div>
-                        {campaign.description && (
-                          <p className="text-sm text-gray-500">
-                            {campaign.description}
+                        <Link href={`/data-collection/${campaign.id}`}>
+                          <Button variant="outline" size="sm">
+                            <Eye className="h-4 w-4 mr-2" />
+                            View Details
+                          </Button>
+                        </Link>
+                      </div>
+
+                      {/* Stats */}
+                      <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mt-4 pt-4 border-t">
+                        <div>
+                          <p className="text-xs text-gray-500">Recipients</p>
+                          <p className="text-lg font-semibold flex items-center gap-1">
+                            <Users className="h-4 w-4" />
+                            {campaign.stats.totalRecipients}
                           </p>
-                        )}
-                      </div>
-                      <Link href={`/data-collection/${campaign.id}`}>
-                        <Button variant="outline" size="sm">
-                          <Eye className="h-4 w-4 mr-2" />
-                          View Details
-                        </Button>
-                      </Link>
-                    </div>
-
-                    {/* Stats */}
-                    <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mt-4 pt-4 border-t">
-                      <div>
-                        <p className="text-xs text-gray-500">Recipients</p>
-                        <p className="text-lg font-semibold flex items-center gap-1">
-                          <Users className="h-4 w-4" />
-                          {campaign.stats.totalRecipients}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Consent Given</p>
-                        <p className="text-lg font-semibold text-green-600">
-                          {campaign.stats.consentGiven}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {getResponseRate(campaign)}% rate
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">In Progress</p>
-                        <p className="text-lg font-semibold text-blue-600">
-                          {campaign.stats.inProgress}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Completed</p>
-                        <p className="text-lg font-semibold text-green-600">
-                          {campaign.stats.completed}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {getCompletionRate(campaign)}% rate
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Failed</p>
-                        <p className="text-lg font-semibold text-red-600">
-                          {campaign.stats.failed}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">
-                          Pending Approval
-                        </p>
-                        <p className="text-lg font-semibold text-yellow-600">
-                          {campaign.stats.pendingApproval}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Progress Bar */}
-                    {campaign.stats.totalRecipients > 0 && (
-                      <div className="mt-4">
-                        <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
-                          <span>Completion Progress</span>
-                          <span>{getCompletionRate(campaign)}%</span>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div
-                            className="bg-green-600 h-2 rounded-full transition-all"
-                            style={{
-                              width: `${getCompletionRate(campaign)}%`,
-                            }}
-                          />
+                        <div>
+                          <p className="text-xs text-gray-500">Consent Given</p>
+                          <p className="text-lg font-semibold text-green-600">
+                            {campaign.stats.consentGiven}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {getResponseRate(campaign)}% rate
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500">In Progress</p>
+                          <p className="text-lg font-semibold text-blue-600">
+                            {campaign.stats.inProgress}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500">Completed</p>
+                          <p className="text-lg font-semibold text-green-600">
+                            {campaign.stats.completed}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {getCompletionRate(campaign)}% rate
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500">Failed</p>
+                          <p className="text-lg font-semibold text-red-600">
+                            {campaign.stats.failed}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500">
+                            Pending Approval
+                          </p>
+                          <p className="text-lg font-semibold text-yellow-600">
+                            {campaign.stats.pendingApproval}
+                          </p>
                         </div>
                       </div>
-                    )}
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </AppShell>
+
+                      {/* Progress Bar */}
+                      {campaign.stats.totalRecipients > 0 && (
+                        <div className="mt-4">
+                          <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                            <span>Completion Progress</span>
+                            <span>{getCompletionRate(campaign)}%</span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div
+                              className="bg-green-600 h-2 rounded-full transition-all"
+                              style={{
+                                width: `${getCompletionRate(campaign)}%`,
+                              }}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </AppShell>
+    </FeatureGuard>
   );
 }
-
-

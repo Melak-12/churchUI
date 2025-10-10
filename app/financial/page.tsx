@@ -3,7 +3,7 @@
 import { AppShell } from "@/components/layout/app-shell";
 import { FinancialDashboard } from "@/components/financial/financial-dashboard";
 import { AuthGuard } from "@/components/auth/auth-guard";
-import { FeatureGuard } from "@/components/auth/feature-guard";
+import { FeatureGuard } from "@/components/feature-guard";
 
 export default function FinancialPage() {
   return (
@@ -16,5 +16,3 @@ export default function FinancialPage() {
     </FeatureGuard>
   );
 }
-
-

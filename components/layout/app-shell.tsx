@@ -50,16 +50,14 @@ const getAdminNavItems = (features: any) => [
           icon: MessageSquare,
         },
         {
-          href: "/data-collection",
-          label: "Data Collection",
-          icon: MessageSquare,
-        },
-        {
           href: "/test-bulk-sms",
           label: "Test Bulk SMS",
           icon: MessageSquare,
         },
       ]
+    : []),
+  ...(features.dataCollection
+    ? [{ href: "/data-collection", label: "Data Collection", icon: FileText }]
     : []),
   ...(features.financial
     ? [{ href: "/financial", label: "Financial", icon: DollarSign }]

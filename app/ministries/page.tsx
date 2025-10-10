@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { AppShell } from "@/components/layout/app-shell";
 import { AuthGuard } from "@/components/auth/auth-guard";
-import { FeatureGuard } from "@/components/auth/feature-guard";
+import { FeatureGuard } from "@/components/feature-guard";
 import { MinistryDashboard } from "@/components/ministries/ministry-dashboard";
 import { MinistryList } from "@/components/ministries/ministry-list";
 import { MinistryForm } from "@/components/ministries/ministry-form";
