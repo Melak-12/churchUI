@@ -110,6 +110,22 @@ export default function SettingsPage() {
     }
   };
 
+  const handleFeatureToggle = async (
+    featureName: keyof typeof features,
+    value: boolean
+  ) => {
+    // Update context immediately for UI responsiveness
+    updateFeatures({ [featureName]: value });
+
+    // Update settings state
+    const updatedFeatures = { ...features, [featureName]: value };
+    const updatedSettings = { ...settings, features: updatedFeatures };
+    setSettings(updatedSettings);
+
+    // Save to backend automatically
+    await saveSettings(updatedSettings);
+  };
+
   const saveFeatures = async () => {
     const updatedSettings = { ...settings, features };
     await saveSettings(updatedSettings);
@@ -280,7 +296,7 @@ export default function SettingsPage() {
                       id="events-toggle"
                       checked={features.events}
                       onCheckedChange={(checked) =>
-                        updateFeatures({ events: checked })
+                        handleFeatureToggle("events", checked)
                       }
                     />
                   </div>
@@ -298,7 +314,7 @@ export default function SettingsPage() {
                       id="financial-toggle"
                       checked={features.financial}
                       onCheckedChange={(checked) =>
-                        updateFeatures({ financial: checked })
+                        handleFeatureToggle("financial", checked)
                       }
                     />
                   </div>
@@ -316,7 +332,7 @@ export default function SettingsPage() {
                       id="communications-toggle"
                       checked={features.communications}
                       onCheckedChange={(checked) =>
-                        updateFeatures({ communications: checked })
+                        handleFeatureToggle("communications", checked)
                       }
                     />
                   </div>
@@ -332,7 +348,7 @@ export default function SettingsPage() {
                       id="voting-toggle"
                       checked={features.voting}
                       onCheckedChange={(checked) =>
-                        updateFeatures({ voting: checked })
+                        handleFeatureToggle("voting", checked)
                       }
                     />
                   </div>
@@ -350,7 +366,7 @@ export default function SettingsPage() {
                       id="member-portal-toggle"
                       checked={features.memberPortal}
                       onCheckedChange={(checked) =>
-                        updateFeatures({ memberPortal: checked })
+                        handleFeatureToggle("memberPortal", checked)
                       }
                     />
                   </div>
@@ -366,7 +382,7 @@ export default function SettingsPage() {
                       id="ministries-toggle"
                       checked={features.ministries}
                       onCheckedChange={(checked) =>
-                        updateFeatures({ ministries: checked })
+                        handleFeatureToggle("ministries", checked)
                       }
                     />
                   </div>
@@ -382,7 +398,7 @@ export default function SettingsPage() {
                       id="attendance-toggle"
                       checked={features.attendance}
                       onCheckedChange={(checked) =>
-                        updateFeatures({ attendance: checked })
+                        handleFeatureToggle("attendance", checked)
                       }
                     />
                   </div>
@@ -400,7 +416,7 @@ export default function SettingsPage() {
                       id="data-collection-toggle"
                       checked={features.dataCollection}
                       onCheckedChange={(checked) =>
-                        updateFeatures({ dataCollection: checked })
+                        handleFeatureToggle("dataCollection", checked)
                       }
                     />
                   </div>
