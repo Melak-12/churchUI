@@ -1402,7 +1402,12 @@ class ApiClient {
     return response.data!;
   }
 
-  async processQRScan(qrData: string, serviceType?: string, serviceTime?: string, notes?: string): Promise<Attendance> {
+  async processQRScan(
+    qrData: string,
+    serviceType?: string,
+    serviceTime?: string,
+    notes?: string
+  ): Promise<Attendance> {
     const response = await this.request<Attendance>("/api/attendance/qr-scan", {
       method: "POST",
       body: JSON.stringify({ qrData, serviceType, serviceTime, notes }),
@@ -1410,7 +1415,11 @@ class ApiClient {
     return response.data!;
   }
 
-  async exportAttendance(startDate?: string, endDate?: string, format: "csv" | "excel" = "csv"): Promise<Blob> {
+  async exportAttendance(
+    startDate?: string,
+    endDate?: string,
+    format: "csv" | "excel" = "csv"
+  ): Promise<Blob> {
     const searchParams = new URLSearchParams();
     if (startDate) searchParams.append("startDate", startDate);
     if (endDate) searchParams.append("endDate", endDate);
@@ -1451,6 +1460,8 @@ class ApiClient {
       method: "POST",
     });
     return response.data!;
+  }
+
   // ==================== Feedback Methods ====================
 
   async submitFeedback(data: CreateFeedbackRequest): Promise<Feedback> {
