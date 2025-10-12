@@ -20,6 +20,8 @@ import {
   UserCheck,
   Building2,
   UserPlus,
+  MessageCircle,
+  HelpCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -62,6 +64,7 @@ const getAdminNavItems = (features: any) => [
   ...(features.financial
     ? [{ href: "/financial", label: "Financial", icon: DollarSign }]
     : []),
+  { href: "/feedback", label: "Feedback", icon: MessageCircle },
   { href: "/profile", label: "Profile", icon: User },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
@@ -78,6 +81,8 @@ const getMemberNavItems = (features: any) => [
   ...(features.memberPortal
     ? [{ href: "/member-portal", label: "Family & Documents", icon: FileText }]
     : []),
+  { href: "/feedback", label: "Feedback", icon: MessageCircle },
+  { href: "/support", label: "Support", icon: HelpCircle },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -96,11 +101,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     router.push("/login");
   };
   return (
-    <div className="min-h-screen bg-background">
+    <div className='min-h-screen bg-background'>
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className='fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden'
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -112,22 +117,22 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <div className="flex items-center justify-between p-4 border-b">
-          <h1 className="text-xl font-bold text-foreground">
+        <div className='flex items-center justify-between p-4 border-b'>
+          <h1 className='text-xl font-bold text-foreground'>
             Community Church
           </h1>
           <Button
-            variant="ghost"
-            size="sm"
-            className="lg:hidden"
+            variant='ghost'
+            size='sm'
+            className='lg:hidden'
             onClick={() => setSidebarOpen(false)}
           >
-            <X className="h-5 w-5" />
+            <X className='h-5 w-5' />
           </Button>
         </div>
 
-        <nav className="p-4">
-          <ul className="space-y-2">
+        <nav className='p-4'>
+          <ul className='space-y-2'>
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
@@ -144,7 +149,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     )}
                     onClick={() => setSidebarOpen(false)}
                   >
-                    <Icon className="h-5 w-5" />
+                    <Icon className='h-5 w-5' />
                     <span>{item.label}</span>
                   </Link>
                 </li>
@@ -153,40 +158,40 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </ul>
         </nav>
 
-        <div className="absolute bottom-4 left-4 right-4">
-          <div className="text-xs text-muted-foreground text-center">
+        <div className='absolute bottom-4 left-4 right-4'>
+          <div className='text-xs text-muted-foreground text-center'>
             {user.role === "ADMIN" ? "Administrator" : "Member"} View
           </div>
         </div>
       </div>
 
       {/* Main content */}
-      <div className="lg:ml-64">
+      <div className='lg:ml-64'>
         {/* Top bar */}
-        <div className="bg-card shadow-sm border-b px-4 py-3 lg:px-6">
-          <div className="flex items-center justify-between">
+        <div className='bg-card shadow-sm border-b px-4 py-3 lg:px-6'>
+          <div className='flex items-center justify-between'>
             <Button
-              variant="ghost"
-              size="sm"
-              className="lg:hidden"
+              variant='ghost'
+              size='sm'
+              className='lg:hidden'
               onClick={() => setSidebarOpen(true)}
             >
-              <Menu className="h-5 w-5" />
+              <Menu className='h-5 w-5' />
             </Button>
 
-            <div className="flex items-center justify-between flex-1">
-              <span className="text-sm text-muted-foreground">
+            <div className='flex items-center justify-between flex-1'>
+              <span className='text-sm text-muted-foreground'>
                 Welcome, {user.role === "ADMIN" ? "Administrator" : "Member"}
               </span>
-              <div className="flex items-center space-x-2">
+              <div className='flex items-center space-x-2'>
                 <ThemeToggle />
                 <Button
-                  variant="ghost"
-                  size="sm"
+                  variant='ghost'
+                  size='sm'
                   onClick={handleLogout}
-                  className="text-muted-foreground hover:text-foreground"
+                  className='text-muted-foreground hover:text-foreground'
                 >
-                  <LogOut className="h-4 w-4 mr-2" />
+                  <LogOut className='h-4 w-4 mr-2' />
                   Sign Out
                 </Button>
               </div>
@@ -195,7 +200,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* Page content */}
-        <main className="p-4 lg:p-6">{children}</main>
+        <main className='p-4 lg:p-6'>{children}</main>
       </div>
     </div>
   );
