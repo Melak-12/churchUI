@@ -58,6 +58,9 @@ const getAdminNavItems = (features: any) => [
         },
       ]
     : []),
+  ...(features.dataCollection
+    ? [{ href: "/data-collection", label: "Data Collection", icon: FileText }]
+    : []),
   ...(features.financial
     ? [{ href: "/financial", label: "Financial", icon: DollarSign }]
     : []),

@@ -1382,6 +1382,75 @@ class ApiClient {
     return response.data!;
   }
 
+  // QR Code Attendance API
+  async generateMemberQRCode(memberId: string): Promise<{
+    qrCode: string;
+    member: {
+      id: string;
+      name: string;
+      phone: string;
+    };
+  }> {
+    const response = await this.request<{
+      qrCode: string;
+      member: {
+        id: string;
+        name: string;
+        phone: string;
+      };
+    }>(`/api/attendance/qr/${memberId}`);
+    return response.data!;
+  }
+
+  async processQRScan(qrData: string, serviceType?: string, serviceTime?: string, notes?: string): Promise<Attendance> {
+    const response = await this.request<Attendance>("/api/attendance/qr-scan", {
+      method: "POST",
+      body: JSON.stringify({ qrData, serviceType, serviceTime, notes }),
+    });
+    return response.data!;
+  }
+
+  async exportAttendance(startDate?: string, endDate?: string, format: "csv" | "excel" = "csv"): Promise<Blob> {
+    const searchParams = new URLSearchParams();
+    if (startDate) searchParams.append("startDate", startDate);
+    if (endDate) searchParams.append("endDate", endDate);
+    searchParams.append("format", format);
+
+    const response = await fetch(
+      `${this.baseURL}/api/attendance/export?${searchParams.toString()}`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to export attendance data");
+    }
+
+    return response.blob();
+  }
+
+  // Ministry Settings API
+  async getMinistrySettings(): Promise<any> {
+    const response = await this.request<any>("/api/ministries/settings");
+    return response.data!;
+  }
+
+  async updateMinistrySettings(settingsData: any): Promise<any> {
+    const response = await this.request<any>("/api/ministries/settings", {
+      method: "PUT",
+      body: JSON.stringify(settingsData),
+    });
+    return response.data!;
+  }
+
+  async resetMinistrySettings(): Promise<any> {
+    const response = await this.request<any>("/api/ministries/settings/reset", {
+      method: "POST",
+    });
+    return response.data!;
   // ==================== Feedback Methods ====================
 
   async submitFeedback(data: CreateFeedbackRequest): Promise<Feedback> {

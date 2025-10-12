@@ -88,6 +88,10 @@ export interface Settings {
   smsFooter: string;
   twilioSenderId: string;
   androidSenderId?: string;
+  androidApiKey?: string;
+  androidSecret?: string;
+  androidRateLimit?: number;
+  androidEndpoint?: string;
   privacyPolicyUrl?: string;
   features?: {
     events: boolean;
@@ -97,6 +101,7 @@ export interface Settings {
     memberPortal: boolean;
     ministries: boolean;
     attendance: boolean;
+    dataCollection: boolean;
   };
 }
 
