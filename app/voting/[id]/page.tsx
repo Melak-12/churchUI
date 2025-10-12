@@ -86,8 +86,8 @@ export default function VoteManagementPage() {
       setActionLoading("start");
       // Get the vote ID, handling both _id and id fields (MongoDB compatibility)
       const voteId = getDocumentId(vote);
-      await apiClient.updateVote(voteId, { status: "ACTIVE" });
-      setVote({ ...vote, status: "ACTIVE" });
+      const updatedVote = await apiClient.startVote(voteId);
+      setVote(updatedVote);
       toast({
         title: "Vote Started",
         description: "The vote is now active and accepting votes.",
@@ -109,8 +109,8 @@ export default function VoteManagementPage() {
       setActionLoading("stop");
       // Get the vote ID, handling both _id and id fields (MongoDB compatibility)
       const voteId = getDocumentId(vote);
-      await apiClient.updateVote(voteId, { status: "CLOSED" });
-      setVote({ ...vote, status: "CLOSED" });
+      const updatedVote = await apiClient.stopVote(voteId);
+      setVote(updatedVote);
       toast({
         title: "Vote Stopped",
         description:
@@ -332,6 +332,24 @@ export default function VoteManagementPage() {
                       <Edit className="h-4 w-4 mr-2" />
                       <span className="hidden sm:inline">Edit</span>
                     </Link>
+                  </Button>
+                )}
+
+                {canStart && (
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={handleStartVote}
+                    disabled={actionLoading === "start"}
+                    className="bg-green-600 hover:bg-green-700 text-white"
+                  >
+                    {actionLoading === "start" ? (
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                      <Play className="h-4 w-4 mr-2" />
+                    )}
+                    <span className="hidden sm:inline">Start Vote</span>
+                    <span className="sm:hidden">Start</span>
                   </Button>
                 )}
 

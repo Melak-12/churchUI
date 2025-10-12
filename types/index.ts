@@ -30,6 +30,7 @@ export interface Vote {
   participationCount?: number;
   participationPercent?: number;
   createdAt: string;
+  hasVoted?: boolean;
   results?: {
     [option: string]: number;
   };

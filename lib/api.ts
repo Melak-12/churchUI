@@ -346,6 +346,26 @@ class ApiClient {
     });
   }
 
+  async startVote(id: string): Promise<Vote> {
+    const response = await this.request<{ vote: Vote }>(
+      `/api/votes/${id}/start`,
+      {
+        method: "POST",
+      }
+    );
+    return response.data!.vote;
+  }
+
+  async stopVote(id: string): Promise<Vote> {
+    const response = await this.request<{ vote: Vote }>(
+      `/api/votes/${id}/stop`,
+      {
+        method: "POST",
+      }
+    );
+    return response.data!.vote;
+  }
+
   async castVote(voteId: string, option: string): Promise<void> {
     await this.request(`/api/votes/${voteId}/vote`, {
       method: "POST",
