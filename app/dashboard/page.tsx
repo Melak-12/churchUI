@@ -30,7 +30,6 @@ import {
 } from "lucide-react";
 
 import Link from "next/link";
-import { FeedbackForm } from "@/components/dashboard/feedback-form";
 
 export default function Dashboard() {
   const [members, setMembers] = useState<Member[]>([]);
@@ -348,22 +347,7 @@ export default function Dashboard() {
           </Card>
         </div>
 
-        {/* Feedback Section */}
-        <Card className='border shadow-sm'>
-          <CardHeader>
-            <CardTitle className='flex items-center space-x-2'>
-              <MessageSquare className='h-5 w-5 text-purple-500' />
-              <span>Share Your Feedback</span>
-            </CardTitle>
-            <CardDescription>
-              We value your input! Please rate your experience and share any
-              feedback about the system.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <FeedbackForm />
-          </CardContent>
-        </Card>
+        
       </div>
     </AppShell>
   );
