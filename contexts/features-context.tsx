@@ -4,7 +4,7 @@ import {
   createContext,
   useContext,
   useState,
-  useEffect,
+  useCallback,
   ReactNode,
 } from "react";
 import { mockSettings } from "@/lib/mock-data";
@@ -32,11 +32,12 @@ const FeaturesContext = createContext<FeaturesContextType | undefined>(
 export function FeaturesProvider({ children }: { children: ReactNode }) {
   const [features, setFeatures] = useState(mockSettings.features!);
 
-  const updateFeatures = (
-    newFeatures: Partial<FeaturesContextType["features"]>
-  ) => {
-    setFeatures((prev) => ({ ...prev, ...newFeatures }));
-  };
+  const updateFeatures = useCallback(
+    (newFeatures: Partial<FeaturesContextType["features"]>) => {
+      setFeatures((prev) => ({ ...prev, ...newFeatures }));
+    },
+    []
+  );
 
   return (
     <FeaturesContext.Provider value={{ features, updateFeatures }}>
