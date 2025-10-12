@@ -71,7 +71,7 @@ export default function TestBulkSMSPage() {
       setResult({
         success: true,
         message: "Bulk SMS test completed successfully!",
-        results: response.data?.results || [],
+        results: (response.data as any)?.results || [],
       });
     } catch (error: any) {
       console.error("Bulk SMS test failed:", error);
@@ -101,7 +101,7 @@ export default function TestBulkSMSPage() {
       setResult({
         success: true,
         message: "Single SMS test completed successfully!",
-        results: [response.data?.result],
+        results: [(response.data as any)?.result],
       });
     } catch (error: any) {
       console.error("Single SMS test failed:", error);
@@ -117,14 +117,14 @@ export default function TestBulkSMSPage() {
 
   return (
     <AppShell>
-      <div className="space-y-6 max-w-4xl mx-auto">
+      <div className='space-y-6 max-w-4xl mx-auto'>
         {/* Header */}
-        <div className="space-y-4">
+        <div className='space-y-4'>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className='text-3xl font-bold text-gray-900'>
               Bulk SMS Test Page
             </h1>
-            <p className="text-gray-500 mt-1">
+            <p className='text-gray-500 mt-1'>
               Test the new Twilio Messaging Services integration
             </p>
           </div>
@@ -133,25 +133,25 @@ export default function TestBulkSMSPage() {
         {/* Test Configuration */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Phone className="h-5 w-5" />
+            <CardTitle className='flex items-center gap-2'>
+              <Phone className='h-5 w-5' />
               Test Configuration
             </CardTitle>
             <CardDescription>
               Configure the test parameters for bulk SMS testing
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className='space-y-4'>
             <div>
-              <Label htmlFor="phoneNumber">Phone Number</Label>
+              <Label htmlFor='phoneNumber'>Phone Number</Label>
               <Input
-                id="phoneNumber"
+                id='phoneNumber'
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
-                placeholder="+1234567890"
-                className="mt-1"
+                placeholder='+1234567890'
+                className='mt-1'
               />
-              <p className="text-sm text-gray-500 mt-1">
+              <p className='text-sm text-gray-500 mt-1'>
                 All test messages will be sent to this number
               </p>
             </div>
@@ -161,8 +161,8 @@ export default function TestBulkSMSPage() {
         {/* Test Messages Preview */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <MessageSquare className="h-5 w-5" />
+            <CardTitle className='flex items-center gap-2'>
+              <MessageSquare className='h-5 w-5' />
               Test Messages Preview
             </CardTitle>
             <CardDescription>
@@ -170,16 +170,16 @@ export default function TestBulkSMSPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
+            <div className='space-y-3'>
               {testMessages.map((msg) => (
-                <div key={msg.id} className="p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center justify-between mb-2">
-                    <Badge variant="outline">{msg.name}</Badge>
-                    <span className="text-sm text-gray-500">
+                <div key={msg.id} className='p-3 bg-gray-50 rounded-lg'>
+                  <div className='flex items-center justify-between mb-2'>
+                    <Badge variant='outline'>{msg.name}</Badge>
+                    <span className='text-sm text-gray-500'>
                       Message {msg.id}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-700">{msg.message}</p>
+                  <p className='text-sm text-gray-700'>{msg.message}</p>
                 </div>
               ))}
             </div>
@@ -195,16 +195,16 @@ export default function TestBulkSMSPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex gap-4">
+            <div className='flex gap-4'>
               <Button
                 onClick={handleTestBulkSMS}
                 disabled={loading || !phoneNumber}
-                className="flex items-center gap-2"
+                className='flex items-center gap-2'
               >
                 {loading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className='h-4 w-4 animate-spin' />
                 ) : (
-                  <Send className="h-4 w-4" />
+                  <Send className='h-4 w-4' />
                 )}
                 Test Bulk SMS (3 Messages)
               </Button>
@@ -212,13 +212,13 @@ export default function TestBulkSMSPage() {
               <Button
                 onClick={handleTestSingleSMS}
                 disabled={loading || !phoneNumber}
-                variant="outline"
-                className="flex items-center gap-2"
+                variant='outline'
+                className='flex items-center gap-2'
               >
                 {loading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className='h-4 w-4 animate-spin' />
                 ) : (
-                  <Send className="h-4 w-4" />
+                  <Send className='h-4 w-4' />
                 )}
                 Test Single SMS
               </Button>
@@ -230,11 +230,11 @@ export default function TestBulkSMSPage() {
         {result && (
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className='flex items-center gap-2'>
                 {result.success ? (
-                  <CheckCircle className="h-5 w-5 text-green-500" />
+                  <CheckCircle className='h-5 w-5 text-green-500' />
                 ) : (
-                  <AlertCircle className="h-5 w-5 text-red-500" />
+                  <AlertCircle className='h-5 w-5 text-red-500' />
                 )}
                 Test Results
               </CardTitle>
@@ -245,23 +245,23 @@ export default function TestBulkSMSPage() {
               </Alert>
 
               {result.error && (
-                <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <h4 className="font-medium text-red-800 mb-2">
+                <div className='mt-4 p-3 bg-red-50 border border-red-200 rounded-lg'>
+                  <h4 className='font-medium text-red-800 mb-2'>
                     Error Details:
                   </h4>
-                  <p className="text-sm text-red-700">{result.error}</p>
+                  <p className='text-sm text-red-700'>{result.error}</p>
                 </div>
               )}
 
               {result.results && result.results.length > 0 && (
-                <div className="mt-4">
-                  <h4 className="font-medium text-gray-800 mb-3">
+                <div className='mt-4'>
+                  <h4 className='font-medium text-gray-800 mb-3'>
                     Message Results:
                   </h4>
-                  <div className="space-y-2">
+                  <div className='space-y-2'>
                     {result.results.map((res, index) => (
-                      <div key={index} className="p-3 bg-gray-50 rounded-lg">
-                        <div className="flex items-center justify-between mb-2">
+                      <div key={index} className='p-3 bg-gray-50 rounded-lg'>
+                        <div className='flex items-center justify-between mb-2'>
                           <Badge
                             variant={
                               res.status === "sent" || res.status === "queued"
@@ -271,17 +271,17 @@ export default function TestBulkSMSPage() {
                           >
                             {res.status || "unknown"}
                           </Badge>
-                          <span className="text-sm text-gray-500">
+                          <span className='text-sm text-gray-500'>
                             Message {index + 1}
                           </span>
                         </div>
                         {res.sid && (
-                          <p className="text-xs text-gray-600">
+                          <p className='text-xs text-gray-600'>
                             SID: {res.sid}
                           </p>
                         )}
                         {res.errorMessage && (
-                          <p className="text-xs text-red-600">
+                          <p className='text-xs text-red-600'>
                             Error: {res.errorMessage}
                           </p>
                         )}
@@ -299,8 +299,8 @@ export default function TestBulkSMSPage() {
           <CardHeader>
             <CardTitle>Test Instructions</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="text-sm text-gray-600">
+          <CardContent className='space-y-3'>
+            <div className='text-sm text-gray-600'>
               <p>
                 <strong>Bulk SMS Test:</strong> Sends 3 different messages to
                 the same phone number to test the new Twilio Messaging Services
