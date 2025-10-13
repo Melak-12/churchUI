@@ -380,6 +380,13 @@ class ApiClient {
     return response.data!;
   }
 
+  async getVoteParticipants(voteId: string): Promise<any[]> {
+    const response = await this.request<{ participants: any[] }>(
+      `/api/votes/${voteId}/participants`
+    );
+    return response.data!.participants;
+  }
+
   // Communications endpoints
   async getCommunications(params?: {
     page?: number;
