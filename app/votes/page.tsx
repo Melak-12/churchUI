@@ -48,7 +48,7 @@ export default function ActiveVotesPage() {
               <VoteIcon className='h-6 w-6 text-white' />
             </div>
             <h1 className='text-2xl font-bold text-foreground'>
-              Community Voting 🗳️
+              Community Voting
             </h1>
           </div>
           <p className='text-muted-foreground'>
@@ -146,7 +146,7 @@ export default function ActiveVotesPage() {
                 <VoteIcon className='h-8 w-8 text-blue-500' />
               </div>
               <h3 className='text-lg font-medium text-foreground mb-2'>
-                All caught up! 🎉
+                All caught up!
               </h3>
               <p className='text-muted-foreground max-w-md mx-auto'>
                 No active votes right now. New community decisions will appear
@@ -164,7 +164,7 @@ export default function ActiveVotesPage() {
               <div className='flex items-center space-x-2 mb-4'>
                 <BarChart3 className='h-5 w-5 text-muted-foreground' />
                 <h2 className='text-lg font-semibold text-foreground'>
-                  Recent Results 📊
+                  Recent Results
                 </h2>
               </div>
               <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>

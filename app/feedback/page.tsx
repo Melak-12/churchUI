@@ -33,7 +33,7 @@ export default function FeedbackPage() {
       });
 
       toast({
-        title: "Feedback Submitted! 🎉",
+        title: "Feedback Submitted!",
         description:
           "Thank you for your feedback. We'll review it and get back to you soon.",
       });
@@ -63,7 +63,7 @@ export default function FeedbackPage() {
                 <MessageCircle className='h-6 w-6 text-white' />
               </div>
               <h1 className='text-2xl font-bold text-foreground'>
-                Feedback & Suggestions 💬
+                Feedback & Suggestions
               </h1>
             </div>
             <p className='text-muted-foreground'>

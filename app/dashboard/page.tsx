@@ -12,21 +12,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Member, Vote, Event } from "@/types";
 import apiClient from "@/lib/api";
 import {
   Users,
-  DollarSign,
   AlertCircle,
   Vote as VoteIcon,
   MessageSquare,
   UserPlus,
-  Plus,
   Calendar,
   Loader2,
-  Clock,
-  MapPin,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -72,9 +67,9 @@ export default function Dashboard() {
   if (loading) {
     return (
       <AppShell>
-        <div className="flex items-center justify-center h-64">
-          <div className="flex items-center space-x-2">
-            <Loader2 className="h-6 w-6 animate-spin" />
+        <div className='flex items-center justify-center h-64'>
+          <div className='flex items-center space-x-2'>
+            <Loader2 className='h-6 w-6 animate-spin' />
             <span>Loading dashboard...</span>
           </div>
         </div>
@@ -85,10 +80,10 @@ export default function Dashboard() {
   if (error) {
     return (
       <AppShell>
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <AlertCircle className="h-8 w-8 text-red-500 mx-auto mb-2" />
-            <p className="text-red-600">{error}</p>
+        <div className='flex items-center justify-center h-64'>
+          <div className='text-center'>
+            <AlertCircle className='h-8 w-8 text-red-500 mx-auto mb-2' />
+            <p className='text-red-600'>{error}</p>
           </div>
         </div>
       </AppShell>
@@ -97,29 +92,23 @@ export default function Dashboard() {
 
   return (
     <AppShell>
-      <div className="space-y-6">
+      <div className='space-y-6'>
         {/* Header */}
-        <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
+        <div className='flex flex-col gap-4 md:flex-row md:items-center md:justify-between'>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-            <p className="text-gray-600">Overview of your community</p>
+            <h1 className='text-2xl font-bold'>Dashboard</h1>
+            <p className='text-muted-foreground'>Overview of your community</p>
           </div>
-          <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
-            <Button size="sm" variant="outline" asChild>
-              <Link href="/voting/new">
-                <VoteIcon className="h-4 w-4 mr-2" />
-                New Vote
+          <div className='flex gap-2'>
+            <Button size='sm' variant='outline' asChild>
+              <Link href='/communications/new'>
+                <MessageSquare className='h-4 w-4 mr-2' />
+                Send SMS
               </Link>
             </Button>
-            <Button size="sm" variant="outline" asChild>
-              <Link href="/communications/new">
-                <MessageSquare className="h-4 w-4 mr-2" />
-                New SMS
-              </Link>
-            </Button>
-            <Button size="sm" asChild>
-              <Link href="/members">
-                <UserPlus className="h-4 w-4 mr-2" />
+            <Button size='sm' asChild>
+              <Link href='/members/new'>
+                <UserPlus className='h-4 w-4 mr-2' />
                 Add Member
               </Link>
             </Button>
@@ -127,96 +116,92 @@ export default function Dashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
           <DashboardCard
-            title="Paid Members"
+            title='Paid Members'
             value={paidMembers}
-            icon={DollarSign}
-            description="Current and up-to-date"
+            icon={Users}
+            iconColor='green'
+            description='Current and up-to-date'
           />
           <DashboardCard
-            title="Delinquent Members"
+            title='Need Follow-up'
             value={delinquentMembers}
             icon={AlertCircle}
-            description="Behind on payments"
+            iconColor='orange'
+            description='Behind on payments'
           />
           <DashboardCard
-            title="Active Votes"
+            title='Active Votes'
             value={activeVotes.length}
             icon={VoteIcon}
-            description="Currently accepting votes"
+            iconColor='blue'
+            description='Currently accepting votes'
           />
           <DashboardCard
-            title="Total Members"
+            title='Total Members'
             value={members.length}
             icon={Users}
-            description="All registered members"
+            iconColor='purple'
+            description='All registered members'
           />
         </div>
 
         {/* Communication Statistics */}
         <CommunicationStats />
 
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
           {/* Upcoming Events */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Calendar className="h-5 w-5 text-blue-500" />
-                <span>Upcoming Events</span>
+              <CardTitle className='text-lg font-medium'>
+                Upcoming Events
               </CardTitle>
-              <CardDescription>Next 5 upcoming events</CardDescription>
+              <CardDescription>Next 5 events</CardDescription>
             </CardHeader>
             <CardContent>
               {events.length > 0 ? (
-                <div className="space-y-3">
+                <div className='space-y-2'>
                   {events.map((event) => (
-                    <div
-                      key={event.id}
-                      className="p-3 border rounded-lg hover:bg-gray-50"
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="font-medium">{event.title}</div>
-                          <div className="text-sm text-gray-500 flex items-center space-x-4 mt-1">
-                            <span className="flex items-center space-x-1">
-                              <Clock className="h-3 w-3" />
-                              <span>
-                                {new Date(event.startDate).toLocaleDateString()}
-                              </span>
+                    <div key={event.id} className='p-3 border rounded-lg'>
+                      <div className='flex items-start justify-between gap-2'>
+                        <div className='flex-1 min-w-0'>
+                          <div className='font-medium truncate'>
+                            {event.title}
+                          </div>
+                          <div className='text-sm text-muted-foreground mt-1 flex items-center gap-4'>
+                            <span className='flex items-center gap-1'>
+                              <Calendar className='h-3 w-3' />
+                              {new Date(event.startDate).toLocaleDateString()}
                             </span>
-                            <span className="flex items-center space-x-1">
-                              <MapPin className="h-3 w-3" />
-                              <span>{event.location}</span>
-                            </span>
+                            {event.location && (
+                              <span className='truncate'>{event.location}</span>
+                            )}
                           </div>
                         </div>
-                        <Button variant="outline" size="sm" asChild>
+                        <Button variant='outline' size='sm' asChild>
                           <Link href={`/events/${event.id}`}>View</Link>
                         </Button>
                       </div>
                     </div>
                   ))}
                   <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full"
+                    variant='outline'
+                    size='sm'
+                    className='w-full'
                     asChild
                   >
-                    <Link href="/events">View All Events</Link>
+                    <Link href='/events'>View All</Link>
                   </Button>
                 </div>
               ) : (
-                <div className="text-center py-8">
-                  <Calendar className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                  <p className="text-sm text-gray-600 mb-4">
+                <div className='text-center py-8'>
+                  <Calendar className='h-8 w-8 text-muted-foreground mx-auto mb-2' />
+                  <p className='text-sm text-muted-foreground mb-4'>
                     No upcoming events
                   </p>
-                  <Button size="sm" asChild>
-                    <Link href="/events/new">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Create Event
-                    </Link>
+                  <Button size='sm' variant='outline' asChild>
+                    <Link href='/events/new'>Create Event</Link>
                   </Button>
                 </div>
               )}
@@ -226,106 +211,80 @@ export default function Dashboard() {
           {/* Critical Delinquent Members */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <AlertCircle className="h-5 w-5 text-orange-500" />
-                <span>Critical Delinquent (&gt;90 days)</span>
+              <CardTitle className='text-lg font-medium'>
+                Need Attention
               </CardTitle>
-              <CardDescription>
-                Members who have lost voting eligibility
-              </CardDescription>
+              <CardDescription>Members over 90 days behind</CardDescription>
             </CardHeader>
             <CardContent>
               {criticalDelinquent.length > 0 ? (
-                <div className="space-y-3">
-                  {criticalDelinquent.map((member) => (
+                <div className='space-y-2'>
+                  {criticalDelinquent.slice(0, 5).map((member) => (
                     <div
                       key={member.id}
-                      className="flex items-center justify-between p-3 border rounded-lg"
+                      className='flex items-center justify-between p-3 border rounded-lg'
                     >
-                      <div>
-                        <div className="font-medium">
+                      <div className='flex-1 min-w-0'>
+                        <div className='font-medium truncate'>
                           {member.firstName} {member.lastName}
                         </div>
-                        <div className="text-sm text-gray-500">
+                        <div className='text-sm text-muted-foreground'>
                           {member.phone}
                         </div>
                       </div>
-                      <Badge variant="destructive">
+                      <div className='text-sm text-muted-foreground'>
                         {member.delinquencyDays} days
-                      </Badge>
+                      </div>
                     </div>
                   ))}
-                  <Button variant="outline" size="sm" className="w-full">
-                    Send Payment Reminder
+                  <Button variant='outline' size='sm' className='w-full'>
+                    Send Reminder
                   </Button>
                 </div>
               ) : (
-                <div className="text-center py-8">
-                  <DollarSign className="h-8 w-8 text-green-500 mx-auto mb-2" />
-                  <p className="text-sm text-gray-600">
-                    All members are current!
+                <div className='text-center py-8'>
+                  <p className='text-sm text-muted-foreground'>
+                    All members are current
                   </p>
                 </div>
               )}
             </CardContent>
           </Card>
+        </div>
 
-          {/* Active Votes */}
+        {/* Active Votes */}
+        {activeVotes.length > 0 && (
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <VoteIcon className="h-5 w-5 text-blue-500" />
-                <span>Active Votes</span>
+              <CardTitle className='text-lg font-medium'>
+                Active Votes
               </CardTitle>
               <CardDescription>
                 Votes currently accepting responses
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {activeVotes.length > 0 ? (
-                <div className="space-y-3">
-                  {activeVotes.map((vote) => (
-                    <div key={vote.id} className="p-3 border rounded-lg">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="font-medium">{vote.title}</div>
-                          <div className="text-sm text-gray-500 flex items-center space-x-4 mt-1">
-                            <span className="flex items-center space-x-1">
-                              <Users className="h-3 w-3" />
-                              <span>
-                                {vote.participationPercent}% participation
-                              </span>
-                            </span>
-                            <span className="flex items-center space-x-1">
-                              <Calendar className="h-3 w-3" />
-                              <span>
-                                Ends {new Date(vote.endAt).toLocaleDateString()}
-                              </span>
-                            </span>
-                          </div>
+              <div className='space-y-2'>
+                {activeVotes.map((vote) => (
+                  <div key={vote.id} className='p-3 border rounded-lg'>
+                    <div className='flex items-start justify-between gap-2'>
+                      <div className='flex-1 min-w-0'>
+                        <div className='font-medium'>{vote.title}</div>
+                        <div className='text-sm text-muted-foreground mt-1'>
+                          Ends {new Date(vote.endAt).toLocaleDateString()} •{" "}
+                          {vote.participationPercent}% voted
                         </div>
-                        <Button variant="outline" size="sm" asChild>
-                          <Link href={`/voting/${vote.id}`}>Manage</Link>
-                        </Button>
                       </div>
+                      <Button variant='outline' size='sm' asChild>
+                        <Link href={`/voting/${vote.id}`}>View</Link>
+                      </Button>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <VoteIcon className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                  <p className="text-sm text-gray-600 mb-4">No active votes</p>
-                  <Button size="sm" asChild>
-                    <Link href="/voting/new">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Create Vote
-                    </Link>
-                  </Button>
-                </div>
-              )}
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
-        </div>
+        )}
       </div>
     </AppShell>
   );

@@ -275,7 +275,7 @@ export default function SupportPage() {
               {/* Tips */}
               <Card className='bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950 dark:to-orange-950 border-amber-200 dark:border-amber-800'>
                 <CardHeader>
-                  <CardTitle className='text-lg'>💡 Support Tip</CardTitle>
+                  <CardTitle className='text-lg'>Support Tip</CardTitle>
                 </CardHeader>
                 <CardContent className='space-y-2 text-sm'>
                   <p className='text-muted-foreground'>

@@ -201,9 +201,9 @@ export default function EventsPage() {
   if (loading) {
     return (
       <AppShell>
-        <div className="flex items-center justify-center h-64">
-          <div className="flex items-center space-x-2">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+        <div className='flex items-center justify-center h-64'>
+          <div className='flex items-center space-x-2'>
+            <div className='animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600'></div>
             <span>Loading events...</span>
           </div>
         </div>
@@ -214,10 +214,10 @@ export default function EventsPage() {
   if (error) {
     return (
       <AppShell>
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <p className="text-red-600">{error}</p>
-            <Button onClick={fetchEvents} className="mt-4">
+        <div className='flex items-center justify-center h-64'>
+          <div className='text-center'>
+            <p className='text-red-600'>{error}</p>
+            <Button onClick={fetchEvents} className='mt-4'>
               Try Again
             </Button>
           </div>
@@ -227,29 +227,29 @@ export default function EventsPage() {
   }
 
   return (
-    <FeatureGuard feature="events">
+    <FeatureGuard feature='events'>
       <AppShell>
-        <div className="space-y-6">
+        <div className='space-y-6'>
           {/* Header Section */}
-          <div className="bg-card rounded-xl p-6 border shadow-sm">
-            <div className="flex items-center justify-between">
+          <div className='bg-card rounded-xl p-6 border shadow-sm'>
+            <div className='flex items-center justify-between'>
               <div>
-                <div className="flex items-center space-x-3 mb-2">
-                  <div className="p-2 bg-green-500 rounded-lg">
-                    <Calendar className="h-6 w-6 text-white" />
+                <div className='flex items-center space-x-3 mb-2'>
+                  <div className='p-2 bg-green-500 rounded-lg'>
+                    <Calendar className='h-6 w-6 text-white' />
                   </div>
-                  <h1 className="text-2xl font-bold text-foreground">
-                    Church Events 🎉
+                  <h1 className='text-2xl font-bold text-foreground'>
+                    Church Events
                   </h1>
                 </div>
-                <p className="text-muted-foreground">
+                <p className='text-muted-foreground'>
                   Discover and join upcoming community activities
                 </p>
               </div>
               {isAdmin && (
-                <Button asChild className="shadow-sm">
-                  <Link href="/events/new">
-                    <Plus className="h-4 w-4 mr-2" />
+                <Button asChild className='shadow-sm'>
+                  <Link href='/events/new'>
+                    <Plus className='h-4 w-4 mr-2' />
                     Create Event
                   </Link>
                 </Button>
@@ -258,55 +258,55 @@ export default function EventsPage() {
           </div>
 
           {/* Quick Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
             <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
+              <CardContent className='p-4'>
+                <div className='flex items-center justify-between'>
                   <div>
-                    <p className="text-sm text-muted-foreground">
+                    <p className='text-sm text-muted-foreground'>
                       Upcoming Events
                     </p>
-                    <p className="text-2xl font-bold text-blue-600">
+                    <p className='text-2xl font-bold text-blue-600'>
                       {
                         events.filter((e) => isFuture(new Date(e.startDate)))
                           .length
                       }
                     </p>
                   </div>
-                  <CalendarDays className="h-8 w-8 text-blue-500" />
+                  <CalendarDays className='h-8 w-8 text-blue-500' />
                 </div>
               </CardContent>
             </Card>
 
             <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
+              <CardContent className='p-4'>
+                <div className='flex items-center justify-between'>
                   <div>
-                    <p className="text-sm text-muted-foreground">This Week</p>
-                    <p className="text-2xl font-bold text-green-600">
+                    <p className='text-sm text-muted-foreground'>This Week</p>
+                    <p className='text-2xl font-bold text-green-600'>
                       {
                         events.filter((e) => isThisWeek(new Date(e.startDate)))
                           .length
                       }
                     </p>
                   </div>
-                  <Zap className="h-8 w-8 text-green-500" />
+                  <Zap className='h-8 w-8 text-green-500' />
                 </div>
               </CardContent>
             </Card>
 
             <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
+              <CardContent className='p-4'>
+                <div className='flex items-center justify-between'>
                   <div>
-                    <p className="text-sm text-muted-foreground">
+                    <p className='text-sm text-muted-foreground'>
                       Total Events
                     </p>
-                    <p className="text-2xl font-bold text-purple-600">
+                    <p className='text-2xl font-bold text-purple-600'>
                       {events.length}
                     </p>
                   </div>
-                  <PartyPopper className="h-8 w-8 text-purple-500" />
+                  <PartyPopper className='h-8 w-8 text-purple-500' />
                 </div>
               </CardContent>
             </Card>
@@ -314,56 +314,56 @@ export default function EventsPage() {
 
           {/* Search and Filters */}
           {/* Filters */}
-          <Card className="border-none shadow-sm">
-            <CardContent className="p-6">
-              <div className="flex flex-col lg:flex-row gap-4 lg:items-center">
-                <div className="relative flex-1 max-w-md">
-                  <Search className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+          <Card className='border-none shadow-sm'>
+            <CardContent className='p-6'>
+              <div className='flex flex-col lg:flex-row gap-4 lg:items-center'>
+                <div className='relative flex-1 max-w-md'>
+                  <Search className='h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground' />
                   <Input
-                    placeholder="🔍 Search events by name..."
+                    placeholder='Search events by name...'
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 bg-white dark:bg-gray-800 border-none shadow-sm"
+                    className='pl-10 bg-white dark:bg-gray-800 border-none shadow-sm'
                   />
                 </div>
-                <div className="flex flex-col sm:flex-row gap-3">
+                <div className='flex flex-col sm:flex-row gap-3'>
                   <Button
-                    variant="outline"
-                    size="sm"
-                    className="justify-start bg-white dark:bg-gray-800 shadow-sm"
+                    variant='outline'
+                    size='sm'
+                    className='justify-start bg-white dark:bg-gray-800 shadow-sm'
                     asChild
                   >
-                    <Link href="/events/calendar">
-                      <Calendar className="h-4 w-4 mr-2" />
+                    <Link href='/events/calendar'>
+                      <Calendar className='h-4 w-4 mr-2' />
                       Calendar View
                     </Link>
                   </Button>
                   <Select value={filterStatus} onValueChange={setFilterStatus}>
-                    <SelectTrigger className="w-full sm:w-[160px] bg-white dark:bg-gray-800 border-none shadow-sm">
-                      <SelectValue placeholder="📊 Status" />
+                    <SelectTrigger className='w-full sm:w-[160px] bg-white dark:bg-gray-800 border-none shadow-sm'>
+                      <SelectValue placeholder='Status' />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">📊 All Status</SelectItem>
-                      <SelectItem value="DRAFT">📝 Draft</SelectItem>
-                      <SelectItem value="PUBLISHED">✅ Published</SelectItem>
-                      <SelectItem value="CANCELLED">❌ Cancelled</SelectItem>
-                      <SelectItem value="COMPLETED">🏁 Completed</SelectItem>
+                      <SelectItem value='all'>All Status</SelectItem>
+                      <SelectItem value='DRAFT'>Draft</SelectItem>
+                      <SelectItem value='PUBLISHED'>Published</SelectItem>
+                      <SelectItem value='CANCELLED'>Cancelled</SelectItem>
+                      <SelectItem value='COMPLETED'>Completed</SelectItem>
                     </SelectContent>
                   </Select>
                   <Select value={filterType} onValueChange={setFilterType}>
-                    <SelectTrigger className="w-full sm:w-[180px] bg-white dark:bg-gray-800 border-none shadow-sm">
-                      <SelectValue placeholder="🎯 Event Type" />
+                    <SelectTrigger className='w-full sm:w-[180px] bg-white dark:bg-gray-800 border-none shadow-sm'>
+                      <SelectValue placeholder='Event Type' />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">🎯 All Types</SelectItem>
-                      <SelectItem value="SERVICE">⛪ Service</SelectItem>
-                      <SelectItem value="MEETING">💼 Meeting</SelectItem>
-                      <SelectItem value="SPECIAL_OCCASION">
-                        🎊 Special Occasion
+                      <SelectItem value='all'>All Types</SelectItem>
+                      <SelectItem value='SERVICE'>Service</SelectItem>
+                      <SelectItem value='MEETING'>Meeting</SelectItem>
+                      <SelectItem value='SPECIAL_OCCASION'>
+                        Special Occasion
                       </SelectItem>
-                      <SelectItem value="CONFERENCE">🎤 Conference</SelectItem>
-                      <SelectItem value="SOCIAL">🎉 Social</SelectItem>
-                      <SelectItem value="OTHER">📌 Other</SelectItem>
+                      <SelectItem value='CONFERENCE'>Conference</SelectItem>
+                      <SelectItem value='SOCIAL'>Social</SelectItem>
+                      <SelectItem value='OTHER'>Other</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -372,23 +372,23 @@ export default function EventsPage() {
           </Card>
 
           {/* Events List */}
-          <Tabs defaultValue="upcoming" className="space-y-4 sm:space-y-6">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="upcoming" className="text-sm sm:text-base">
-                <span className="hidden sm:inline">Upcoming</span>
-                <span className="sm:hidden">Upcoming</span>
-                <span className="ml-1">({upcomingEvents.length})</span>
+          <Tabs defaultValue='upcoming' className='space-y-4 sm:space-y-6'>
+            <TabsList className='grid w-full grid-cols-2'>
+              <TabsTrigger value='upcoming' className='text-sm sm:text-base'>
+                <span className='hidden sm:inline'>Upcoming</span>
+                <span className='sm:hidden'>Upcoming</span>
+                <span className='ml-1'>({upcomingEvents.length})</span>
               </TabsTrigger>
-              <TabsTrigger value="past" className="text-sm sm:text-base">
-                <span className="hidden sm:inline">Past</span>
-                <span className="sm:hidden">Past</span>
-                <span className="ml-1">({pastEvents.length})</span>
+              <TabsTrigger value='past' className='text-sm sm:text-base'>
+                <span className='hidden sm:inline'>Past</span>
+                <span className='sm:hidden'>Past</span>
+                <span className='ml-1'>({pastEvents.length})</span>
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="upcoming" className="space-y-4">
+            <TabsContent value='upcoming' className='space-y-4'>
               {upcomingEvents.length > 0 ? (
-                <div className="grid gap-4">
+                <div className='grid gap-4'>
                   {upcomingEvents.map((event) => (
                     <EventCard
                       key={getDocumentId(event)}
@@ -404,23 +404,23 @@ export default function EventsPage() {
                   ))}
                 </div>
               ) : (
-                <Card className="border-dashed border-2 border-gray-200 dark:border-gray-700">
-                  <CardContent className="flex flex-col items-center justify-center py-12 px-4">
-                    <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-full mb-4">
-                      <Calendar className="h-8 w-8 text-blue-500" />
+                <Card className='border-dashed border-2 border-gray-200 dark:border-gray-700'>
+                  <CardContent className='flex flex-col items-center justify-center py-12 px-4'>
+                    <div className='p-3 bg-blue-50 dark:bg-blue-900/20 rounded-full mb-4'>
+                      <Calendar className='h-8 w-8 text-blue-500' />
                     </div>
-                    <h3 className="text-lg font-medium text-foreground mb-2 text-center">
-                      No upcoming events yet! 📅
+                    <h3 className='text-lg font-medium text-foreground mb-2 text-center'>
+                      No upcoming events yet!
                     </h3>
-                    <p className="text-muted-foreground text-center mb-6 max-w-md">
+                    <p className='text-muted-foreground text-center mb-6 max-w-md'>
                       {isAdmin
                         ? "Ready to bring the community together? Create your first event!"
                         : "Check back soon for exciting community activities and gatherings."}
                     </p>
                     {isAdmin && (
-                      <Button className="shadow-sm" asChild>
-                        <Link href="/events/new">
-                          <Plus className="h-4 w-4 mr-2" />
+                      <Button className='shadow-sm' asChild>
+                        <Link href='/events/new'>
+                          <Plus className='h-4 w-4 mr-2' />
                           Create Your First Event
                         </Link>
                       </Button>
@@ -430,9 +430,9 @@ export default function EventsPage() {
               )}
             </TabsContent>
 
-            <TabsContent value="past" className="space-y-4">
+            <TabsContent value='past' className='space-y-4'>
               {pastEvents.length > 0 ? (
-                <div className="grid gap-4">
+                <div className='grid gap-4'>
                   {pastEvents.map((event) => (
                     <EventCard
                       key={getDocumentId(event)}
@@ -448,15 +448,15 @@ export default function EventsPage() {
                   ))}
                 </div>
               ) : (
-                <Card className="border-dashed border-2 border-gray-200 dark:border-gray-700">
-                  <CardContent className="flex flex-col items-center justify-center py-12 px-4">
-                    <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-full mb-4">
-                      <Calendar className="h-8 w-8 text-purple-500" />
+                <Card className='border-dashed border-2 border-gray-200 dark:border-gray-700'>
+                  <CardContent className='flex flex-col items-center justify-center py-12 px-4'>
+                    <div className='p-3 bg-purple-50 dark:bg-purple-900/20 rounded-full mb-4'>
+                      <Calendar className='h-8 w-8 text-purple-500' />
                     </div>
-                    <h3 className="text-lg font-medium text-foreground mb-2 text-center">
-                      No past events yet 📚
+                    <h3 className='text-lg font-medium text-foreground mb-2 text-center'>
+                      No past events yet
                     </h3>
-                    <p className="text-muted-foreground text-center max-w-md">
+                    <p className='text-muted-foreground text-center max-w-md'>
                       Your event history will appear here as activities are
                       completed.
                     </p>
@@ -521,24 +521,24 @@ function EventCard({
   };
 
   return (
-    <Card className="hover:shadow-md transition-all duration-300">
-      <CardContent className="p-6">
-        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-4 lg:space-y-0">
-          <div className="flex-1 min-w-0">
+    <Card className='hover:shadow-md transition-all duration-300'>
+      <CardContent className='p-6'>
+        <div className='flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-4 lg:space-y-0'>
+          <div className='flex-1 min-w-0'>
             {/* Title and Badges */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 mb-3 space-y-2 sm:space-y-0">
-              <h3 className="text-xl font-semibold text-foreground truncate">
+            <div className='flex flex-col sm:flex-row sm:items-center sm:space-x-3 mb-3 space-y-2 sm:space-y-0'>
+              <h3 className='text-xl font-semibold text-foreground truncate'>
                 {event.title}
               </h3>
-              <div className="flex flex-wrap gap-2">
+              <div className='flex flex-wrap gap-2'>
                 <Badge
-                  variant="secondary"
+                  variant='secondary'
                   className={`${getEventTypeColor(event.type)}`}
                 >
                   {event.type.replace("_", " ")}
                 </Badge>
                 <Badge
-                  variant="secondary"
+                  variant='secondary'
                   className={`${getStatusColor(event.status)}`}
                 >
                   {event.status}
@@ -548,42 +548,42 @@ function EventCard({
 
             {/* Description */}
             {event.description && (
-              <p className="text-muted-foreground mb-4 line-clamp-2">
+              <p className='text-muted-foreground mb-4 line-clamp-2'>
                 {event.description}
               </p>
             )}
 
             {/* Event Details */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm text-muted-foreground">
-              <div className="flex items-center space-x-2">
-                <div className="p-1 bg-blue-50 dark:bg-blue-900/20 rounded">
-                  <Clock className="h-4 w-4 text-blue-500" />
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm text-muted-foreground'>
+              <div className='flex items-center space-x-2'>
+                <div className='p-1 bg-blue-50 dark:bg-blue-900/20 rounded'>
+                  <Clock className='h-4 w-4 text-blue-500' />
                 </div>
-                <span className="truncate">
+                <span className='truncate'>
                   {format(new Date(event.startDate), "MMM d, yyyy h:mm a")}
                 </span>
               </div>
-              <div className="flex items-center space-x-2">
-                <div className="p-1 bg-green-50 dark:bg-green-900/20 rounded">
-                  <MapPin className="h-4 w-4 text-green-500" />
+              <div className='flex items-center space-x-2'>
+                <div className='p-1 bg-green-50 dark:bg-green-900/20 rounded'>
+                  <MapPin className='h-4 w-4 text-green-500' />
                 </div>
-                <span className="truncate">{event.location}</span>
+                <span className='truncate'>{event.location}</span>
               </div>
               {event.capacity && (
-                <div className="flex items-center space-x-2">
-                  <div className="p-1 bg-purple-50 dark:bg-purple-900/20 rounded">
-                    <Users className="h-4 w-4 text-purple-500" />
+                <div className='flex items-center space-x-2'>
+                  <div className='p-1 bg-purple-50 dark:bg-purple-900/20 rounded'>
+                    <Users className='h-4 w-4 text-purple-500' />
                   </div>
                   <span>
                     {event.registrationCount || 0}/{event.capacity} registered
                   </span>
                 </div>
               )}
-              <div className="flex items-center space-x-2">
-                <div className="p-1 bg-orange-50 dark:bg-orange-900/20 rounded">
-                  <Calendar className="h-4 w-4 text-orange-500" />
+              <div className='flex items-center space-x-2'>
+                <div className='p-1 bg-orange-50 dark:bg-orange-900/20 rounded'>
+                  <Calendar className='h-4 w-4 text-orange-500' />
                 </div>
-                <span className="font-medium text-orange-600">
+                <span className='font-medium text-orange-600'>
                   {getRelativeTime(event.startDate)}
                 </span>
               </div>
@@ -591,53 +591,53 @@ function EventCard({
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 lg:ml-4 lg:flex-col lg:items-stretch lg:min-w-0">
+          <div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 lg:ml-4 lg:flex-col lg:items-stretch lg:min-w-0'>
             {/* View Button */}
             <Button
-              variant="outline"
-              size="sm"
-              className="w-full sm:w-auto lg:w-full"
+              variant='outline'
+              size='sm'
+              className='w-full sm:w-auto lg:w-full'
               asChild
             >
               <Link href={`/events/${eventId}`}>
-                <Eye className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline lg:hidden">View</span>
-                <span className="sm:hidden lg:inline">View Details</span>
+                <Eye className='h-4 w-4 mr-2' />
+                <span className='hidden sm:inline lg:hidden'>View</span>
+                <span className='sm:hidden lg:inline'>View Details</span>
               </Link>
             </Button>
 
             {/* Admin Actions */}
             {isAdmin ? (
-              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 lg:flex-col">
+              <div className='flex flex-col sm:flex-row gap-2 sm:gap-3 lg:flex-col'>
                 <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full sm:w-auto lg:w-full"
+                  variant='outline'
+                  size='sm'
+                  className='w-full sm:w-auto lg:w-full'
                   asChild
                 >
                   <Link href={`/events/${eventId}/edit`}>
-                    <Edit className="h-4 w-4 mr-2" />
-                    <span className="hidden sm:inline lg:hidden">Edit</span>
-                    <span className="sm:hidden lg:inline">Edit Event</span>
+                    <Edit className='h-4 w-4 mr-2' />
+                    <span className='hidden sm:inline lg:hidden'>Edit</span>
+                    <span className='sm:hidden lg:inline'>Edit Event</span>
                   </Link>
                 </Button>
                 {onDelete && (
                   <Button
-                    variant="outline"
-                    size="sm"
+                    variant='outline'
+                    size='sm'
                     onClick={() => onDelete(eventId)}
                     disabled={isDeleting}
-                    className="w-full sm:w-auto lg:w-full text-red-600 hover:text-red-700 hover:bg-red-50 disabled:opacity-50"
+                    className='w-full sm:w-auto lg:w-full text-red-600 hover:text-red-700 hover:bg-red-50 disabled:opacity-50'
                   >
                     {isDeleting ? (
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
+                      <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-red-600'></div>
                     ) : (
                       <>
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        <span className="hidden sm:inline lg:hidden">
+                        <Trash2 className='h-4 w-4 mr-2' />
+                        <span className='hidden sm:inline lg:hidden'>
                           Delete
                         </span>
-                        <span className="sm:hidden lg:inline">
+                        <span className='sm:hidden lg:inline'>
                           Delete Event
                         </span>
                       </>
@@ -647,36 +647,36 @@ function EventCard({
               </div>
             ) : (
               /* Member Actions */
-              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 lg:flex-col">
+              <div className='flex flex-col sm:flex-row gap-2 sm:gap-3 lg:flex-col'>
                 {event.registrationRequired &&
                   event.status === "PUBLISHED" &&
                   onRegister && (
                     <Button
-                      variant="default"
-                      size="sm"
+                      variant='default'
+                      size='sm'
                       onClick={() => onRegister(eventId)}
                       disabled={isRegistering || event.isFull}
-                      className="w-full sm:w-auto lg:w-full bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50"
+                      className='w-full sm:w-auto lg:w-full bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50'
                     >
                       {isRegistering ? (
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white'></div>
                       ) : event.isFull ? (
                         <>
-                          <AlertCircle className="h-4 w-4 mr-2" />
-                          <span className="hidden sm:inline lg:hidden">
+                          <AlertCircle className='h-4 w-4 mr-2' />
+                          <span className='hidden sm:inline lg:hidden'>
                             Full
                           </span>
-                          <span className="sm:hidden lg:inline">
+                          <span className='sm:hidden lg:inline'>
                             Event Full
                           </span>
                         </>
                       ) : (
                         <>
-                          <UserPlus className="h-4 w-4 mr-2" />
-                          <span className="hidden sm:inline lg:hidden">
+                          <UserPlus className='h-4 w-4 mr-2' />
+                          <span className='hidden sm:inline lg:hidden'>
                             Register
                           </span>
-                          <span className="sm:hidden lg:inline">
+                          <span className='sm:hidden lg:inline'>
                             Register Now
                           </span>
                         </>
@@ -685,12 +685,12 @@ function EventCard({
                   )}
                 {!event.registrationRequired &&
                   event.status === "PUBLISHED" && (
-                    <div className="flex items-center justify-center text-green-600 text-sm py-2 px-3 border border-green-200 rounded-md bg-green-50">
-                      <CheckCircle className="h-4 w-4 mr-2" />
-                      <span className="hidden sm:inline lg:hidden">
+                    <div className='flex items-center justify-center text-green-600 text-sm py-2 px-3 border border-green-200 rounded-md bg-green-50'>
+                      <CheckCircle className='h-4 w-4 mr-2' />
+                      <span className='hidden sm:inline lg:hidden'>
                         Open to all
                       </span>
-                      <span className="sm:hidden lg:inline">
+                      <span className='sm:hidden lg:inline'>
                         Open to All Members
                       </span>
                     </div>

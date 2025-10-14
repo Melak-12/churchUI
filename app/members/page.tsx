@@ -350,16 +350,16 @@ export default function MembersPage() {
       }
 
       if (errorCount === 0) {
-        alert(`✅ Successfully imported ${successCount} members!`);
+        alert(`Successfully imported ${successCount} members!`);
       } else {
-        const message = `Import completed:\n✅ ${successCount} members imported successfully\n❌ ${errorCount} members failed\n\nErrors:\n${errors
+        const message = `Import completed:\n${successCount} members imported successfully\n${errorCount} members failed\n\nErrors:\n${errors
           .slice(0, 5)
           .join("\n")}${errors.length > 5 ? "\n... and more" : ""}`;
         alert(message);
       }
     } catch (err: any) {
       console.error("Import error:", err);
-      alert(`❌ Import failed: ${err.message}`);
+      alert(`Import failed: ${err.message}`);
     } finally {
       setImporting(false);
       // Reset file input
@@ -381,18 +381,17 @@ export default function MembersPage() {
   });
 
   const getStatusColor = (status: string) => {
-    switch (status) {
+    switch (status.toUpperCase()) {
       case "PAID":
-        return "bg-green-500 text-white";
+        return "text-green-700 bg-green-50 dark:text-green-400 dark:bg-green-950/50 font-normal";
       case "DELINQUENT":
-        return "bg-red-500 text-white";
+        return "text-red-700 bg-red-50 dark:text-red-400 dark:bg-red-950/50 font-normal";
       case "PENDING":
-        return "bg-orange-500 text-white";
+        return "text-orange-700 bg-orange-50 dark:text-orange-400 dark:bg-orange-950/50 font-normal";
       default:
-        return "bg-gray-500 text-white";
+        return "bg-muted font-normal";
     }
   };
-
   const getInitials = (firstName?: string, lastName?: string) => {
     const first = (firstName || "").charAt(0);
     const last = (lastName || "").charAt(0);
@@ -419,9 +418,9 @@ export default function MembersPage() {
       <AppShell>
         <div className='flex items-center justify-center h-64'>
           <div className='text-center'>
-            <AlertCircle className='h-12 w-12 text-red-500 mx-auto mb-4' />
+            <AlertCircle className='h-12 w-12 text-muted-foreground mx-auto mb-4' />
             <h3 className='text-lg font-semibold text-foreground mb-2'>
-              Oops! Something went wrong
+              Something went wrong
             </h3>
             <p className='text-muted-foreground mb-6'>{error}</p>
             <Button onClick={fetchMembers} variant='outline'>
@@ -442,16 +441,16 @@ export default function MembersPage() {
           <div className='flex items-center justify-between'>
             <div>
               <div className='flex items-center space-x-3 mb-2'>
-                <div className='p-2 bg-blue-500 rounded-lg shadow-md'>
-                  <Users className='h-6 w-6 text-white' />
+                <div className='p-2 bg-muted rounded-lg'>
+                  <Users className='h-6 w-6 text-muted-foreground' />
                 </div>
                 <h1 className='text-2xl font-bold text-foreground'>
-                  Community Members 👥
+                  Community Members
                 </h1>
               </div>
               <p className='text-muted-foreground'>
                 Connect with your church family •
-                <span className='font-semibold text-blue-600 dark:text-blue-400 ml-1'>
+                <span className='font-semibold ml-1'>
                   {members.length} members
                 </span>{" "}
                 total
@@ -468,14 +467,14 @@ export default function MembersPage() {
 
         {/* Quick Stats */}
         <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
-          <Card className='border border-green-100 dark:border-green-900 shadow-md'>
+          <Card className='border shadow-sm'>
             <CardContent className='p-5'>
               <div className='flex items-center justify-between'>
                 <div>
                   <p className='text-sm font-medium text-muted-foreground mb-1'>
-                    💚 Paid Members
+                    Paid Members
                   </p>
-                  <p className='text-3xl font-bold text-green-600 dark:text-green-400'>
+                  <p className='text-3xl font-bold'>
                     {members.filter((m) => m.status === "PAID").length}
                   </p>
                   <p className='text-xs text-muted-foreground mt-1'>
@@ -489,14 +488,14 @@ export default function MembersPage() {
             </CardContent>
           </Card>
 
-          <Card className='border border-orange-100 dark:border-orange-900 shadow-md'>
+          <Card className='border shadow-sm'>
             <CardContent className='p-5'>
               <div className='flex items-center justify-between'>
                 <div>
                   <p className='text-sm font-medium text-muted-foreground mb-1'>
-                    ⚠️ Need Follow-up
+                    Need Follow-up
                   </p>
-                  <p className='text-3xl font-bold text-orange-600 dark:text-orange-400'>
+                  <p className='text-3xl font-bold'>
                     {members.filter((m) => m.status === "DELINQUENT").length}
                   </p>
                   <p className='text-xs text-muted-foreground mt-1'>
@@ -510,14 +509,14 @@ export default function MembersPage() {
             </CardContent>
           </Card>
 
-          <Card className='border border-blue-100 dark:border-blue-900 shadow-md'>
+          <Card className='border shadow-sm'>
             <CardContent className='p-5'>
               <div className='flex items-center justify-between'>
                 <div>
                   <p className='text-sm font-medium text-muted-foreground mb-1'>
-                    🆕 New This Month
+                    New This Month
                   </p>
-                  <p className='text-3xl font-bold text-blue-600 dark:text-blue-400'>
+                  <p className='text-3xl font-bold'>
                     {
                       members.filter((m) => {
                         const joinDate = new Date(m.createdAt);
@@ -538,16 +537,14 @@ export default function MembersPage() {
             </CardContent>
           </Card>
 
-          <Card className='border border-purple-100 dark:border-purple-900 shadow-md'>
+          <Card className='border shadow-sm'>
             <CardContent className='p-5'>
               <div className='flex items-center justify-between'>
                 <div>
                   <p className='text-sm font-medium text-muted-foreground mb-1'>
-                    👨‍👩‍👧‍👦 Total Members
+                    Total Members
                   </p>
-                  <p className='text-3xl font-bold text-purple-600 dark:text-purple-400'>
-                    {members.length}
-                  </p>
+                  <p className='text-3xl font-bold'>{members.length}</p>
                   <p className='text-xs text-muted-foreground mt-1'>
                     Our Community
                   </p>
@@ -568,7 +565,7 @@ export default function MembersPage() {
                 <div className='relative flex-1 max-w-md'>
                   <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground' />
                   <Input
-                    placeholder='🔍 Search by name, email, or phone...'
+                    placeholder='Search by name, email, or phone...'
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     className='pl-10 bg-white dark:bg-gray-800 border-none shadow-sm'
@@ -580,12 +577,10 @@ export default function MembersPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value='all'>📊 All Members</SelectItem>
-                    <SelectItem value='PAID'>💚 Paid</SelectItem>
-                    <SelectItem value='DELINQUENT'>
-                      ⚠️ Need Follow-up
-                    </SelectItem>
-                    <SelectItem value='PENDING'>⏳ Pending</SelectItem>
+                    <SelectItem value='all'>All Members</SelectItem>
+                    <SelectItem value='PAID'>Paid</SelectItem>
+                    <SelectItem value='DELINQUENT'>Need Follow-up</SelectItem>
+                    <SelectItem value='PENDING'>Pending</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -603,12 +598,12 @@ export default function MembersPage() {
                     <DropdownMenuItem
                       onClick={() => exportToCSV(filteredMembers)}
                     >
-                      📄 Export as CSV
+                      Export as CSV
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => exportToExcel(filteredMembers)}
                     >
-                      📊 Export as Excel
+                      Export as Excel
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -674,8 +669,8 @@ export default function MembersPage() {
               >
                 <div className='bg-muted/50 p-4'>
                   <div className='flex items-start space-x-4'>
-                    <Avatar className='h-16 w-16 border-4 border-white dark:border-gray-800 shadow-sm'>
-                      <AvatarFallback className='bg-primary text-white font-bold text-lg'>
+                    <Avatar className='h-16 w-16 border-2 border-muted shadow-sm'>
+                      <AvatarFallback className='bg-muted text-foreground font-bold text-lg'>
                         {getInitials(member.firstName, member.lastName)}
                       </AvatarFallback>
                     </Avatar>
@@ -700,16 +695,16 @@ export default function MembersPage() {
                 <CardContent className='p-5 space-y-3'>
                   <div className='space-y-2.5'>
                     <div className='flex items-center space-x-3 p-2 rounded-lg'>
-                      <div className='p-1.5 bg-blue-500 rounded'>
-                        <Mail className='h-3.5 w-3.5 text-white' />
+                      <div className='p-1.5 bg-muted rounded'>
+                        <Mail className='h-3.5 w-3.5 text-muted-foreground' />
                       </div>
                       <span className='text-sm truncate flex-1'>
                         {member.email || "No email"}
                       </span>
                     </div>
                     <div className='flex items-center space-x-3 p-2 rounded-lg'>
-                      <div className='p-1.5 bg-green-500 rounded'>
-                        <Phone className='h-3.5 w-3.5 text-white' />
+                      <div className='p-1.5 bg-muted rounded'>
+                        <Phone className='h-3.5 w-3.5 text-muted-foreground' />
                       </div>
                       <span className='text-sm font-medium'>
                         {member.phone}
@@ -717,8 +712,8 @@ export default function MembersPage() {
                     </div>
                     {member.address && (
                       <div className='flex items-center space-x-3 p-2 rounded-lg'>
-                        <div className='p-1.5 bg-purple-500 rounded'>
-                          <MapPin className='h-3.5 w-3.5 text-white' />
+                        <div className='p-1.5 bg-muted rounded'>
+                          <MapPin className='h-3.5 w-3.5 text-muted-foreground' />
                         </div>
                         <span className='text-sm truncate flex-1'>
                           {member.address}
@@ -726,8 +721,8 @@ export default function MembersPage() {
                       </div>
                     )}
                     <div className='flex items-center space-x-3 p-2 rounded-lg'>
-                      <div className='p-1.5 bg-orange-500 rounded'>
-                        <Calendar className='h-3.5 w-3.5 text-white' />
+                      <div className='p-1.5 bg-muted rounded'>
+                        <Calendar className='h-3.5 w-3.5 text-muted-foreground' />
                       </div>
                       <span className='text-sm'>
                         Joined{" "}
@@ -740,10 +735,13 @@ export default function MembersPage() {
                   </div>
 
                   <div className='pt-3 border-t flex gap-2'>
-                    <Button size='sm' className='flex-1 shadow-sm' asChild>
-                      <Link href={`/members/${member.id}`}>
-                        👤 View Profile
-                      </Link>
+                    <Button
+                      size='sm'
+                      variant='outline'
+                      className='flex-1 shadow-sm'
+                      asChild
+                    >
+                      <Link href={`/members/${member.id}`}>View Profile</Link>
                     </Button>
                     <Button
                       size='sm'
@@ -812,9 +810,14 @@ export default function MembersPage() {
                         </div>
                       </div>
                       <div className='flex items-center space-x-2 ml-4'>
-                        <Button size='sm' className='shadow-sm' asChild>
+                        <Button
+                          size='sm'
+                          variant='outline'
+                          className='shadow-sm'
+                          asChild
+                        >
                           <Link href={`/members/${member.id}`}>
-                            👤 View Profile
+                            View Profile
                           </Link>
                         </Button>
                         <Button
@@ -849,8 +852,8 @@ export default function MembersPage() {
               </h3>
               <p className='text-muted-foreground mb-6 max-w-md mx-auto'>
                 {search || statusFilter !== "all"
-                  ? "Try adjusting your search or filters to find the members you're looking for. 🔍"
-                  : "Start building your community by adding your first member! 🎉"}
+                  ? "Try adjusting your search or filters to find the members you're looking for."
+                  : "Start building your community by adding your first member!"}
               </p>
               {!search && statusFilter === "all" && (
                 <Button asChild className='shadow-sm'>
