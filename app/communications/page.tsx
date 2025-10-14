@@ -291,8 +291,8 @@ export default function CommunicationsPage() {
             <div className='flex items-center justify-between'>
               <div>
                 <div className='flex items-center space-x-3 mb-2'>
-                  <div className='p-2 bg-purple-500 rounded-lg'>
-                    <MessageSquare className='h-6 w-6 text-white' />
+                  <div className='p-2 bg-purple-100 dark:bg-purple-950/50 rounded-lg'>
+                    <MessageSquare className='h-6 w-6 text-purple-600 dark:text-purple-400' />
                   </div>
                   <h1 className='text-2xl font-bold text-foreground'>
                     Communications
@@ -321,11 +321,11 @@ export default function CommunicationsPage() {
                 <div className='flex items-center justify-between'>
                   <div>
                     <p className='text-sm text-muted-foreground'>Sent</p>
-                    <p className='text-2xl font-bold text-green-600'>
+                    <p className='text-2xl font-bold text-green-600 dark:text-green-400'>
                       {communications.filter((c) => c.status === "SENT").length}
                     </p>
                   </div>
-                  <Send className='h-8 w-8 text-green-500' />
+                  <Send className='h-8 w-8 text-green-500 dark:text-green-400' />
                 </div>
               </CardContent>
             </Card>
@@ -335,14 +335,14 @@ export default function CommunicationsPage() {
                 <div className='flex items-center justify-between'>
                   <div>
                     <p className='text-sm text-muted-foreground'>Scheduled</p>
-                    <p className='text-2xl font-bold text-blue-600'>
+                    <p className='text-2xl font-bold text-blue-600 dark:text-blue-400'>
                       {
                         communications.filter((c) => c.status === "SCHEDULED")
                           .length
                       }
                     </p>
                   </div>
-                  <Calendar className='h-8 w-8 text-blue-500' />
+                  <Calendar className='h-8 w-8 text-blue-500 dark:text-blue-400' />
                 </div>
               </CardContent>
             </Card>
@@ -352,14 +352,14 @@ export default function CommunicationsPage() {
                 <div className='flex items-center justify-between'>
                   <div>
                     <p className='text-sm text-muted-foreground'>Draft</p>
-                    <p className='text-2xl font-bold text-yellow-600'>
+                    <p className='text-2xl font-bold text-yellow-600 dark:text-yellow-400'>
                       {
                         communications.filter((c) => c.status === "DRAFT")
                           .length
                       }
                     </p>
                   </div>
-                  <MessageSquare className='h-8 w-8 text-yellow-500' />
+                  <MessageSquare className='h-8 w-8 text-yellow-500 dark:text-yellow-400' />
                 </div>
               </CardContent>
             </Card>
@@ -369,11 +369,11 @@ export default function CommunicationsPage() {
                 <div className='flex items-center justify-between'>
                   <div>
                     <p className='text-sm text-muted-foreground'>Total</p>
-                    <p className='text-2xl font-bold text-purple-600'>
+                    <p className='text-2xl font-bold text-purple-600 dark:text-purple-400'>
                       {communications.length}
                     </p>
                   </div>
-                  <Users className='h-8 w-8 text-purple-500' />
+                  <Users className='h-8 w-8 text-purple-500 dark:text-purple-400' />
                 </div>
               </CardContent>
             </Card>

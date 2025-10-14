@@ -31,13 +31,13 @@ import { useFeatures } from "@/contexts/features-context";
 
 const getAdminNavItems = (features: any) => [
   { href: "/dashboard", label: "Dashboard", icon: Home },
-  { href: "/members", label: "Members", icon: Users },
-  ...(features.ministries
-    ? [{ href: "/ministries", label: "Ministries", icon: Building2 }]
-    : []),
-  ...(features.attendance
-    ? [{ href: "/attendance", label: "Attendance", icon: UserPlus }]
-    : []),
+  // { href: "/members", label: "Members", icon: Users },
+  // ...(features.ministries
+  //   ? [{ href: "/ministries", label: "Ministries", icon: Building2 }]
+  //   : []),
+  // ...(features.attendance
+  //   ? [{ href: "/attendance", label: "Attendance", icon: UserPlus }]
+  //   : []),
   ...(features.events
     ? [{ href: "/events", label: "Events", icon: Calendar }]
     : []),
@@ -51,22 +51,26 @@ const getAdminNavItems = (features: any) => [
           label: "Communications",
           icon: MessageSquare,
         },
-        {
-          href: "/test-bulk-sms",
-          label: "Test Bulk SMS",
-          icon: MessageSquare,
-        },
+        // {
+        //   href: "/test-bulk-sms",
+        //   label: "Test Bulk SMS",
+        //   icon: MessageSquare,
+        // },
       ]
     : []),
   ...(features.dataCollection
-    ? [{ href: "/data-collection", label: "Data Collection", icon: FileText }]
+    ? [
+        // { href: "/data-collection", label: "Data Collection", icon: FileText },
+      ]
     : []),
   ...(features.financial
-    ? [{ href: "/financial", label: "Financial", icon: DollarSign }]
+    ? [
+        // { href: "/financial", label: "Financial", icon: DollarSign }
+      ]
     : []),
-  { href: "/feedback", label: "Feedback", icon: MessageCircle },
-  { href: "/profile", label: "Profile", icon: User },
-  { href: "/settings", label: "Settings", icon: Settings },
+  // { href: "/feedback", label: "Feedback", icon: MessageCircle },
+  // { href: "/profile", label: "Profile", icon: User },
+  // { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 const getMemberNavItems = (features: any) => [
@@ -81,8 +85,8 @@ const getMemberNavItems = (features: any) => [
   ...(features.memberPortal
     ? [{ href: "/member-portal", label: "Family & Documents", icon: FileText }]
     : []),
-  { href: "/feedback", label: "Feedback", icon: MessageCircle },
-  { href: "/support", label: "Support", icon: HelpCircle },
+  // { href: "/feedback", label: "Feedback", icon: MessageCircle },
+  // { href: "/support", label: "Support", icon: HelpCircle },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
