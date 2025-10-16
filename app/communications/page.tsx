@@ -288,7 +288,7 @@ export default function CommunicationsPage() {
         <div className='space-y-6'>
           {/* Header Section */}
           <div className='bg-card rounded-xl p-6 border shadow-sm'>
-            <div className='flex items-center justify-between'>
+            <div className='flex flex-col gap-4 md:flex-row md:items-center md:justify-between'>
               <div>
                 <div className='flex items-center space-x-3 mb-2'>
                   <div className='p-2 bg-purple-100 dark:bg-purple-950/50 rounded-lg'>
@@ -302,7 +302,7 @@ export default function CommunicationsPage() {
                   Stay connected with your community through SMS campaigns
                 </p>
               </div>
-              <div className='flex items-center gap-2'>
+              <div className='flex items-center gap-2 flex-wrap'>
                 <TwilioTest />
                 <Button className='shadow-sm' asChild>
                   <Link href='/communications/new'>
