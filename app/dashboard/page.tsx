@@ -94,19 +94,24 @@ export default function Dashboard() {
     <AppShell>
       <div className='space-y-6'>
         {/* Header */}
-        <div className='flex flex-col gap-4 md:flex-row md:items-center md:justify-between'>
+        <div className='flex flex-col gap-4'>
           <div>
             <h1 className='text-2xl font-bold'>Dashboard</h1>
             <p className='text-muted-foreground'>Overview of your community</p>
           </div>
-          <div className='flex gap-2'>
-            <Button size='sm' variant='outline' asChild>
+          <div className='flex flex-col sm:flex-row gap-2'>
+            <Button
+              size='sm'
+              variant='outline'
+              asChild
+              className='w-full sm:w-auto'
+            >
               <Link href='/communications/new'>
                 <MessageSquare className='h-4 w-4 mr-2' />
                 Send SMS
               </Link>
             </Button>
-            <Button size='sm' asChild>
+            <Button size='sm' asChild className='w-full sm:w-auto'>
               <Link href='/members/new'>
                 <UserPlus className='h-4 w-4 mr-2' />
                 Add Member
