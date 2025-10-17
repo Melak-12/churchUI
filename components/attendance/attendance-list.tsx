@@ -64,15 +64,23 @@ export function AttendanceList({
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
-  const filteredAttendance = attendance.filter((record) => {
+  const filteredAttendance = (attendance || []).filter((record) => {
     const matchesSearch =
-      record.member.firstName
+      (record?.member?.firstName || "")
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
-      record.member.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      record.event?.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      record.ministry?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      record.smallGroup?.name.toLowerCase().includes(searchTerm.toLowerCase());
+      (record?.member?.lastName || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      (record?.event?.title || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      (record?.ministry?.name || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      (record?.smallGroup?.name || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
 
     const matchesType =
       typeFilter === "all" ||
@@ -148,7 +156,8 @@ export function AttendanceList({
               <div>
                 <CardTitle className='text-lg'>Search & Filter</CardTitle>
                 <p className='text-sm text-muted-foreground'>
-                  {filteredAttendance.length} of {attendance.length} records
+                  {filteredAttendance.length} of {(attendance || []).length}{" "}
+                  records
                 </p>
               </div>
             </div>
@@ -237,7 +246,8 @@ export function AttendanceList({
                       <div className='flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950 px-3 py-2 rounded-lg'>
                         <User className='h-5 w-5 text-emerald-600' />
                         <span className='font-semibold text-lg'>
-                          {record.member.firstName} {record.member.lastName}
+                          {record.member.firstName || ""}{" "}
+                          {record.member.lastName || ""}
                         </span>
                       </div>
                       <Badge

@@ -59,14 +59,16 @@ export function MinistryList({
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
-  const filteredMinistries = ministries.filter((ministry) => {
+  const filteredMinistries = (ministries || []).filter((ministry) => {
     const matchesSearch =
-      ministry.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      ministry.description?.toLowerCase().includes(searchTerm.toLowerCase());
+      (ministry?.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (ministry?.description || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
     const matchesCategory =
-      categoryFilter === "all" || ministry.category === categoryFilter;
+      categoryFilter === "all" || ministry?.category === categoryFilter;
     const matchesStatus =
-      statusFilter === "all" || ministry.status === statusFilter;
+      statusFilter === "all" || ministry?.status === statusFilter;
 
     return matchesSearch && matchesCategory && matchesStatus;
   });
@@ -140,7 +142,8 @@ export function MinistryList({
               <div>
                 <CardTitle className='text-lg'>Find Ministries</CardTitle>
                 <p className='text-sm text-muted-foreground'>
-                  {filteredMinistries.length} of {ministries.length} ministries
+                  {filteredMinistries.length} of {(ministries || []).length}{" "}
+                  ministries
                 </p>
               </div>
             </div>
@@ -164,7 +167,7 @@ export function MinistryList({
               <div className='relative'>
                 <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4' />
                 <Input
-                  placeholder='🔍 Search ministries by name...'
+                  placeholder='Search ministries by name...'
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className='pl-10 bg-white dark:bg-gray-800 border-none shadow-sm'
@@ -173,31 +176,29 @@ export function MinistryList({
             </div>
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
               <SelectTrigger className='w-full sm:w-48 bg-white dark:bg-gray-800 border-none shadow-sm'>
-                <SelectValue placeholder='📂 Category' />
+                <SelectValue placeholder='Category' />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value='all'>📂 All Categories</SelectItem>
-                <SelectItem value='WORSHIP'>🎵 Worship</SelectItem>
-                <SelectItem value='CHILDREN'>👶 Children</SelectItem>
-                <SelectItem value='YOUTH'>🎓 Youth</SelectItem>
-                <SelectItem value='ADULTS'>👔 Adults</SelectItem>
-                <SelectItem value='SENIORS'>👴 Seniors</SelectItem>
-                <SelectItem value='OUTREACH'>🌍 Outreach</SelectItem>
-                <SelectItem value='ADMINISTRATION'>
-                  💼 Administration
-                </SelectItem>
-                <SelectItem value='OTHER'>📌 Other</SelectItem>
+                <SelectItem value='all'>All Categories</SelectItem>
+                <SelectItem value='WORSHIP'>Worship</SelectItem>
+                <SelectItem value='CHILDREN'>Children</SelectItem>
+                <SelectItem value='YOUTH'>Youth</SelectItem>
+                <SelectItem value='ADULTS'>Adults</SelectItem>
+                <SelectItem value='SENIORS'>Seniors</SelectItem>
+                <SelectItem value='OUTREACH'>Outreach</SelectItem>
+                <SelectItem value='ADMINISTRATION'>Administration</SelectItem>
+                <SelectItem value='OTHER'>Other</SelectItem>
               </SelectContent>
             </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className='w-full sm:w-48 bg-white dark:bg-gray-800 border-none shadow-sm'>
-                <SelectValue placeholder='🎯 Status' />
+                <SelectValue placeholder='Status' />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value='all'>🎯 All Status</SelectItem>
-                <SelectItem value='ACTIVE'>✅ Active</SelectItem>
-                <SelectItem value='INACTIVE'>⏸️ Inactive</SelectItem>
-                <SelectItem value='PLANNING'>📋 Planning</SelectItem>
+                <SelectItem value='all'>All Status</SelectItem>
+                <SelectItem value='ACTIVE'>Active</SelectItem>
+                <SelectItem value='INACTIVE'>Inactive</SelectItem>
+                <SelectItem value='PLANNING'>Planning</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -218,8 +219,8 @@ export function MinistryList({
             </h3>
             <p className='text-muted-foreground max-w-md mx-auto'>
               {ministries.length === 0
-                ? "Create your first ministry to start serving the community! ❤️"
-                : "Try adjusting your search or filter criteria. 🔍"}
+                ? "Create your first ministry to start serving the community!"
+                : "Try adjusting your search or filter criteria."}
             </p>
           </CardContent>
         </Card>
@@ -233,10 +234,7 @@ export function MinistryList({
               <CardHeader className='pb-3 bg-muted/50'>
                 <div className='flex items-start justify-between'>
                   <div className='space-y-2 flex-1'>
-                    <CardTitle className='text-lg flex items-center gap-2'>
-                      <span>❤️</span>
-                      <span>{ministry.name}</span>
-                    </CardTitle>
+                    <CardTitle className='text-lg'>{ministry.name}</CardTitle>
                     <div className='flex flex-wrap items-center gap-2'>
                       <Badge
                         className={`${getCategoryColor(
@@ -288,28 +286,32 @@ export function MinistryList({
                   </CardDescription>
                 )}
               </CardHeader>
+              <CardContent className='space-y-3 pt-4'></CardContent>
               <CardContent className='space-y-3 pt-4'>
                 {/* Leader */}
-                <div className='flex items-center gap-2 text-sm p-2 bg-blue-50 dark:bg-blue-950/30 rounded-lg'>
+                <div className='flex items-center gap-2 text-sm p-2 dark:bg-blue-950/30 rounded-lg'>
                   <Users className='h-4 w-4 text-blue-600' />
                   <span className='text-muted-foreground'>Leader:</span>
                   <span className='font-semibold'>
-                    {ministry.leader.firstName} {ministry.leader.lastName}
+                    {ministry.leader
+                      ? `${ministry.leader.firstName} ${ministry.leader.lastName}`
+                      : "No leader assigned"}
                   </span>
                 </div>
 
                 {/* Members Count */}
-                <div className='flex items-center gap-2 text-sm p-2 bg-green-50 dark:bg-green-950/30 rounded-lg'>
+                <div className='flex items-center gap-2 text-sm p-2 dark:bg-green-950/30 rounded-lg'>
                   <Users className='h-4 w-4 text-green-600' />
                   <span className='text-muted-foreground'>Members:</span>
                   <span className='font-semibold'>
-                    {ministry.memberCount || ministry.members.length}
+                    {ministry.memberCount ||
+                      (ministry.members ? ministry.members.length : 0)}
                   </span>
                 </div>
 
                 {/* Meeting Schedule */}
                 {ministry.meetingSchedule && (
-                  <div className='flex items-center gap-2 text-sm p-2 bg-purple-50 dark:bg-purple-950/30 rounded-lg'>
+                  <div className='flex items-center gap-2 text-sm p-2 dark:bg-purple-950/30 rounded-lg'>
                     <Calendar className='h-4 w-4 text-purple-600' />
                     <div className='flex-1'>
                       <span className='text-muted-foreground'>Meets: </span>
@@ -343,7 +345,7 @@ export function MinistryList({
                 )}
 
                 {/* Budget */}
-                {ministry.budget && (
+                {ministry.budget && ministry.budget.allocated && (
                   <div className='bg-emerald-50 dark:bg-emerald-950/30 p-3 rounded-lg'>
                     <div className='flex items-center gap-2 text-sm mb-1'>
                       <DollarSign className='h-4 w-4 text-emerald-600' />
@@ -351,17 +353,17 @@ export function MinistryList({
                       <span className='font-bold text-emerald-700 dark:text-emerald-400'>
                         {formatCurrency(
                           ministry.budget.allocated,
-                          ministry.budget.currency
+                          ministry.budget.currency || "USD"
                         )}
                       </span>
                     </div>
-                    {ministry.budget.spent > 0 && (
+                    {ministry.budget.spent && ministry.budget.spent > 0 && (
                       <div className='text-xs text-muted-foreground ml-6'>
                         Spent:{" "}
                         <span className='font-medium'>
                           {formatCurrency(
                             ministry.budget.spent,
-                            ministry.budget.currency
+                            ministry.budget.currency || "USD"
                           )}
                         </span>
                         {" • "}
@@ -382,7 +384,7 @@ export function MinistryList({
                 {ministry.goals && ministry.goals.length > 0 && (
                   <div className='space-y-2'>
                     <span className='text-xs font-semibold text-muted-foreground uppercase tracking-wide'>
-                      🎯 Goals
+                      Goals
                     </span>
                     <div className='flex flex-wrap gap-1.5'>
                       {ministry.goals.slice(0, 2).map((goal, index) => (

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { AppShell } from "@/components/layout/app-shell";
-import { FeatureGuard } from "@/components/auth/feature-guard";
+import { FeatureGuard } from "@/components/feature-guard";
 import {
   Card,
   CardContent,
@@ -232,14 +232,14 @@ export default function EventsPage() {
         <div className='space-y-6'>
           {/* Header Section */}
           <div className='bg-card rounded-xl p-6 border shadow-sm'>
-            <div className='flex items-center justify-between'>
+            <div className='flex flex-col gap-4'>
               <div>
                 <div className='flex items-center space-x-3 mb-2'>
                   <div className='p-2 bg-green-500 rounded-lg'>
                     <Calendar className='h-6 w-6 text-white' />
                   </div>
                   <h1 className='text-2xl font-bold text-foreground'>
-                    Church Events 🎉
+                    Church Events
                   </h1>
                 </div>
                 <p className='text-muted-foreground'>
@@ -247,7 +247,7 @@ export default function EventsPage() {
                 </p>
               </div>
               {isAdmin && (
-                <Button asChild className='shadow-sm'>
+                <Button asChild className='shadow-sm w-full sm:w-auto'>
                   <Link href='/events/new'>
                     <Plus className='h-4 w-4 mr-2' />
                     Create Event
@@ -313,14 +313,14 @@ export default function EventsPage() {
           </div>
 
           {/* Search and Filters */}
-                    {/* Filters */}
+          {/* Filters */}
           <Card className='border-none shadow-sm'>
             <CardContent className='p-6'>
               <div className='flex flex-col lg:flex-row gap-4 lg:items-center'>
                 <div className='relative flex-1 max-w-md'>
                   <Search className='h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground' />
                   <Input
-                    placeholder='🔍 Search events by name...'
+                    placeholder='Search events by name...'
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className='pl-10 bg-white dark:bg-gray-800 border-none shadow-sm'
@@ -340,30 +340,30 @@ export default function EventsPage() {
                   </Button>
                   <Select value={filterStatus} onValueChange={setFilterStatus}>
                     <SelectTrigger className='w-full sm:w-[160px] bg-white dark:bg-gray-800 border-none shadow-sm'>
-                      <SelectValue placeholder='📊 Status' />
+                      <SelectValue placeholder='Status' />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value='all'>📊 All Status</SelectItem>
-                      <SelectItem value='DRAFT'>📝 Draft</SelectItem>
-                      <SelectItem value='PUBLISHED'>✅ Published</SelectItem>
-                      <SelectItem value='CANCELLED'>❌ Cancelled</SelectItem>
-                      <SelectItem value='COMPLETED'>🏁 Completed</SelectItem>
+                      <SelectItem value='all'>All Status</SelectItem>
+                      <SelectItem value='DRAFT'>Draft</SelectItem>
+                      <SelectItem value='PUBLISHED'>Published</SelectItem>
+                      <SelectItem value='CANCELLED'>Cancelled</SelectItem>
+                      <SelectItem value='COMPLETED'>Completed</SelectItem>
                     </SelectContent>
                   </Select>
                   <Select value={filterType} onValueChange={setFilterType}>
                     <SelectTrigger className='w-full sm:w-[180px] bg-white dark:bg-gray-800 border-none shadow-sm'>
-                      <SelectValue placeholder='🎯 Event Type' />
+                      <SelectValue placeholder='Event Type' />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value='all'>🎯 All Types</SelectItem>
-                      <SelectItem value='SERVICE'>⛪ Service</SelectItem>
-                      <SelectItem value='MEETING'>💼 Meeting</SelectItem>
+                      <SelectItem value='all'>All Types</SelectItem>
+                      <SelectItem value='SERVICE'>Service</SelectItem>
+                      <SelectItem value='MEETING'>Meeting</SelectItem>
                       <SelectItem value='SPECIAL_OCCASION'>
-                        🎊 Special Occasion
+                        Special Occasion
                       </SelectItem>
-                      <SelectItem value='CONFERENCE'>🎤 Conference</SelectItem>
-                      <SelectItem value='SOCIAL'>🎉 Social</SelectItem>
-                      <SelectItem value='OTHER'>📌 Other</SelectItem>
+                      <SelectItem value='CONFERENCE'>Conference</SelectItem>
+                      <SelectItem value='SOCIAL'>Social</SelectItem>
+                      <SelectItem value='OTHER'>Other</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -410,7 +410,7 @@ export default function EventsPage() {
                       <Calendar className='h-8 w-8 text-blue-500' />
                     </div>
                     <h3 className='text-lg font-medium text-foreground mb-2 text-center'>
-                      No upcoming events yet! 📅
+                      No upcoming events yet!
                     </h3>
                     <p className='text-muted-foreground text-center mb-6 max-w-md'>
                       {isAdmin
@@ -454,7 +454,7 @@ export default function EventsPage() {
                       <Calendar className='h-8 w-8 text-purple-500' />
                     </div>
                     <h3 className='text-lg font-medium text-foreground mb-2 text-center'>
-                      No past events yet 📚
+                      No past events yet
                     </h3>
                     <p className='text-muted-foreground text-center max-w-md'>
                       Your event history will appear here as activities are

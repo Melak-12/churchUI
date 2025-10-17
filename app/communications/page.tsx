@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { AppShell } from "@/components/layout/app-shell";
-import { FeatureGuard } from "@/components/auth/feature-guard";
+import { FeatureGuard } from "@/components/feature-guard";
 import {
   Card,
   CardContent,
@@ -288,23 +288,23 @@ export default function CommunicationsPage() {
         <div className='space-y-6'>
           {/* Header Section */}
           <div className='bg-card rounded-xl p-6 border shadow-sm'>
-            <div className='flex items-center justify-between'>
+            <div className='flex flex-col gap-4'>
               <div>
                 <div className='flex items-center space-x-3 mb-2'>
-                  <div className='p-2 bg-purple-500 rounded-lg'>
-                    <MessageSquare className='h-6 w-6 text-white' />
+                  <div className='p-2 bg-purple-100 dark:bg-purple-950/50 rounded-lg'>
+                    <MessageSquare className='h-6 w-6 text-purple-600 dark:text-purple-400' />
                   </div>
                   <h1 className='text-2xl font-bold text-foreground'>
-                    Communications 💬
+                    Communications
                   </h1>
                 </div>
                 <p className='text-muted-foreground'>
                   Stay connected with your community through SMS campaigns
                 </p>
               </div>
-              <div className='flex items-center gap-2'>
+              <div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-2'>
                 <TwilioTest />
-                <Button className='shadow-sm' asChild>
+                <Button className='shadow-sm w-full sm:w-auto' asChild>
                   <Link href='/communications/new'>
                     <Plus className='h-4 w-4 mr-2' />
                     Create Campaign
@@ -321,11 +321,11 @@ export default function CommunicationsPage() {
                 <div className='flex items-center justify-between'>
                   <div>
                     <p className='text-sm text-muted-foreground'>Sent</p>
-                    <p className='text-2xl font-bold text-green-600'>
+                    <p className='text-2xl font-bold text-green-600 dark:text-green-400'>
                       {communications.filter((c) => c.status === "SENT").length}
                     </p>
                   </div>
-                  <Send className='h-8 w-8 text-green-500' />
+                  <Send className='h-8 w-8 text-green-500 dark:text-green-400' />
                 </div>
               </CardContent>
             </Card>
@@ -335,14 +335,14 @@ export default function CommunicationsPage() {
                 <div className='flex items-center justify-between'>
                   <div>
                     <p className='text-sm text-muted-foreground'>Scheduled</p>
-                    <p className='text-2xl font-bold text-blue-600'>
+                    <p className='text-2xl font-bold text-blue-600 dark:text-blue-400'>
                       {
                         communications.filter((c) => c.status === "SCHEDULED")
                           .length
                       }
                     </p>
                   </div>
-                  <Calendar className='h-8 w-8 text-blue-500' />
+                  <Calendar className='h-8 w-8 text-blue-500 dark:text-blue-400' />
                 </div>
               </CardContent>
             </Card>
@@ -352,14 +352,14 @@ export default function CommunicationsPage() {
                 <div className='flex items-center justify-between'>
                   <div>
                     <p className='text-sm text-muted-foreground'>Draft</p>
-                    <p className='text-2xl font-bold text-yellow-600'>
+                    <p className='text-2xl font-bold text-yellow-600 dark:text-yellow-400'>
                       {
                         communications.filter((c) => c.status === "DRAFT")
                           .length
                       }
                     </p>
                   </div>
-                  <MessageSquare className='h-8 w-8 text-yellow-500' />
+                  <MessageSquare className='h-8 w-8 text-yellow-500 dark:text-yellow-400' />
                 </div>
               </CardContent>
             </Card>
@@ -369,11 +369,11 @@ export default function CommunicationsPage() {
                 <div className='flex items-center justify-between'>
                   <div>
                     <p className='text-sm text-muted-foreground'>Total</p>
-                    <p className='text-2xl font-bold text-purple-600'>
+                    <p className='text-2xl font-bold text-purple-600 dark:text-purple-400'>
                       {communications.length}
                     </p>
                   </div>
-                  <Users className='h-8 w-8 text-purple-500' />
+                  <Users className='h-8 w-8 text-purple-500 dark:text-purple-400' />
                 </div>
               </CardContent>
             </Card>
@@ -452,7 +452,7 @@ export default function CommunicationsPage() {
                 </div>
                 <h3 className='text-lg font-medium text-foreground mb-2'>
                   {statusFilter === "ALL"
-                    ? "Ready to connect? 📱"
+                    ? "Ready to connect?"
                     : `No ${statusFilter.toLowerCase()} campaigns found`}
                 </h3>
                 <p className='text-muted-foreground text-center mb-6 max-w-md'>

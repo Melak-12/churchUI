@@ -79,17 +79,17 @@ export default function CommunicationDetailsPage() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "SENT":
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
+        return <CheckCircle className='h-4 w-4 text-green-500' />;
       case "SENDING":
-        return <Clock className="h-4 w-4 text-blue-500" />;
+        return <Clock className='h-4 w-4 text-blue-500' />;
       case "FAILED":
-        return <AlertCircle className="h-4 w-4 text-red-500" />;
+        return <AlertCircle className='h-4 w-4 text-red-500' />;
       case "SCHEDULED":
-        return <Clock className="h-4 w-4 text-yellow-500" />;
+        return <Clock className='h-4 w-4 text-yellow-500' />;
       case "DRAFT":
-        return <MessageSquare className="h-4 w-4 text-gray-500" />;
+        return <MessageSquare className='h-4 w-4 text-gray-500' />;
       default:
-        return <MessageSquare className="h-4 w-4 text-gray-500" />;
+        return <MessageSquare className='h-4 w-4 text-gray-500' />;
     }
   };
 
@@ -113,15 +113,15 @@ export default function CommunicationDetailsPage() {
   const getRecipientStatusIcon = (status: string) => {
     switch (status) {
       case "SENT":
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
+        return <CheckCircle className='h-4 w-4 text-green-500' />;
       case "DELIVERED":
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
+        return <CheckCircle className='h-4 w-4 text-green-600' />;
       case "FAILED":
-        return <AlertCircle className="h-4 w-4 text-red-500" />;
+        return <AlertCircle className='h-4 w-4 text-red-500' />;
       case "PENDING":
-        return <Clock className="h-4 w-4 text-yellow-500" />;
+        return <Clock className='h-4 w-4 text-yellow-500' />;
       default:
-        return <Clock className="h-4 w-4 text-gray-500" />;
+        return <Clock className='h-4 w-4 text-gray-500' />;
     }
   };
 
@@ -133,22 +133,22 @@ export default function CommunicationDetailsPage() {
   if (loading) {
     return (
       <AppShell>
-        <div className="space-y-6">
-          <div className="flex items-center space-x-4">
-            <Skeleton className="h-10 w-10" />
+        <div className='space-y-6'>
+          <div className='flex items-center space-x-4'>
+            <Skeleton className='h-10 w-10' />
             <div>
-              <Skeleton className="h-8 w-64 mb-2" />
-              <Skeleton className="h-4 w-32" />
+              <Skeleton className='h-8 w-64 mb-2' />
+              <Skeleton className='h-4 w-32' />
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
             {Array.from({ length: 3 }).map((_, i) => (
               <Card key={i}>
                 <CardHeader>
-                  <Skeleton className="h-6 w-32" />
+                  <Skeleton className='h-6 w-32' />
                 </CardHeader>
                 <CardContent>
-                  <Skeleton className="h-8 w-16" />
+                  <Skeleton className='h-8 w-16' />
                 </CardContent>
               </Card>
             ))}
@@ -161,26 +161,26 @@ export default function CommunicationDetailsPage() {
   if (error || !communication) {
     return (
       <AppShell>
-        <div className="space-y-6">
-          <div className="flex items-center space-x-4">
-            <Button variant="outline" size="sm" asChild>
-              <Link href="/communications">
-                <ArrowLeft className="h-4 w-4 mr-2" />
+        <div className='space-y-6'>
+          <div className='flex items-center space-x-4'>
+            <Button variant='outline' size='sm' asChild>
+              <Link href='/communications'>
+                <ArrowLeft className='h-4 w-4 mr-2' />
                 Back
               </Link>
             </Button>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className='text-2xl font-bold text-gray-900'>
                 Communication Not Found
               </h1>
-              <p className="text-gray-600">
+              <p className='text-gray-600'>
                 The communication you&apos;re looking for doesn&apos;t exist
               </p>
             </div>
           </div>
           {error && (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
+            <Alert variant='destructive'>
+              <AlertCircle className='h-4 w-4' />
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
@@ -196,35 +196,35 @@ export default function CommunicationDetailsPage() {
 
   return (
     <AppShell>
-      <div className="space-y-6">
+      <div className='space-y-6'>
         {/* Header */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
+        <div className='space-y-4'>
+          <div className='flex items-center justify-between'>
             <Button
-              variant="ghost"
-              size="sm"
+              variant='ghost'
+              size='sm'
               asChild
-              className="text-gray-600 hover:text-gray-900"
+              className='text-gray-600 hover:text-gray-900'
             >
-              <Link href="/communications">
-                <ArrowLeft className="h-4 w-4 mr-1" />
+              <Link href='/communications'>
+                <ArrowLeft className='h-4 w-4 mr-1' />
                 Back
               </Link>
             </Button>
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className='text-3xl font-bold text-gray-900'>
               {communication.name}
             </h1>
-            <p className="text-gray-500 mt-1">SMS Campaign Details</p>
+            <p className='text-gray-500 mt-1'>SMS Campaign Details</p>
           </div>
         </div>
 
         {/* Status and Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className='grid grid-cols-1 md:grid-cols-4 gap-6'>
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Status</CardTitle>
+            <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+              <CardTitle className='text-sm font-medium'>Status</CardTitle>
               {getStatusIcon(communication.status)}
             </CardHeader>
             <CardContent>
@@ -235,84 +235,86 @@ export default function CommunicationDetailsPage() {
           </Card>
 
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+            <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+              <CardTitle className='text-sm font-medium'>
                 Messages Sent
               </CardTitle>
-              <Send className="h-4 w-4 text-muted-foreground" />
+              <Send className='h-4 w-4 text-muted-foreground' />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{communication.sent}</div>
+              <div className='text-2xl font-bold'>{communication.sent}</div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Delivered</CardTitle>
-              <CheckCircle className="h-4 w-4 text-muted-foreground" />
+            <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+              <CardTitle className='text-sm font-medium'>Delivered</CardTitle>
+              <CheckCircle className='h-4 w-4 text-muted-foreground' />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-600">
+              <div className='text-2xl font-bold text-green-600'>
                 {communication.delivered}
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+            <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+              <CardTitle className='text-sm font-medium'>
                 Delivery Rate
               </CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
+              <Users className='h-4 w-4 text-muted-foreground' />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{deliveryRate}%</div>
-              <Progress value={deliveryRate} className="mt-2" />
+              <div className='text-2xl font-bold'>{deliveryRate}%</div>
+              <Progress value={deliveryRate} className='mt-2' />
             </CardContent>
           </Card>
         </div>
 
         {/* Campaign Details */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
           <Card>
             <CardHeader>
               <CardTitle>Campaign Information</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className='space-y-4'>
               <div>
-                <label className="text-sm font-medium text-gray-500">
+                <label className='text-sm font-medium text-gray-500'>
                   Audience
                 </label>
-                <div className="mt-1">
-                  <Badge variant="outline">
+                <div className='mt-1'>
+                  <Badge variant='outline'>
                     {communication.audience.replace("_", " ")}
                   </Badge>
                 </div>
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-500">
+                <label className='text-sm font-medium text-gray-500 dark:text-gray-400'>
                   Message
                 </label>
-                <div className="mt-1 p-3 bg-gray-50 rounded-md">
-                  <p className="text-sm">{communication.body}</p>
+                <div className='mt-1 p-3 bg-gray-50 dark:bg-gray-800 rounded-md'>
+                  <p className='text-sm text-gray-900 dark:text-gray-100'>
+                    {communication.body}
+                  </p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className='grid grid-cols-2 gap-4'>
                 <div>
-                  <label className="text-sm font-medium text-gray-500">
+                  <label className='text-sm font-medium text-gray-500'>
                     Created
                   </label>
-                  <div className="mt-1 text-sm">
+                  <div className='mt-1 text-sm'>
                     {formatDate(communication.createdAt)}
                   </div>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-500">
+                  <label className='text-sm font-medium text-gray-500'>
                     Sent
                   </label>
-                  <div className="mt-1 text-sm">
+                  <div className='mt-1 text-sm'>
                     {communication.sentAt
                       ? formatDate(communication.sentAt)
                       : "Not sent"}
@@ -322,11 +324,11 @@ export default function CommunicationDetailsPage() {
 
               {communication.scheduledAt && (
                 <div>
-                  <label className="text-sm font-medium text-gray-500">
+                  <label className='text-sm font-medium text-gray-500'>
                     Scheduled
                   </label>
-                  <div className="mt-1 text-sm flex items-center">
-                    <Calendar className="h-4 w-4 mr-2" />
+                  <div className='mt-1 text-sm flex items-center'>
+                    <Calendar className='h-4 w-4 mr-2' />
                     {formatDate(communication.scheduledAt)}
                   </div>
                 </div>
@@ -339,34 +341,34 @@ export default function CommunicationDetailsPage() {
               <CardTitle>Recipient Statistics</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">
+              <div className='space-y-4'>
+                <div className='flex justify-between items-center'>
+                  <span className='text-sm text-gray-600'>
                     Total Recipients
                   </span>
-                  <span className="font-semibold">{recipients.length}</span>
+                  <span className='font-semibold'>{recipients.length}</span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Pending</span>
-                  <span className="font-semibold text-yellow-600">
+                <div className='flex justify-between items-center'>
+                  <span className='text-sm text-gray-600'>Pending</span>
+                  <span className='font-semibold text-yellow-600'>
                     {recipients.filter((r) => r.status === "PENDING").length}
                   </span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Sent</span>
-                  <span className="font-semibold text-blue-600">
+                <div className='flex justify-between items-center'>
+                  <span className='text-sm text-gray-600'>Sent</span>
+                  <span className='font-semibold text-blue-600'>
                     {recipients.filter((r) => r.status === "SENT").length}
                   </span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Delivered</span>
-                  <span className="font-semibold text-green-600">
+                <div className='flex justify-between items-center'>
+                  <span className='text-sm text-gray-600'>Delivered</span>
+                  <span className='font-semibold text-green-600'>
                     {recipients.filter((r) => r.status === "DELIVERED").length}
                   </span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Failed</span>
-                  <span className="font-semibold text-red-600">
+                <div className='flex justify-between items-center'>
+                  <span className='text-sm text-gray-600'>Failed</span>
+                  <span className='font-semibold text-red-600'>
                     {recipients.filter((r) => r.status === "FAILED").length}
                   </span>
                 </div>
@@ -400,24 +402,24 @@ export default function CommunicationDetailsPage() {
                   {recipients.map((recipient, index) => (
                     <TableRow key={index}>
                       <TableCell>
-                        <div className="flex items-center space-x-2">
-                          <User className="h-4 w-4 text-gray-400" />
+                        <div className='flex items-center space-x-2'>
+                          <User className='h-4 w-4 text-gray-400' />
                           <div>
-                            <div className="font-medium">
+                            <div className='font-medium'>
                               {recipient.member.firstName}{" "}
                               {recipient.member.lastName}
                             </div>
-                            <div className="text-sm text-gray-500">
+                            <div className='text-sm text-gray-500'>
                               {recipient.member.email}
                             </div>
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="font-mono text-sm">
+                      <TableCell className='font-mono text-sm'>
                         {recipient.phone}
                       </TableCell>
                       <TableCell>
-                        <div className="flex items-center space-x-2">
+                        <div className='flex items-center space-x-2'>
                           {getRecipientStatusIcon(recipient.status)}
                           <Badge
                             variant={
@@ -439,17 +441,17 @@ export default function CommunicationDetailsPage() {
                           </Badge>
                         </div>
                       </TableCell>
-                      <TableCell className="text-sm">
+                      <TableCell className='text-sm'>
                         {recipient.sentAt
                           ? formatDate(recipient.sentAt)
                           : "N/A"}
                       </TableCell>
-                      <TableCell className="text-sm">
+                      <TableCell className='text-sm'>
                         {recipient.deliveredAt
                           ? formatDate(recipient.deliveredAt)
                           : "N/A"}
                       </TableCell>
-                      <TableCell className="text-sm text-red-600">
+                      <TableCell className='text-sm text-red-600'>
                         {recipient.errorMessage || "N/A"}
                       </TableCell>
                     </TableRow>

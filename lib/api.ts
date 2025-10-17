@@ -25,6 +25,10 @@ import {
   MinistryQuery,
   SmallGroupQuery,
   AttendanceQuery,
+  Feedback,
+  CreateFeedbackRequest,
+  FeedbackQuery,
+  FeedbackStats,
 } from "@/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
@@ -342,6 +346,26 @@ class ApiClient {
     });
   }
 
+  async startVote(id: string): Promise<Vote> {
+    const response = await this.request<{ vote: Vote }>(
+      `/api/votes/${id}/start`,
+      {
+        method: "POST",
+      }
+    );
+    return response.data!.vote;
+  }
+
+  async stopVote(id: string): Promise<Vote> {
+    const response = await this.request<{ vote: Vote }>(
+      `/api/votes/${id}/stop`,
+      {
+        method: "POST",
+      }
+    );
+    return response.data!.vote;
+  }
+
   async castVote(voteId: string, option: string): Promise<void> {
     await this.request(`/api/votes/${voteId}/vote`, {
       method: "POST",
@@ -354,6 +378,13 @@ class ApiClient {
       `/api/votes/${voteId}/results`
     );
     return response.data!;
+  }
+
+  async getVoteParticipants(voteId: string): Promise<any[]> {
+    const response = await this.request<{ participants: any[] }>(
+      `/api/votes/${voteId}/participants`
+    );
+    return response.data!.participants;
   }
 
   // Communications endpoints
@@ -488,6 +519,17 @@ class ApiClient {
   async getTwilioStatus(): Promise<any> {
     const response = await this.request<any>(
       "/api/communications/twilio-status"
+    );
+    return response.data!;
+  }
+
+  async testBulkSms(phoneNumber: string, messages: any[]): Promise<any> {
+    const response = await this.request<any>(
+      "/api/communications/test-bulk-sms",
+      {
+        method: "POST",
+        body: JSON.stringify({ phoneNumber, messages }),
+      }
     );
     return response.data!;
   }
@@ -1032,11 +1074,11 @@ class ApiClient {
       ? `/api/ministries?${queryString}`
       : "/api/ministries";
 
-    const response = await this.request<{
-      ministries: Ministry[];
-      pagination?: any;
-    }>(endpoint);
-    return response.data!;
+    const response = await this.request<any>(endpoint);
+    return {
+      ministries: response.data || [],
+      pagination: response.pagination,
+    };
   }
 
   async getMinistry(
@@ -1265,11 +1307,11 @@ class ApiClient {
       ? `/api/attendance?${queryString}`
       : "/api/attendance";
 
-    const response = await this.request<{
-      attendance: Attendance[];
-      pagination?: any;
-    }>(endpoint);
-    return response.data!;
+    const response = await this.request<any>(endpoint);
+    return {
+      attendance: response.data || [],
+      pagination: response.pagination,
+    };
   }
 
   async getAttendanceRecord(id: string): Promise<Attendance> {
@@ -1365,6 +1407,215 @@ class ApiClient {
       }
     );
     return response.data!;
+  }
+
+  // QR Code Attendance API
+  async generateMemberQRCode(memberId: string): Promise<{
+    qrCode: string;
+    member: {
+      id: string;
+      name: string;
+      phone: string;
+    };
+  }> {
+    const response = await this.request<{
+      qrCode: string;
+      member: {
+        id: string;
+        name: string;
+        phone: string;
+      };
+    }>(`/api/attendance/qr/${memberId}`);
+    return response.data!;
+  }
+
+  async processQRScan(
+    qrData: string,
+    serviceType?: string,
+    serviceTime?: string,
+    notes?: string
+  ): Promise<Attendance> {
+    const response = await this.request<Attendance>("/api/attendance/qr-scan", {
+      method: "POST",
+      body: JSON.stringify({ qrData, serviceType, serviceTime, notes }),
+    });
+    return response.data!;
+  }
+
+  async exportAttendance(
+    startDate?: string,
+    endDate?: string,
+    format: "csv" | "excel" = "csv"
+  ): Promise<Blob> {
+    const searchParams = new URLSearchParams();
+    if (startDate) searchParams.append("startDate", startDate);
+    if (endDate) searchParams.append("endDate", endDate);
+    searchParams.append("format", format);
+
+    const response = await fetch(
+      `${this.baseURL}/api/attendance/export?${searchParams.toString()}`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to export attendance data");
+    }
+
+    return response.blob();
+  }
+
+  // Ministry Settings API
+  async getMinistrySettings(): Promise<any> {
+    const response = await this.request<any>("/api/ministries/settings");
+    return response.data!;
+  }
+
+  async updateMinistrySettings(settingsData: any): Promise<any> {
+    const response = await this.request<any>("/api/ministries/settings", {
+      method: "PUT",
+      body: JSON.stringify(settingsData),
+    });
+    return response.data!;
+  }
+
+  async resetMinistrySettings(): Promise<any> {
+    const response = await this.request<any>("/api/ministries/settings/reset", {
+      method: "POST",
+    });
+    return response.data!;
+  }
+
+  // ==================== Feedback Methods ====================
+
+  async submitFeedback(data: CreateFeedbackRequest): Promise<Feedback> {
+    const response = await this.request<{ feedback: Feedback }>(
+      "/api/feedback",
+      {
+        method: "POST",
+        body: JSON.stringify(data),
+      }
+    );
+    return response.data!.feedback;
+  }
+
+  async getMyFeedback(): Promise<Feedback[]> {
+    const response = await this.request<{ feedbacks: Feedback[] }>(
+      "/api/feedback/my-feedback"
+    );
+    return response.data!.feedbacks;
+  }
+
+  async getAllFeedback(
+    query?: FeedbackQuery
+  ): Promise<{ feedbacks: Feedback[]; pagination?: any }> {
+    const queryString = query
+      ? new URLSearchParams(query as any).toString()
+      : "";
+    const endpoint = queryString
+      ? `/api/feedback?${queryString}`
+      : "/api/feedback";
+
+    const response = await this.request<{ feedbacks: Feedback[] }>(endpoint);
+    return {
+      feedbacks: response.data!.feedbacks,
+      pagination: response.pagination,
+    };
+  }
+
+  async getFeedbackStats(): Promise<FeedbackStats> {
+    const response = await this.request<{ stats: FeedbackStats }>(
+      "/api/feedback/stats"
+    );
+    return response.data!.stats;
+  }
+
+  async getFeedbackById(id: string): Promise<Feedback> {
+    const response = await this.request<{ feedback: Feedback }>(
+      `/api/feedback/${id}`
+    );
+    return response.data!.feedback;
+  }
+
+  async markFeedbackAsReviewed(
+    id: string,
+    adminNotes?: string
+  ): Promise<Feedback> {
+    const response = await this.request<{ feedback: Feedback }>(
+      `/api/feedback/${id}/review`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({ adminNotes }),
+      }
+    );
+    return response.data!.feedback;
+  }
+
+  async resolveFeedback(id: string, adminNotes?: string): Promise<Feedback> {
+    const response = await this.request<{ feedback: Feedback }>(
+      `/api/feedback/${id}/resolve`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({ adminNotes }),
+      }
+    );
+    return response.data!.feedback;
+  }
+
+  async archiveFeedback(id: string): Promise<void> {
+    await this.request(`/api/feedback/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  // ==================== Member Profile Completion Methods ====================
+
+  async completeProfile(profileData: {
+    phone: string;
+    firstName: string;
+    lastName: string;
+    email?: string;
+    address?: string;
+    password: string;
+    consent: boolean;
+    familyMembers?: Array<{
+      firstName: string;
+      lastName?: string;
+      relationship: string;
+      phone?: string;
+    }>;
+  }): Promise<any> {
+    const response = await this.request<any>("/api/members/complete-profile", {
+      method: "POST",
+      body: JSON.stringify(profileData),
+    });
+    return response.data;
+  }
+
+  async checkPhoneExists(phone: string): Promise<{
+    exists: boolean;
+    profileCompleted: boolean;
+    firstName?: string;
+    lastName?: string;
+  }> {
+    try {
+      const response = await this.request<any>(
+        `/api/members/check-phone/${encodeURIComponent(phone)}`
+      );
+      return response.data;
+    } catch (error: any) {
+      // If 404, phone doesn't exist
+      if (error.message?.includes("not found")) {
+        return {
+          exists: false,
+          profileCompleted: false,
+        };
+      }
+      throw error;
+    }
   }
 }
 

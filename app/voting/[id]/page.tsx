@@ -54,6 +54,11 @@ export default function VoteManagementPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [participants, setParticipants] = useState<any[]>([]);
+  const [participantsLoading, setParticipantsLoading] = useState(false);
+  const [participantsError, setParticipantsError] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchVote = async () => {
@@ -81,13 +86,31 @@ export default function VoteManagementPage() {
     }
   }, [params.id]);
 
+  const fetchParticipants = async () => {
+    if (!vote || vote.anonymous) return;
+
+    try {
+      setParticipantsLoading(true);
+      setParticipantsError(null);
+      const participantsData = await apiClient.getVoteParticipants(
+        params.id as string
+      );
+      setParticipants(participantsData);
+    } catch (err: any) {
+      console.error("Failed to fetch participants:", err);
+      setParticipantsError(err.message || "Failed to load participants");
+    } finally {
+      setParticipantsLoading(false);
+    }
+  };
+
   const handleStartVote = async () => {
     try {
       setActionLoading("start");
       // Get the vote ID, handling both _id and id fields (MongoDB compatibility)
       const voteId = getDocumentId(vote);
-      await apiClient.updateVote(voteId, { status: "ACTIVE" });
-      setVote({ ...vote, status: "ACTIVE" });
+      const updatedVote = await apiClient.startVote(voteId);
+      setVote(updatedVote);
       toast({
         title: "Vote Started",
         description: "The vote is now active and accepting votes.",
@@ -109,8 +132,8 @@ export default function VoteManagementPage() {
       setActionLoading("stop");
       // Get the vote ID, handling both _id and id fields (MongoDB compatibility)
       const voteId = getDocumentId(vote);
-      await apiClient.updateVote(voteId, { status: "CLOSED" });
-      setVote({ ...vote, status: "CLOSED" });
+      const updatedVote = await apiClient.stopVote(voteId);
+      setVote(updatedVote);
       toast({
         title: "Vote Stopped",
         description:
@@ -332,6 +355,24 @@ export default function VoteManagementPage() {
                       <Edit className="h-4 w-4 mr-2" />
                       <span className="hidden sm:inline">Edit</span>
                     </Link>
+                  </Button>
+                )}
+
+                {canStart && (
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={handleStartVote}
+                    disabled={actionLoading === "start"}
+                    className="bg-green-600 hover:bg-green-700 text-white"
+                  >
+                    {actionLoading === "start" ? (
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                      <Play className="h-4 w-4 mr-2" />
+                    )}
+                    <span className="hidden sm:inline">Start Vote</span>
+                    <span className="sm:hidden">Start</span>
                   </Button>
                 )}
 
@@ -596,7 +637,11 @@ export default function VoteManagementPage() {
           </TabsContent>
 
           {/* Participants Tab */}
-          <TabsContent value="participants" className="space-y-6">
+          <TabsContent
+            value="participants"
+            className="space-y-6"
+            onFocus={fetchParticipants}
+          >
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
@@ -606,7 +651,9 @@ export default function VoteManagementPage() {
                 <CardDescription>
                   {vote.anonymous
                     ? "This is an anonymous vote. Individual votes cannot be tracked."
-                    : "List of members who have participated in this vote."}
+                    : `${vote.participationCount || 0} member${
+                        (vote.participationCount || 0) !== 1 ? "s have" : " has"
+                      } voted so far.`}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -620,16 +667,104 @@ export default function VoteManagementPage() {
                       Individual votes are not tracked to maintain anonymity.
                     </p>
                   </div>
-                ) : (
+                ) : participantsLoading ? (
+                  <div className="text-center py-8">
+                    <Loader2 className="h-8 w-8 text-gray-400 mx-auto mb-4 animate-spin" />
+                    <p className="text-gray-500">Loading participants...</p>
+                  </div>
+                ) : participantsError ? (
+                  <div className="text-center py-8">
+                    <AlertCircle className="h-12 w-12 text-red-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                      Error Loading Participants
+                    </h3>
+                    <p className="text-gray-500 mb-4">{participantsError}</p>
+                    <Button
+                      onClick={fetchParticipants}
+                      variant="outline"
+                      size="sm"
+                    >
+                      Try Again
+                    </Button>
+                  </div>
+                ) : participants.length === 0 ? (
                   <div className="text-center py-8">
                     <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-gray-900 mb-2">
-                      Participant Tracking
+                      No Participants Yet
                     </h3>
                     <p className="text-gray-500">
-                      Individual participant tracking will be implemented in a
-                      future update.
+                      No one has voted yet. Participants will appear here once
+                      votes are cast.
                     </p>
+                    <Button
+                      onClick={fetchParticipants}
+                      variant="outline"
+                      size="sm"
+                      className="mt-4"
+                    >
+                      Refresh
+                    </Button>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="mb-4 flex items-center justify-between">
+                      <p className="text-sm text-gray-600">
+                        Showing {participants.length} participant
+                        {participants.length !== 1 ? "s" : ""}
+                      </p>
+                      <Button
+                        onClick={fetchParticipants}
+                        variant="outline"
+                        size="sm"
+                      >
+                        Refresh
+                      </Button>
+                    </div>
+                    <div className="border rounded-lg overflow-hidden">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Member
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Contact
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Voted At
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {participants.map((participant, index) => (
+                            <tr
+                              key={participant.voterId || index}
+                              className="hover:bg-gray-50"
+                            >
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm font-medium text-gray-900">
+                                  {participant.voterName}
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm text-gray-500">
+                                  {participant.voterEmail && (
+                                    <div>{participant.voterEmail}</div>
+                                  )}
+                                  {participant.voterPhone && (
+                                    <div>{participant.voterPhone}</div>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {new Date(participant.votedAt).toLocaleString()}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 )}
               </CardContent>

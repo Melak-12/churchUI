@@ -1,7 +1,7 @@
 "use client";
 
 import { AppShell } from "@/components/layout/app-shell";
-import { FeatureGuard } from "@/components/auth/feature-guard";
+import { FeatureGuard } from "@/components/feature-guard";
 import { VoteCard } from "@/components/voting/vote-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -50,23 +50,22 @@ export default function VotingPage() {
         <div className='space-y-6'>
           {/* Modern Header */}
           <div className='bg-card rounded-xl p-6 border shadow-sm'>
-            <div className='flex items-start justify-between'>
+            <div className='flex flex-col gap-4'>
               <div>
                 <div className='flex items-center space-x-3 mb-2'>
                   <div className='p-2 bg-indigo-500 rounded-lg'>
                     <VoteIcon className='h-6 w-6 text-white' />
                   </div>
-                  <h1 className='text-2xl font-bold'>Voting & Decisions 🗳️</h1>
+                  <h1 className='text-2xl font-bold'>Voting & Decisions</h1>
                 </div>
                 <p className='text-muted-foreground'>
                   Manage community votes and elections democratically
                 </p>
               </div>
-              <Button asChild className='shadow-sm'>
+              <Button asChild className='shadow-sm w-full sm:w-auto'>
                 <Link href='/voting/new' className='flex items-center gap-2'>
                   <Plus className='h-4 w-4' />
-                  <span className='hidden sm:inline'>New Vote</span>
-                  <span className='sm:hidden'>New</span>
+                  <span>New Vote</span>
                 </Link>
               </Button>
             </div>
@@ -85,10 +84,10 @@ export default function VotingPage() {
                       </div>
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value='ALL'>🗳️ All Votes</SelectItem>
-                      <SelectItem value='SCHEDULED'>📅 Scheduled</SelectItem>
-                      <SelectItem value='ACTIVE'>✅ Active</SelectItem>
-                      <SelectItem value='CLOSED'>🔒 Closed</SelectItem>
+                      <SelectItem value='ALL'>All Votes</SelectItem>
+                      <SelectItem value='SCHEDULED'>Scheduled</SelectItem>
+                      <SelectItem value='ACTIVE'>Active</SelectItem>
+                      <SelectItem value='CLOSED'>Closed</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

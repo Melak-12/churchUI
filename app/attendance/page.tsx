@@ -1,138 +1,28 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { AppShell } from "@/components/layout/app-shell";
 import { AuthGuard } from "@/components/auth/auth-guard";
-import { FeatureGuard } from "@/components/auth/feature-guard";
+import { FeatureGuard } from "@/components/feature-guard";
+import { AttendanceCheckIn } from "@/components/attendance/attendance-checkin";
 import { AttendanceDashboard } from "@/components/attendance/attendance-dashboard";
-import { AttendanceList } from "@/components/attendance/attendance-list";
-import { AttendanceForm } from "@/components/attendance/attendance-form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Plus,
   Users,
   BarChart3,
+  QrCode,
   Calendar,
-  Check,
   Clock,
-  UserCheck,
+  CheckCircle,
 } from "lucide-react";
-import { Attendance, CreateAttendanceRequest } from "@/types";
-import apiClient from "@/lib/api";
-import { useToast } from "@/hooks/use-toast";
+import { Attendance } from "@/types";
 
 export default function AttendancePage() {
-  const [attendance, setAttendance] = useState<Attendance[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [showCreateForm, setShowCreateForm] = useState(false);
-  const [editingAttendance, setEditingAttendance] = useState<Attendance | null>(
-    null
-  );
-  const { toast } = useToast();
+  const [recentAttendance, setRecentAttendance] = useState<Attendance[]>([]);
 
-  const fetchAttendance = useCallback(async () => {
-    try {
-      setLoading(true);
-      const response = await apiClient.getAttendance();
-      setAttendance(response.attendance);
-    } catch (error) {
-      console.error("Error fetching attendance:", error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch attendance records",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  }, [toast]);
-
-  useEffect(() => {
-    fetchAttendance();
-  }, [fetchAttendance]);
-
-  const handleCreateAttendance = async (data: CreateAttendanceRequest) => {
-    try {
-      await apiClient.createAttendance(data);
-      toast({
-        title: "Success",
-        description: "Attendance record created successfully",
-      });
-      setShowCreateForm(false);
-      fetchAttendance();
-    } catch (error) {
-      console.error("Error creating attendance:", error);
-      toast({
-        title: "Error",
-        description: "Failed to create attendance record",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleUpdateAttendance = async (
-    id: string,
-    data: Partial<CreateAttendanceRequest>
-  ) => {
-    try {
-      await apiClient.updateAttendance(id, data);
-      toast({
-        title: "Success",
-        description: "Attendance record updated successfully",
-      });
-      setEditingAttendance(null);
-      fetchAttendance();
-    } catch (error) {
-      console.error("Error updating attendance:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update attendance record",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleDeleteAttendance = async (id: string) => {
-    try {
-      await apiClient.deleteAttendance(id);
-      toast({
-        title: "Success",
-        description: "Attendance record deleted successfully",
-      });
-      fetchAttendance();
-    } catch (error) {
-      console.error("Error deleting attendance:", error);
-      toast({
-        title: "Error",
-        description: "Failed to delete attendance record",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleCheckOut = async (id: string) => {
-    try {
-      await apiClient.checkOutAttendance(id);
-      toast({
-        title: "Success",
-        description: "Successfully checked out",
-      });
-      fetchAttendance();
-    } catch (error) {
-      console.error("Error checking out:", error);
-      toast({
-        title: "Error",
-        description: "Failed to check out",
-        variant: "destructive",
-      });
-    }
+  const handleAttendanceRecorded = (attendance: Attendance) => {
+    setRecentAttendance((prev) => [attendance, ...prev.slice(0, 9)]);
   };
 
   return (
@@ -142,148 +32,168 @@ export default function AttendancePage() {
           <div className='space-y-6'>
             {/* Header Section */}
             <div className='bg-card rounded-xl p-6 border shadow-sm'>
-              <div className='flex items-center justify-between'>
+              <div className='flex flex-col gap-4'>
                 <div>
                   <div className='flex items-center space-x-3 mb-2'>
-                    <div className='p-2 bg-emerald-500 rounded-lg'>
-                      <UserCheck className='h-6 w-6 text-white' />
+                    <div className='p-2 bg-blue-500 rounded-lg'>
+                      <Users className='h-6 w-6 text-white' />
                     </div>
                     <h1 className='text-2xl font-bold text-foreground'>
-                      Attendance Tracker 📋
+                      Attendance Management
                     </h1>
                   </div>
                   <p className='text-muted-foreground'>
-                    Keep track of member participation and engagement
+                    Track member attendance and service participation
                   </p>
                 </div>
-                <Button
-                  className='shadow-sm'
-                  onClick={() => setShowCreateForm(true)}
-                >
-                  <Plus className='h-4 w-4 mr-2' />
-                  Quick Check-In
-                </Button>
+                <div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-2'>
+                  <Button
+                    variant='outline'
+                    size='sm'
+                    className='w-full sm:w-auto'
+                  >
+                    <Calendar className='h-4 w-4 mr-2' />
+                    Schedule Service
+                  </Button>
+                  <Button size='sm' className='w-full sm:w-auto'>
+                    <QrCode className='h-4 w-4 mr-2' />
+                    Generate QR Codes
+                  </Button>
+                </div>
               </div>
             </div>
 
-            <Tabs defaultValue='list' className='space-y-6'>
+            {/* Quick Stats */}
+            <div className='grid gap-4 md:grid-cols-4'>
+              <div className='bg-card rounded-lg p-4 border'>
+                <div className='flex items-center space-x-2'>
+                  <div className='p-2 bg-green-100 rounded-lg'>
+                    <CheckCircle className='h-5 w-5 text-green-600' />
+                  </div>
+                  <div>
+                    <div className='text-2xl font-bold'>0</div>
+                    <div className='text-sm text-muted-foreground'>
+                      Todays Check-ins
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className='bg-card rounded-lg p-4 border'>
+                <div className='flex items-center space-x-2'>
+                  <div className='p-2 bg-blue-100 rounded-lg'>
+                    <Users className='h-5 w-5 text-blue-600' />
+                  </div>
+                  <div>
+                    <div className='text-2xl font-bold'>0</div>
+                    <div className='text-sm text-muted-foreground'>
+                      Total Members
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className='bg-card rounded-lg p-4 border'>
+                <div className='flex items-center space-x-2'>
+                  <div className='p-2 bg-purple-100 rounded-lg'>
+                    <BarChart3 className='h-5 w-5 text-purple-600' />
+                  </div>
+                  <div>
+                    <div className='text-2xl font-bold'>0%</div>
+                    <div className='text-sm text-muted-foreground'>
+                      Attendance Rate
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className='bg-card rounded-lg p-4 border'>
+                <div className='flex items-center space-x-2'>
+                  <div className='p-2 bg-orange-100 rounded-lg'>
+                    <Clock className='h-5 w-5 text-orange-600' />
+                  </div>
+                  <div>
+                    <div className='text-2xl font-bold'>0</div>
+                    <div className='text-sm text-muted-foreground'>
+                      Services This Week
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <Tabs defaultValue='checkin' className='space-y-6'>
               <div className='bg-card rounded-xl p-4 border'>
-                <TabsList className='grid w-full grid-cols-4'>
-                  <TabsTrigger value='list' className='flex items-center gap-2'>
-                    <Users className='h-4 w-4' />
-                    <span className='hidden sm:inline'>Records</span>
-                    <span className='sm:hidden'>List</span>
+                <TabsList className='grid w-full grid-cols-2'>
+                  <TabsTrigger
+                    value='checkin'
+                    className='flex items-center gap-2'
+                  >
+                    <QrCode className='h-4 w-4' />
+                    <span className='hidden sm:inline'>Check-in</span>
+                    <span className='sm:hidden'>Check-in</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value='dashboard'
                     className='flex items-center gap-2'
                   >
                     <BarChart3 className='h-4 w-4' />
-                    <span className='hidden sm:inline'>Analytics</span>
+                    <span className='hidden sm:inline'>Dashboard</span>
                     <span className='sm:hidden'>Stats</span>
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value='services'
-                    className='flex items-center gap-2'
-                  >
-                    <Calendar className='h-4 w-4' />
-                    <span className='hidden sm:inline'>Services</span>
-                    <span className='sm:hidden'>Services</span>
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value='checkin'
-                    className='flex items-center gap-2'
-                  >
-                    <Check className='h-4 w-4' />
-                    <span className='hidden sm:inline'>Check-In</span>
-                    <span className='sm:hidden'>Check</span>
                   </TabsTrigger>
                 </TabsList>
               </div>
 
-              <TabsContent value='list' className='space-y-4'>
-                <AttendanceList
-                  attendance={attendance}
-                  loading={loading}
-                  onEdit={setEditingAttendance}
-                  onDelete={handleDeleteAttendance}
-                  onCheckOut={handleCheckOut}
-                  onRefresh={fetchAttendance}
+              <TabsContent value='checkin' className='space-y-4'>
+                <AttendanceCheckIn
+                  onAttendanceRecorded={handleAttendanceRecorded}
                 />
               </TabsContent>
 
               <TabsContent value='dashboard' className='space-y-4'>
                 <AttendanceDashboard />
               </TabsContent>
-
-              <TabsContent value='services' className='space-y-4'>
-                <div className='bg-card rounded-xl border'>
-                  <div className='text-center py-12'>
-                    <div className='p-3 bg-blue-50 dark:bg-blue-900/20 rounded-full mb-4 w-fit mx-auto'>
-                      <Calendar className='h-8 w-8 text-blue-500' />
-                    </div>
-                    <h3 className='text-lg font-medium text-foreground mb-2'>
-                      Service Tracking Coming Soon! 🎯
-                    </h3>
-                    <p className='text-muted-foreground max-w-md mx-auto'>
-                      Enhanced service attendance tracking with automated
-                      check-ins and detailed analytics is in development.
-                    </p>
-                  </div>
-                </div>
-              </TabsContent>
-
-              <TabsContent value='checkin' className='space-y-4'>
-                <div className='bg-card rounded-xl border'>
-                  <div className='text-center py-12'>
-                    <div className='p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-full mb-4 w-fit mx-auto'>
-                      <Check className='h-8 w-8 text-emerald-500' />
-                    </div>
-                    <h3 className='text-lg font-medium text-foreground mb-2'>
-                      Quick Check-In Interface! ⚡
-                    </h3>
-                    <p className='text-muted-foreground max-w-md mx-auto'>
-                      A streamlined check-in experience for faster member
-                      registration at events and services is coming soon.
-                    </p>
-                  </div>
-                </div>
-              </TabsContent>
             </Tabs>
 
-            {/* Create Attendance Dialog */}
-            <Dialog open={showCreateForm} onOpenChange={setShowCreateForm}>
-              <DialogContent className='max-w-2xl'>
-                <DialogHeader>
-                  <DialogTitle>Check In Member</DialogTitle>
-                </DialogHeader>
-                <AttendanceForm
-                  onSubmit={handleCreateAttendance}
-                  onCancel={() => setShowCreateForm(false)}
-                />
-              </DialogContent>
-            </Dialog>
-
-            {/* Edit Attendance Dialog */}
-            <Dialog
-              open={!!editingAttendance}
-              onOpenChange={() => setEditingAttendance(null)}
-            >
-              <DialogContent className='max-w-2xl'>
-                <DialogHeader>
-                  <DialogTitle>Edit Attendance Record</DialogTitle>
-                </DialogHeader>
-                {editingAttendance && (
-                  <AttendanceForm
-                    initialData={editingAttendance}
-                    onSubmit={(data) =>
-                      handleUpdateAttendance(editingAttendance.id, data)
-                    }
-                    onCancel={() => setEditingAttendance(null)}
-                  />
-                )}
-              </DialogContent>
-            </Dialog>
+            {/* Recent Activity Sidebar */}
+            {recentAttendance.length > 0 && (
+              <div className='bg-card rounded-xl p-6 border'>
+                <h3 className='text-lg font-semibold mb-4'>Recent Check-ins</h3>
+                <div className='space-y-3'>
+                  {recentAttendance.slice(0, 5).map((attendance) => (
+                    <div
+                      key={attendance.id}
+                      className='flex items-center justify-between p-3 bg-muted/50 rounded-lg'
+                    >
+                      <div className='flex items-center space-x-3'>
+                        <div className='p-2 bg-green-100 rounded-lg'>
+                          <CheckCircle className='h-4 w-4 text-green-600' />
+                        </div>
+                        <div>
+                          <div className='font-medium'>
+                            {attendance.member.firstName}{" "}
+                            {attendance.member.lastName}
+                          </div>
+                          <div className='text-sm text-muted-foreground'>
+                            {attendance.service?.type?.replace("_", " ") ||
+                              "Service"}
+                          </div>
+                        </div>
+                      </div>
+                      <div className='text-sm text-muted-foreground'>
+                        {new Date(attendance.checkInTime).toLocaleTimeString(
+                          "en-US",
+                          {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          }
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </AppShell>
       </AuthGuard>

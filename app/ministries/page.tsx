@@ -3,10 +3,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { AppShell } from "@/components/layout/app-shell";
 import { AuthGuard } from "@/components/auth/auth-guard";
-import { FeatureGuard } from "@/components/auth/feature-guard";
+import { FeatureGuard } from "@/components/feature-guard";
 import { MinistryDashboard } from "@/components/ministries/ministry-dashboard";
 import { MinistryList } from "@/components/ministries/ministry-list";
 import { MinistryForm } from "@/components/ministries/ministry-form";
+import { MinistrySettings } from "@/components/ministries/ministry-settings";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,7 +16,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Plus, Users, BarChart3, Settings, Heart, Zap } from "lucide-react";
 import {
   Ministry,
   CreateMinistryRequest,
@@ -23,11 +23,11 @@ import {
 } from "@/types";
 import apiClient from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
+import Link from "next/link";
 
 export default function MinistriesPage() {
   const [ministries, setMinistries] = useState<Ministry[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingMinistry, setEditingMinistry] = useState<Ministry | null>(null);
   const { toast } = useToast();
 
@@ -35,9 +35,10 @@ export default function MinistriesPage() {
     try {
       setLoading(true);
       const response = await apiClient.getMinistries();
-      setMinistries(response.ministries);
+      setMinistries(response?.ministries || []);
     } catch (error) {
       console.error("Error fetching ministries:", error);
+      setMinistries([]);
       toast({
         title: "Error",
         description: "Failed to fetch ministries",
@@ -52,38 +53,18 @@ export default function MinistriesPage() {
     fetchMinistries();
   }, [fetchMinistries]);
 
-  const handleCreateMinistry = async (data: CreateMinistryRequest) => {
-    try {
-      await apiClient.createMinistry(data);
-      toast({
-        title: "Success",
-        description: "Ministry created successfully",
-      });
-      setShowCreateForm(false);
-      fetchMinistries();
-    } catch (error) {
-      console.error("Error creating ministry:", error);
-      toast({
-        title: "Error",
-        description: "Failed to create ministry",
-        variant: "destructive",
-      });
-    }
-  };
-
   const handleUpdateMinistry = async (
     id: string,
     data: Partial<CreateMinistryRequest>
   ) => {
     try {
-      // Ensure budget has required spent field if budget is provided
       const updateData = {
         ...data,
         budget: data.budget
           ? {
               allocated: data.budget.allocated,
               currency: data.budget.currency,
-              spent: 0, // Default spent to 0 for updates
+              spent: 0,
             }
           : undefined,
       } as UpdateMinistryRequest;
@@ -128,14 +109,10 @@ export default function MinistriesPage() {
       <AuthGuard>
         <AppShell>
           <div className='space-y-6'>
-            {/* Header Section */}
             <div className='bg-card rounded-xl p-6 border shadow-sm'>
-              <div className='flex items-center justify-between'>
+              <div className='flex flex-col gap-4'>
                 <div>
                   <div className='flex items-center space-x-3 mb-2'>
-                    <div className='p-2 bg-green-500 rounded-lg'>
-                      <Heart className='h-6 w-6 text-white' />
-                    </div>
                     <h1 className='text-2xl font-bold text-foreground'>
                       Ministry Hub
                     </h1>
@@ -144,12 +121,8 @@ export default function MinistriesPage() {
                     Serving our community together through various ministries
                   </p>
                 </div>
-                <Button
-                  className='shadow-sm'
-                  onClick={() => setShowCreateForm(true)}
-                >
-                  <Plus className='h-4 w-4 mr-2' />
-                  New Ministry
+                <Button className='shadow-sm w-full sm:w-auto' asChild>
+                  <Link href='/ministries/new'>New Ministry</Link>
                 </Button>
               </div>
             </div>
@@ -158,7 +131,6 @@ export default function MinistriesPage() {
               <div className='bg-card rounded-xl p-4 border'>
                 <TabsList className='grid w-full grid-cols-3'>
                   <TabsTrigger value='list' className='flex items-center gap-2'>
-                    <Users className='h-4 w-4' />
                     <span className='hidden sm:inline'>Ministries</span>
                     <span className='sm:hidden'>List</span>
                   </TabsTrigger>
@@ -166,7 +138,6 @@ export default function MinistriesPage() {
                     value='dashboard'
                     className='flex items-center gap-2'
                   >
-                    <BarChart3 className='h-4 w-4' />
                     <span className='hidden sm:inline'>Dashboard</span>
                     <span className='sm:hidden'>Stats</span>
                   </TabsTrigger>
@@ -174,7 +145,6 @@ export default function MinistriesPage() {
                     value='settings'
                     className='flex items-center gap-2'
                   >
-                    <Settings className='h-4 w-4' />
                     <span className='hidden sm:inline'>Settings</span>
                     <span className='sm:hidden'>Config</span>
                   </TabsTrigger>
@@ -196,37 +166,10 @@ export default function MinistriesPage() {
               </TabsContent>
 
               <TabsContent value='settings' className='space-y-4'>
-                <div className='bg-card rounded-xl border'>
-                  <div className='text-center py-12'>
-                    <div className='p-3 bg-orange-50 dark:bg-orange-900/20 rounded-full mb-4 w-fit mx-auto'>
-                      <Settings className='h-8 w-8 text-orange-500' />
-                    </div>
-                    <h3 className='text-lg font-medium text-foreground mb-2'>
-                      Coming Soon! 🚧
-                    </h3>
-                    <p className='text-muted-foreground max-w-md mx-auto'>
-                      Ministry configuration options are being developed. Check
-                      back soon for advanced settings and customization options.
-                    </p>
-                  </div>
-                </div>
+                <MinistrySettings />
               </TabsContent>
             </Tabs>
 
-            {/* Create Ministry Dialog */}
-            <Dialog open={showCreateForm} onOpenChange={setShowCreateForm}>
-              <DialogContent className='max-w-2xl'>
-                <DialogHeader>
-                  <DialogTitle>Create New Ministry</DialogTitle>
-                </DialogHeader>
-                <MinistryForm
-                  onSubmit={handleCreateMinistry}
-                  onCancel={() => setShowCreateForm(false)}
-                />
-              </DialogContent>
-            </Dialog>
-
-            {/* Edit Ministry Dialog */}
             <Dialog
               open={!!editingMinistry}
               onOpenChange={() => setEditingMinistry(null)}

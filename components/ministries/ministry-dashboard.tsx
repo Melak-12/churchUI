@@ -56,10 +56,11 @@ export function MinistryDashboard() {
         apiClient.getMinistryStats(),
       ]);
 
-      setMinistries(ministriesResponse.ministries);
+      setMinistries(ministriesResponse?.ministries || []);
       setStats(statsResponse);
     } catch (error) {
       console.error("Error fetching ministry data:", error);
+      setMinistries([]); // Set empty array on error
     } finally {
       setLoading(false);
     }
@@ -71,8 +72,10 @@ export function MinistryDashboard() {
 
   const filteredMinistries =
     selectedCategory === "all"
-      ? ministries
-      : ministries.filter((ministry) => ministry.category === selectedCategory);
+      ? ministries || []
+      : (ministries || []).filter(
+          (ministry) => ministry.category === selectedCategory
+        );
 
   const formatCurrency = (amount: number, currency: string = "USD") => {
     return new Intl.NumberFormat("en-US", {
@@ -277,8 +280,10 @@ export function MinistryDashboard() {
                       <Badge variant="outline">{ministry.status}</Badge>
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      Leader: {ministry.leader.firstName}{" "}
-                      {ministry.leader.lastName}
+                      Leader:{" "}
+                      {ministry.leader
+                        ? `${ministry.leader.firstName} ${ministry.leader.lastName}`
+                        : "No leader assigned"}
                     </p>
                     {ministry.description && (
                       <p className="text-sm text-muted-foreground line-clamp-1">
@@ -289,16 +294,17 @@ export function MinistryDashboard() {
                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
                     <div className="text-center">
                       <div className="font-medium">
-                        {ministry.memberCount || ministry.members.length}
+                        {ministry.memberCount ||
+                          (ministry.members ? ministry.members.length : 0)}
                       </div>
                       <div>Members</div>
                     </div>
-                    {ministry.budget && (
+                    {ministry.budget && ministry.budget.allocated && (
                       <div className="text-center">
                         <div className="font-medium">
                           {formatCurrency(
                             ministry.budget.allocated,
-                            ministry.budget.currency
+                            ministry.budget.currency || "USD"
                           )}
                         </div>
                         <div>Budget</div>
