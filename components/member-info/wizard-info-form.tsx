@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -50,6 +50,7 @@ interface FamilyMember {
 
 export function WizardInfoForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [currentStep, setCurrentStep] = useState<Step>("firstName");
   const [formData, setFormData] = useState({
@@ -80,6 +81,17 @@ export function WizardInfoForm() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [phoneFromUrl, setPhoneFromUrl] = useState(false);
+
+  // Read phone from URL query parameters
+  useEffect(() => {
+    const phoneParam = searchParams.get("phone");
+    if (phoneParam) {
+      const formattedPhone = formatPhoneNumber(phoneParam);
+      setFormData((prev) => ({ ...prev, phone: formattedPhone }));
+      setPhoneFromUrl(true);
+    }
+  }, [searchParams]);
 
   const validatePhoneNumber = (phone: string) => {
     const usPhoneRegex = /^\+1\d{10}$/;
@@ -394,24 +406,38 @@ export function WizardInfoForm() {
               </div>
               <h1 className="text-4xl font-bold text-gray-900">Your phone number</h1>
               <p className="text-xl text-gray-600">
-                We'll use this to keep you connected
+                {phoneFromUrl
+                  ? "We have your phone number on file"
+                  : "We'll use this to keep you connected"}
               </p>
             </div>
             <div className="max-w-md mx-auto space-y-4">
-              <Input
-                autoFocus
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => handlePhoneChange(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && canProgressFromStep("phone")) {
-                    handleNext();
-                  }
-                }}
-                placeholder="(555) 123-4567"
-                className="text-2xl h-16 text-center"
-              />
-              {formData.phone && !validatePhoneNumber(formData.phone) && (
+              <div className="relative">
+                <Input
+                  autoFocus={!phoneFromUrl}
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => handlePhoneChange(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && canProgressFromStep("phone")) {
+                      handleNext();
+                    }
+                  }}
+                  placeholder="(555) 123-4567"
+                  className="text-2xl h-16 text-center"
+                  disabled={phoneFromUrl}
+                  readOnly={phoneFromUrl}
+                />
+                {phoneFromUrl && (
+                  <div className="absolute inset-0 bg-gray-50 bg-opacity-50 rounded-md pointer-events-none" />
+                )}
+              </div>
+              {phoneFromUrl && (
+                <p className="text-sm text-gray-500 text-center">
+                  This phone number was provided in your invitation link
+                </p>
+              )}
+              {formData.phone && !validatePhoneNumber(formData.phone) && !phoneFromUrl && (
                 <p className="text-red-500 text-center">
                   Please enter a valid phone number
                 </p>
