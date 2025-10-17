@@ -82,15 +82,59 @@ export function WizardInfoForm() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [phoneFromUrl, setPhoneFromUrl] = useState(false);
+  const [isValidatingPhone, setIsValidatingPhone] = useState(true);
+  const [phoneValidationError, setPhoneValidationError] = useState("");
+  const [isPhoneValid, setIsPhoneValid] = useState(false);
 
-  // Read phone from URL query parameters
+  // Read phone from URL query parameters and validate
   useEffect(() => {
-    const phoneParam = searchParams.get("phone");
-    if (phoneParam) {
+    const validatePhone = async () => {
+      const phoneParam = searchParams.get("phone");
+      
+      if (!phoneParam) {
+        // No phone in URL - allow manual entry
+        setIsValidatingPhone(false);
+        setIsPhoneValid(true);
+        return;
+      }
+
       const formattedPhone = formatPhoneNumber(phoneParam);
       setFormData((prev) => ({ ...prev, phone: formattedPhone }));
       setPhoneFromUrl(true);
-    }
+
+      try {
+        // TODO: Uncomment when API endpoint is ready
+        // const result = await apiClient.checkPhoneExists(formattedPhone);
+        
+        // SCAFFOLD: Simulating API call for now
+        // Remove this mock and uncomment the actual API call above
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
+        const result = { exists: true, profileCompleted: false }; // Mock response
+        
+        if (!result.exists) {
+          setPhoneValidationError(
+            "This phone number is not registered in our system. Please contact your church administrator."
+          );
+          setIsPhoneValid(false);
+        } else if (result.profileCompleted) {
+          setPhoneValidationError(
+            "This phone number already has a completed profile. Please try logging in instead."
+          );
+          setIsPhoneValid(false);
+        } else {
+          setIsPhoneValid(true);
+        }
+      } catch (err: any) {
+        setPhoneValidationError(
+          "Unable to verify your phone number. Please try again later or contact support."
+        );
+        setIsPhoneValid(false);
+      } finally {
+        setIsValidatingPhone(false);
+      }
+    };
+
+    validatePhone();
   }, [searchParams]);
 
   const validatePhoneNumber = (phone: string) => {
@@ -346,7 +390,7 @@ export function WizardInfoForm() {
               <h1 className="text-4xl font-bold text-gray-900">
                 Welcome to Our Community
               </h1>
-              <p className="text-xl text-gray-600">Let's start with your first name</p>
+              <p className="text-xl text-gray-600">Let&apos;s start with your first name</p>
             </div>
             <div className="max-w-md mx-auto">
               <Input
@@ -375,7 +419,7 @@ export function WizardInfoForm() {
               <h1 className="text-4xl font-bold text-gray-900">
                 Nice to meet you, {formData.firstName}!
               </h1>
-              <p className="text-xl text-gray-600">What's your last name?</p>
+              <p className="text-xl text-gray-600">What&apos;s your last name?</p>
             </div>
             <div className="max-w-md mx-auto">
               <Input
@@ -408,7 +452,7 @@ export function WizardInfoForm() {
               <p className="text-xl text-gray-600">
                 {phoneFromUrl
                   ? "We have your phone number on file"
-                  : "We'll use this to keep you connected"}
+                  : "We&apos;ll use this to keep you connected"}
               </p>
             </div>
             <div className="max-w-md mx-auto space-y-4">
@@ -624,7 +668,7 @@ export function WizardInfoForm() {
               </p>
               {formData.password && !canProgressFromStep("password") && (
                 <p className="text-red-500 text-center text-sm">
-                  Password doesn't meet requirements
+                  Password doesn&apos;t meet requirements
                 </p>
               )}
             </div>
@@ -675,7 +719,7 @@ export function WizardInfoForm() {
               </div>
               {formData.confirmPassword &&
                 formData.password !== formData.confirmPassword && (
-                  <p className="text-red-500 text-center">Passwords don't match</p>
+                  <p className="text-red-500 text-center">Passwords don&apos;t match</p>
                 )}
             </div>
           </div>
@@ -750,7 +794,7 @@ export function WizardInfoForm() {
                 className="w-full h-16 text-xl"
                 size="lg"
               >
-                Skip - I'll complete this
+                Skip - I&apos;ll complete this
               </Button>
             </div>
           </div>
@@ -882,6 +926,56 @@ export function WizardInfoForm() {
         return null;
     }
   };
+
+  // Show loading state while validating phone
+  if (isValidatingPhone) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Loader2 className="h-12 w-12 animate-spin text-blue-600 mx-auto" />
+          <h2 className="text-2xl font-semibold text-gray-900">Verifying your information...</h2>
+          <p className="text-gray-600">Please wait while we check your phone number</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state if phone validation failed
+  if (!isPhoneValid) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center p-6">
+        <div className="max-w-md w-full text-center space-y-6">
+          <div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+            <AlertCircle className="h-8 w-8 text-red-600" />
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-3xl font-bold text-gray-900">Unable to Continue</h2>
+            <p className="text-lg text-gray-600">{phoneValidationError}</p>
+          </div>
+          <div className="space-y-3">
+            <Button
+              onClick={() => router.push("/login")}
+              className="w-full h-12 text-lg"
+              size="lg"
+            >
+              Go to Login
+            </Button>
+            <Button
+              onClick={() => router.push("/")}
+              variant="outline"
+              className="w-full h-12 text-lg"
+              size="lg"
+            >
+              Back to Home
+            </Button>
+          </div>
+          <p className="text-sm text-gray-500">
+            Need help? Contact your church administrator
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col">
