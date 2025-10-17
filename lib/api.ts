@@ -1570,6 +1570,53 @@ class ApiClient {
       method: "DELETE",
     });
   }
+
+  // ==================== Member Profile Completion Methods ====================
+
+  async completeProfile(profileData: {
+    phone: string;
+    firstName: string;
+    lastName: string;
+    email?: string;
+    address?: string;
+    password: string;
+    consent: boolean;
+    familyMembers?: Array<{
+      firstName: string;
+      lastName?: string;
+      relationship: string;
+      phone?: string;
+    }>;
+  }): Promise<any> {
+    const response = await this.request<any>("/api/members/complete-profile", {
+      method: "POST",
+      body: JSON.stringify(profileData),
+    });
+    return response.data;
+  }
+
+  async checkPhoneExists(phone: string): Promise<{
+    exists: boolean;
+    profileCompleted: boolean;
+    firstName?: string;
+    lastName?: string;
+  }> {
+    try {
+      const response = await this.request<any>(
+        `/api/members/check-phone/${encodeURIComponent(phone)}`
+      );
+      return response.data;
+    } catch (error: any) {
+      // If 404, phone doesn't exist
+      if (error.message?.includes("not found")) {
+        return {
+          exists: false,
+          profileCompleted: false,
+        };
+      }
+      throw error;
+    }
+  }
 }
 
 export const apiClient = new ApiClient(API_BASE_URL);

@@ -228,7 +228,7 @@ export default function LoginPage() {
             <div className="mt-6">
               <Separator className="my-4" />
 
-              <div className="text-center">
+              <div className="text-center space-y-2">
                 <p className="text-sm text-muted-foreground">
                   Don&apos;t have an account?{" "}
                   <Link
@@ -236,6 +236,15 @@ export default function LoginPage() {
                     className="text-primary hover:text-primary/80 font-medium transition-colors"
                   >
                     Register here
+                  </Link>
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  New member?{" "}
+                  <Link
+                    href="/member-info"
+                    className="text-primary hover:text-primary/80 font-medium transition-colors"
+                  >
+                    Join our community
                   </Link>
                 </p>
               </div>
