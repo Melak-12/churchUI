@@ -110,7 +110,7 @@ export default function MinistriesPage() {
         <AppShell>
           <div className='space-y-6'>
             <div className='bg-card rounded-xl p-6 border shadow-sm'>
-              <div className='flex items-center justify-between'>
+              <div className='flex flex-col gap-4'>
                 <div>
                   <div className='flex items-center space-x-3 mb-2'>
                     <h1 className='text-2xl font-bold text-foreground'>
@@ -121,7 +121,7 @@ export default function MinistriesPage() {
                     Serving our community together through various ministries
                   </p>
                 </div>
-                <Button className='shadow-sm' asChild>
+                <Button className='shadow-sm w-full sm:w-auto' asChild>
                   <Link href='/ministries/new'>New Ministry</Link>
                 </Button>
               </div>

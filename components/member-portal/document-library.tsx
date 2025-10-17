@@ -122,7 +122,9 @@ export function DocumentLibrary() {
       );
 
       if (response.success && response.data) {
-        setCategories((response.data as { categories: DocumentCategory[] }).categories);
+        setCategories(
+          (response.data as { categories: DocumentCategory[] }).categories
+        );
       }
     } catch (err: any) {
       console.error("Failed to load categories:", err);
@@ -132,9 +134,14 @@ export function DocumentLibrary() {
   const handleDownload = async (documentId: string, fileName: string) => {
     try {
       // Use fetch directly for blob downloads since apiClient.get doesn't support responseType
-      const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("authToken")
+          : null;
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/member-portal/documents/${documentId}/download`,
+        `${
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
+        }/api/member-portal/documents/${documentId}/download`,
         {
           headers: {
             ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -143,7 +150,7 @@ export function DocumentLibrary() {
       );
 
       if (!response.ok) {
-        throw new Error('Download failed');
+        throw new Error("Download failed");
       }
 
       const blob = await response.blob();
@@ -166,14 +173,14 @@ export function DocumentLibrary() {
   };
 
   const getFileIcon = (mimeType: string) => {
-    if (mimeType.startsWith("image/")) return <Image className="w-5 h-5" />;
+    if (mimeType.startsWith("image/")) return <Image className='w-5 h-5' />;
     if (mimeType.includes("spreadsheet") || mimeType.includes("excel"))
-      return <FileSpreadsheet className="w-5 h-5" />;
+      return <FileSpreadsheet className='w-5 h-5' />;
     if (mimeType.includes("presentation") || mimeType.includes("powerpoint"))
-      return <Presentation className="w-5 h-5" />;
+      return <Presentation className='w-5 h-5' />;
     if (mimeType === "application/pdf")
-      return <FileText className="w-5 h-5 text-red-500" />;
-    return <File className="w-5 h-5" />;
+      return <FileText className='w-5 h-5 text-red-500' />;
+    return <File className='w-5 h-5' />;
   };
 
   const formatFileSize = (bytes: number) => {
@@ -229,86 +236,89 @@ export function DocumentLibrary() {
 
   if (error) {
     return (
-      <Alert variant="destructive">
-        <AlertCircle className="h-4 w-4" />
+      <Alert variant='destructive'>
+        <AlertCircle className='h-4 w-4' />
         <AlertDescription>{error}</AlertDescription>
       </Alert>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className='flex flex-col gap-4'>
         <div>
-          <h1 className="text-3xl font-bold">Document Library</h1>
-          <p className="text-gray-600">Access church documents and resources</p>
+          <h1 className='text-3xl font-bold'>Document Library</h1>
+          <p className='text-gray-600'>Access church documents and resources</p>
         </div>
-        <Button onClick={() => setShowUploadDialog(true)}>
-          <Upload className="w-4 h-4 mr-2" />
+        <Button
+          onClick={() => setShowUploadDialog(true)}
+          className='w-full sm:w-auto'
+        >
+          <Upload className='w-4 h-4 mr-2' />
           Upload Document
         </Button>
       </div>
 
       {/* Search and Filters */}
       <Card>
-        <CardContent className="pt-6">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+        <CardContent className='pt-6'>
+          <div className='flex flex-col md:flex-row gap-4'>
+            <div className='flex-1 relative'>
+              <Search className='absolute left-3 top-3 h-4 w-4 text-gray-400' />
               <Input
-                placeholder="Search documents..."
+                placeholder='Search documents...'
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className='pl-10'
               />
             </div>
             <Select
               value={selectedCategory}
               onValueChange={setSelectedCategory}
             >
-              <SelectTrigger className="w-full md:w-48">
-                <SelectValue placeholder="All Categories" />
+              <SelectTrigger className='w-full md:w-48'>
+                <SelectValue placeholder='All Categories' />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                <SelectItem value="POLICY">Policy</SelectItem>
-                <SelectItem value="FORM">Forms</SelectItem>
-                <SelectItem value="BULLETIN">Bulletins</SelectItem>
-                <SelectItem value="NEWSLETTER">Newsletters</SelectItem>
-                <SelectItem value="FINANCIAL">Financial</SelectItem>
-                <SelectItem value="LEGAL">Legal</SelectItem>
-                <SelectItem value="MINISTRY">Ministry</SelectItem>
-                <SelectItem value="EVENT">Events</SelectItem>
-                <SelectItem value="PERSONAL">Personal</SelectItem>
-                <SelectItem value="OTHER">Other</SelectItem>
+                <SelectItem value='all'>All Categories</SelectItem>
+                <SelectItem value='POLICY'>Policy</SelectItem>
+                <SelectItem value='FORM'>Forms</SelectItem>
+                <SelectItem value='BULLETIN'>Bulletins</SelectItem>
+                <SelectItem value='NEWSLETTER'>Newsletters</SelectItem>
+                <SelectItem value='FINANCIAL'>Financial</SelectItem>
+                <SelectItem value='LEGAL'>Legal</SelectItem>
+                <SelectItem value='MINISTRY'>Ministry</SelectItem>
+                <SelectItem value='EVENT'>Events</SelectItem>
+                <SelectItem value='PERSONAL'>Personal</SelectItem>
+                <SelectItem value='OTHER'>Other</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </CardContent>
       </Card>
 
-      <Tabs defaultValue="documents" className="space-y-4">
+      <Tabs defaultValue='documents' className='space-y-4'>
         <TabsList>
-          <TabsTrigger value="documents">All Documents</TabsTrigger>
-          <TabsTrigger value="categories">By Category</TabsTrigger>
-          <TabsTrigger value="my-documents">My Documents</TabsTrigger>
+          <TabsTrigger value='documents'>All Documents</TabsTrigger>
+          <TabsTrigger value='categories'>By Category</TabsTrigger>
+          <TabsTrigger value='my-documents'>My Documents</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="documents" className="space-y-4">
+        <TabsContent value='documents' className='space-y-4'>
           {loading ? (
-            <div className="flex items-center justify-center h-64">
-              <Loader2 className="w-8 h-8 animate-spin" />
+            <div className='flex items-center justify-center h-64'>
+              <Loader2 className='w-8 h-8 animate-spin' />
             </div>
           ) : documents.length === 0 ? (
             <Card>
-              <CardContent className="pt-6">
-                <div className="text-center py-8">
-                  <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">
+              <CardContent className='pt-6'>
+                <div className='text-center py-8'>
+                  <FileText className='w-16 h-16 text-gray-300 mx-auto mb-4' />
+                  <h3 className='text-lg font-semibold mb-2'>
                     No Documents Found
                   </h3>
-                  <p className="text-gray-600">
+                  <p className='text-gray-600'>
                     {searchTerm || selectedCategory !== "all"
                       ? "Try adjusting your search or filters."
                       : "No documents are available at this time."}
@@ -317,7 +327,7 @@ export function DocumentLibrary() {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid gap-4">
+            <div className='grid gap-4'>
               {documents.map((document) => (
                 <Card
                   key={document._id}
@@ -325,32 +335,32 @@ export function DocumentLibrary() {
                     isExpired(document.expiryDate) ? "border-red-200" : ""
                   }
                 >
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start space-x-4 flex-1">
-                        <div className="flex-shrink-0 mt-1">
+                  <CardContent className='p-6'>
+                    <div className='flex items-start justify-between'>
+                      <div className='flex items-start space-x-4 flex-1'>
+                        <div className='flex-shrink-0 mt-1'>
                           {getFileIcon(document.mimeType)}
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <h3 className="font-semibold text-lg mb-1 flex items-center gap-2">
+                        <div className='flex-1 min-w-0'>
+                          <div className='flex items-start justify-between'>
+                            <div className='flex-1'>
+                              <h3 className='font-semibold text-lg mb-1 flex items-center gap-2'>
                                 {document.title}
                                 {isExpired(document.expiryDate) && (
                                   <Badge
-                                    variant="destructive"
-                                    className="text-xs"
+                                    variant='destructive'
+                                    className='text-xs'
                                   >
                                     Expired
                                   </Badge>
                                 )}
                               </h3>
                               {document.description && (
-                                <p className="text-gray-600 mb-2">
+                                <p className='text-gray-600 mb-2'>
                                   {document.description}
                                 </p>
                               )}
-                              <div className="flex flex-wrap items-center gap-2 mb-2">
+                              <div className='flex flex-wrap items-center gap-2 mb-2'>
                                 <Badge
                                   className={getCategoryColor(
                                     document.category
@@ -359,45 +369,45 @@ export function DocumentLibrary() {
                                   {document.category}
                                 </Badge>
                                 {document.subcategory && (
-                                  <Badge variant="outline">
+                                  <Badge variant='outline'>
                                     {document.subcategory}
                                   </Badge>
                                 )}
-                                <span className="text-sm text-gray-500">
+                                <span className='text-sm text-gray-500'>
                                   {getVisibilityIcon(document.visibility)}{" "}
                                   {document.visibility}
                                 </span>
                                 {document.version > 1 && (
-                                  <Badge variant="outline">
+                                  <Badge variant='outline'>
                                     v{document.version}
                                   </Badge>
                                 )}
                               </div>
-                              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
-                                <div className="flex items-center gap-1">
-                                  <User className="w-3 h-3" />
+                              <div className='flex flex-wrap items-center gap-4 text-sm text-gray-500'>
+                                <div className='flex items-center gap-1'>
+                                  <User className='w-3 h-3' />
                                   {document.uploadedBy.firstName}{" "}
                                   {document.uploadedBy.lastName}
                                 </div>
-                                <div className="flex items-center gap-1">
-                                  <Calendar className="w-3 h-3" />
+                                <div className='flex items-center gap-1'>
+                                  <Calendar className='w-3 h-3' />
                                   {new Date(
                                     document.createdAt
                                   ).toLocaleDateString()}
                                 </div>
                                 <span>{formatFileSize(document.fileSize)}</span>
-                                <div className="flex items-center gap-1">
-                                  <Download className="w-3 h-3" />
+                                <div className='flex items-center gap-1'>
+                                  <Download className='w-3 h-3' />
                                   {document.downloadCount} downloads
                                 </div>
                               </div>
                               {document.tags.length > 0 && (
-                                <div className="mt-2 flex flex-wrap gap-1">
+                                <div className='mt-2 flex flex-wrap gap-1'>
                                   {document.tags.map((tag) => (
                                     <Badge
                                       key={tag}
-                                      variant="secondary"
-                                      className="text-xs"
+                                      variant='secondary'
+                                      className='text-xs'
                                     >
                                       #{tag}
                                     </Badge>
@@ -408,9 +418,9 @@ export function DocumentLibrary() {
                           </div>
                         </div>
                       </div>
-                      <div className="flex flex-col gap-2 ml-4">
+                      <div className='flex flex-col gap-2 ml-4'>
                         <Button
-                          size="sm"
+                          size='sm'
                           onClick={() =>
                             handleDownload(
                               document._id,
@@ -419,7 +429,7 @@ export function DocumentLibrary() {
                           }
                           disabled={isExpired(document.expiryDate)}
                         >
-                          <Download className="w-4 h-4 mr-2" />
+                          <Download className='w-4 h-4 mr-2' />
                           Download
                         </Button>
                       </div>
@@ -431,17 +441,17 @@ export function DocumentLibrary() {
           )}
         </TabsContent>
 
-        <TabsContent value="categories" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <TabsContent value='categories' className='space-y-4'>
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
             {categories.map((category) => (
               <Card
                 key={category._id}
-                className="cursor-pointer hover:shadow-md transition-shadow"
+                className='cursor-pointer hover:shadow-md transition-shadow'
               >
                 <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Folder className="w-5 h-5" />
+                  <CardTitle className='flex items-center justify-between'>
+                    <div className='flex items-center gap-2'>
+                      <Folder className='w-5 h-5' />
                       {category._id}
                     </div>
                     <Badge>{category.count}</Badge>
@@ -455,7 +465,7 @@ export function DocumentLibrary() {
           </div>
         </TabsContent>
 
-        <TabsContent value="my-documents" className="space-y-4">
+        <TabsContent value='my-documents' className='space-y-4'>
           <Card>
             <CardHeader>
               <CardTitle>My Uploaded Documents</CardTitle>
@@ -464,7 +474,7 @@ export function DocumentLibrary() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-center text-gray-500 py-8">
+              <p className='text-center text-gray-500 py-8'>
                 This feature will show documents you&apos;ve uploaded
               </p>
             </CardContent>
@@ -481,13 +491,13 @@ export function DocumentLibrary() {
               Upload a new document to the church library
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
-            <p className="text-sm text-gray-600">
+          <div className='space-y-4'>
+            <p className='text-sm text-gray-600'>
               Document upload functionality will be implemented here.
             </p>
-            <div className="flex justify-end space-x-2">
+            <div className='flex justify-end space-x-2'>
               <Button
-                variant="outline"
+                variant='outline'
                 onClick={() => setShowUploadDialog(false)}
               >
                 Cancel

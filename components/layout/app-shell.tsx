@@ -31,13 +31,6 @@ import { useFeatures } from "@/contexts/features-context";
 
 const getAdminNavItems = (features: any) => [
   { href: "/dashboard", label: "Dashboard", icon: Home },
-  // { href: "/members", label: "Members", icon: Users },
-  // ...(features.ministries
-  //   ? [{ href: "/ministries", label: "Ministries", icon: Building2 }]
-  //   : []),
-  // ...(features.attendance
-  //   ? [{ href: "/attendance", label: "Attendance", icon: UserPlus }]
-  //   : []),
   ...(features.events
     ? [{ href: "/events", label: "Events", icon: Calendar }]
     : []),
@@ -51,22 +44,24 @@ const getAdminNavItems = (features: any) => [
           label: "Communications",
           icon: MessageSquare,
         },
-        // {
-        //   href: "/test-bulk-sms",
-        //   label: "Test Bulk SMS",
-        //   icon: MessageSquare,
-        // },
       ]
     : []),
+  // { href: "/profile", label: "Profile", icon: User },
+  // { href: "/settings", label: "Settings", icon: Settings },
+  // { href: "/feedback", label: "Feedback", icon: MessageCircle },
+  // { href: "/members", label: "Members", icon: Users },
+  // ...(features.ministries
+  //   ? [{ href: "/ministries", label: "Ministries", icon: Building2 }]
+  //   : []),
+  // ...(features.attendance
+  //   ? [{ href: "/attendance", label: "Attendance", icon: UserPlus }]
+  //   : []),
   // ...(features.dataCollection
   //   ? [{ href: "/data-collection", label: "Data Collection", icon: FileText }]
   //   : []),
   // ...(features.financial
   //   ? [{ href: "/financial", label: "Financial", icon: DollarSign }]
   //   : []),
-  // { href: "/feedback", label: "Feedback", icon: MessageCircle },
-  // { href: "/profile", label: "Profile", icon: User },
-  // { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 const getMemberNavItems = (features: any) => [
@@ -100,38 +95,25 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     await logout();
     router.push("/login");
   };
+  // Limit to 4-5 items for mobile bottom nav, rest go to "More" menu
+  const maxMobileNavItems = 4;
+  const mobileNavItems = navItems.slice(0, maxMobileNavItems);
+  const moreNavItems = navItems.slice(maxMobileNavItems);
+
   return (
     <div className='min-h-screen bg-background'>
-      {/* Mobile sidebar backdrop */}
-      {sidebarOpen && (
-        <div
-          className='fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden'
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      {/* Sidebar */}
-      <div
-        className={cn(
-          "fixed top-0 left-0 h-full w-64 bg-card shadow-md z-50 transform transition-transform duration-200 ease-in-out lg:translate-x-0",
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        )}
-      >
+      {/* Desktop Sidebar */}
+      <div className='hidden lg:block fixed top-0 left-0 h-full w-64 bg-card shadow-md z-50'>
         <div className='flex items-center justify-between p-4 border-b'>
           <h1 className='text-xl font-bold text-foreground'>
             Community Church
           </h1>
-          <Button
-            variant='ghost'
-            size='sm'
-            className='lg:hidden'
-            onClick={() => setSidebarOpen(false)}
-          >
-            <X className='h-5 w-5' />
-          </Button>
         </div>
 
-        <nav className='p-4'>
+        <nav
+          className='p-4 overflow-y-auto'
+          style={{ maxHeight: "calc(100vh - 120px)" }}
+        >
           <ul className='space-y-2'>
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -147,7 +129,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         ? "bg-primary text-primary-foreground"
                         : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                     )}
-                    onClick={() => setSidebarOpen(false)}
                   >
                     <Icon className='h-5 w-5' />
                     <span>{item.label}</span>
@@ -166,24 +147,26 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* Main content */}
-      <div className='lg:ml-64'>
+      <div className='lg:ml-64 pb-16 lg:pb-0'>
         {/* Top bar */}
         <div className='bg-card shadow-sm border-b px-4 py-3 lg:px-6'>
           <div className='flex items-center justify-between'>
-            <Button
-              variant='ghost'
-              size='sm'
-              className='lg:hidden'
-              onClick={() => setSidebarOpen(true)}
-            >
-              <Menu className='h-5 w-5' />
-            </Button>
+            <div className='lg:hidden px-2'>
+              <h1 className='sm:text-lg font-bold text-foreground'>
+                Community Church
+              </h1>
+            </div>
 
-            <div className='flex items-center justify-between flex-1'>
-              <span className='text-sm text-muted-foreground'>
-                Welcome, {user.role === "ADMIN" ? "Administrator" : "Member"}
+            <div className='flex items-center justify-between flex-1 lg:flex-initial lg:ml-auto'>
+              <span className='text-xs sm:text-sm text-muted-foreground font-light truncate max-w-[120px] sm:max-w-none'>
+                Welcome,{" "}
+                {user.firstName && user.lastName
+                  ? `${user.firstName} ${user.lastName}`
+                  : user.role === "ADMIN"
+                  ? "Administrator"
+                  : "Member"}
               </span>
-              <div className='flex items-center space-x-2'>
+              <div className='flex items-center space-x-2 ml-auto'>
                 <ThemeToggle />
                 <Button
                   variant='ghost'
@@ -191,8 +174,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   onClick={handleLogout}
                   className='text-muted-foreground hover:text-foreground'
                 >
-                  <LogOut className='h-4 w-4 mr-2' />
-                  Sign Out
+                  <LogOut className='h-4 w-4 lg:mr-2' />
+                  <span className='hidden lg:inline'>Sign Out</span>
                 </Button>
               </div>
             </div>
@@ -202,6 +185,100 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {/* Page content */}
         <main className='p-4 lg:p-6'>{children}</main>
       </div>
+
+      {/* Mobile Bottom Navigation (Instagram-style) */}
+      <div className='lg:hidden fixed bottom-0 left-0 right-0 bg-card border-t shadow-lg z-40'>
+        <nav className='flex items-center justify-around px-2 py-2'>
+          {mobileNavItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = pathname === item.href;
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "flex flex-col items-center justify-center px-3 py-2 rounded-lg transition-colors min-w-0 flex-1",
+                  isActive ? "text-primary" : "text-muted-foreground"
+                )}
+              >
+                <Icon
+                  className='h-6 w-6 mb-1'
+                  strokeWidth={isActive ? 2.5 : 2}
+                />
+                <span className='text-xs truncate max-w-full'>
+                  {item.label}
+                </span>
+              </Link>
+            );
+          })}
+
+          {/* More menu if there are additional items */}
+          {moreNavItems.length > 0 && (
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className={cn(
+                "flex flex-col items-center justify-center px-3 py-2 rounded-lg transition-colors min-w-0 flex-1",
+                "text-muted-foreground"
+              )}
+            >
+              <Menu className='h-6 w-6 mb-1' />
+              <span className='text-xs'>More</span>
+            </button>
+          )}
+        </nav>
+      </div>
+
+      {/* Mobile "More" Drawer */}
+      {sidebarOpen && (
+        <>
+          <div
+            className='lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40'
+            onClick={() => setSidebarOpen(false)}
+          />
+          <div className='lg:hidden fixed bottom-0 left-0 right-0 bg-card rounded-t-xl shadow-lg z-50 max-h-[70vh] overflow-hidden'>
+            <div className='flex items-center justify-between p-4 border-b'>
+              <h2 className='text-lg font-semibold'>More Options</h2>
+              <Button
+                variant='ghost'
+                size='sm'
+                onClick={() => setSidebarOpen(false)}
+              >
+                <X className='h-5 w-5' />
+              </Button>
+            </div>
+            <nav
+              className='p-4 overflow-y-auto'
+              style={{ maxHeight: "calc(70vh - 70px)" }}
+            >
+              <ul className='space-y-2'>
+                {moreNavItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = pathname === item.href;
+
+                  return (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
+                        className={cn(
+                          "flex items-center space-x-3 px-3 py-3 rounded-lg text-sm transition-colors",
+                          isActive
+                            ? "bg-primary text-primary-foreground"
+                            : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                        )}
+                        onClick={() => setSidebarOpen(false)}
+                      >
+                        <Icon className='h-5 w-5' />
+                        <span>{item.label}</span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
+          </div>
+        </>
+      )}
     </div>
   );
 }

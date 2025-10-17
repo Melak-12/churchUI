@@ -232,7 +232,7 @@ export default function EventsPage() {
         <div className='space-y-6'>
           {/* Header Section */}
           <div className='bg-card rounded-xl p-6 border shadow-sm'>
-            <div className='flex items-center justify-between'>
+            <div className='flex flex-col gap-4'>
               <div>
                 <div className='flex items-center space-x-3 mb-2'>
                   <div className='p-2 bg-green-500 rounded-lg'>
@@ -247,7 +247,7 @@ export default function EventsPage() {
                 </p>
               </div>
               {isAdmin && (
-                <Button asChild className='shadow-sm'>
+                <Button asChild className='shadow-sm w-full sm:w-auto'>
                   <Link href='/events/new'>
                     <Plus className='h-4 w-4 mr-2' />
                     Create Event

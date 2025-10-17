@@ -112,6 +112,8 @@ export interface User {
   id: string;
   role: UserRole;
   memberId?: string; // if role is MEMBER
+  firstName?: string;
+  lastName?: string;
 }
 
 // Event Management Types

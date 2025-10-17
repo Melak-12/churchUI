@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Card,
   CardContent,
@@ -191,6 +191,9 @@ export function CommunicationWizard({
     data.scheduledAt ? "schedule" : "now"
   );
 
+  // Ref for custom selection section
+  const customSelectionRef = useRef<HTMLDivElement>(null);
+
   // Fetch members for custom selection
   useEffect(() => {
     if (
@@ -221,6 +224,19 @@ export function CommunicationWizard({
   useEffect(() => {
     if (data.audience !== "CUSTOM") {
       setSearchQuery("");
+    }
+  }, [data.audience]);
+
+  // Auto-scroll to custom selection when CUSTOM audience is selected
+  useEffect(() => {
+    if (data.audience === "CUSTOM" && customSelectionRef.current) {
+      // Small delay to ensure the DOM has updated
+      setTimeout(() => {
+        customSelectionRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
+      }, 100);
     }
   }, [data.audience]);
 
@@ -379,7 +395,10 @@ export function CommunicationWizard({
             </RadioGroup>
 
             {data.audience === "CUSTOM" && (
-              <div className='mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg'>
+              <div
+                ref={customSelectionRef}
+                className='mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg'
+              >
                 <div className='flex items-center justify-between mb-3'>
                   <span className='font-medium text-sm'>Select Members</span>
                   <Badge variant='outline' className='text-xs'>
@@ -454,11 +473,11 @@ export function CommunicationWizard({
                 className='mt-2 min-h-32 resize-none text-base'
                 maxLength={1600}
               />
-              <div className='flex items-center justify-between mt-2 text-sm text-gray-500'>
+              <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-2 text-sm text-gray-500'>
                 <span>{data.body.length}/1600 characters</span>
-                <div className='flex items-center space-x-4'>
-                  <span>Variables: </span>
-                  <div className='flex space-x-1'>
+                <div className='flex flex-wrap items-center gap-2'>
+                  <span className='whitespace-nowrap'>Variables:</span>
+                  <div className='flex flex-wrap gap-1'>
                     {messageVariables.slice(0, 3).map((item) => (
                       <Button
                         key={item.variable}
@@ -476,11 +495,11 @@ export function CommunicationWizard({
             </div>
 
             {data.body && (
-              <div className='p-3 bg-gray-50 rounded-lg'>
-                <div className='text-sm font-medium text-gray-700 mb-1'>
+              <div className='p-3 bg-gray-50 dark:bg-gray-800 rounded-lg'>
+                <div className='text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>
                   Preview:
                 </div>
-                <div className='text-sm whitespace-pre-wrap text-gray-600'>
+                <div className='text-sm whitespace-pre-wrap text-gray-600 dark:text-gray-400'>
                   {messagePreview}
                 </div>
               </div>
@@ -512,7 +531,7 @@ export function CommunicationWizard({
               }}
               className='space-y-3'
             >
-              <div className='flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50'>
+              <div className='flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800'>
                 <RadioGroupItem value='now' id='now' />
                 <Label htmlFor='now' className='flex-1 cursor-pointer'>
                   <div className='font-medium'>Send Now</div>
@@ -520,7 +539,7 @@ export function CommunicationWizard({
                 </Label>
               </div>
 
-              <div className='flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50'>
+              <div className='flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800'>
                 <RadioGroupItem value='schedule' id='schedule' />
                 <Label htmlFor='schedule' className='flex-1 cursor-pointer'>
                   <div className='font-medium'>Schedule for Later</div>
@@ -532,8 +551,8 @@ export function CommunicationWizard({
             </RadioGroup>
 
             {scheduleOption === "schedule" && (
-              <div className='p-4 bg-gray-50 rounded-lg space-y-4'>
-                <div className='grid grid-cols-2 gap-4'>
+              <div className='p-4 bg-gray-50 dark:bg-gray-800 rounded-lg space-y-4'>
+                <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
                   <div>
                     <Label className='text-sm font-medium'>Date</Label>
                     <Popover>
@@ -584,9 +603,11 @@ export function CommunicationWizard({
                 </div>
 
                 {scheduledDate && (
-                  <div className='text-sm text-gray-600 flex items-center'>
-                    <Clock className='h-4 w-4 mr-1' />
-                    {format(scheduledDate, "PPP")} at {scheduledTime}
+                  <div className='text-sm text-gray-600 dark:text-gray-400 flex items-center'>
+                    <Clock className='h-4 w-4 mr-1 flex-shrink-0' />
+                    <span className='break-words'>
+                      {format(scheduledDate, "PPP")} at {scheduledTime}
+                    </span>
                   </div>
                 )}
               </div>
@@ -599,15 +620,23 @@ export function CommunicationWizard({
           <div className='space-y-6'>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
               <div className='space-y-3'>
-                <h4 className='font-medium text-gray-900'>Campaign Summary</h4>
+                <h4 className='font-medium text-gray-900 dark:text-gray-100'>
+                  Campaign Summary
+                </h4>
                 <div className='space-y-2 text-sm'>
-                  <div className='flex justify-between'>
-                    <span className='text-gray-500'>Name:</span>
-                    <span className='font-medium'>{data.name}</span>
+                  <div className='flex justify-between gap-4'>
+                    <span className='text-gray-500 dark:text-gray-400'>
+                      Name:
+                    </span>
+                    <span className='font-medium text-right break-words'>
+                      {data.name}
+                    </span>
                   </div>
-                  <div className='flex justify-between'>
-                    <span className='text-gray-500'>Audience:</span>
-                    <span className='font-medium'>
+                  <div className='flex justify-between gap-4'>
+                    <span className='text-gray-500 dark:text-gray-400'>
+                      Audience:
+                    </span>
+                    <span className='font-medium text-right'>
                       {
                         audienceOptions.find(
                           (opt) => opt.value === data.audience
@@ -615,15 +644,19 @@ export function CommunicationWizard({
                       }
                     </span>
                   </div>
-                  <div className='flex justify-between'>
-                    <span className='text-gray-500'>Recipients:</span>
-                    <span className='font-medium'>
+                  <div className='flex justify-between gap-4'>
+                    <span className='text-gray-500 dark:text-gray-400'>
+                      Recipients:
+                    </span>
+                    <span className='font-medium text-right'>
                       {getMemberCount(data.audience)} members
                     </span>
                   </div>
-                  <div className='flex justify-between'>
-                    <span className='text-gray-500'>Timing:</span>
-                    <span className='font-medium'>
+                  <div className='flex justify-between gap-4'>
+                    <span className='text-gray-500 dark:text-gray-400'>
+                      Timing:
+                    </span>
+                    <span className='font-medium text-right break-words'>
                       {data.scheduledAt
                         ? format(
                             new Date(data.scheduledAt),
@@ -640,14 +673,14 @@ export function CommunicationWizard({
                   Message Preview
                 </h4>
                 <div className='p-3 bg-gray-50 dark:bg-gray-800 rounded-lg'>
-                  <div className='text-sm whitespace-pre-wrap text-gray-700 dark:text-gray-300'>
+                  <div className='text-sm whitespace-pre-wrap text-gray-700 dark:text-gray-300 break-words'>
                     {messagePreview || data.body}
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className='flex items-center justify-between p-4 bg-blue-50 dark:bg-blue-950/50 rounded-lg'>
+            <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-blue-50 dark:bg-blue-950/50 rounded-lg'>
               <div className='flex items-center space-x-2'>
                 <DollarSign className='h-4 w-4 text-blue-600 dark:text-blue-400' />
                 <span className='text-sm font-medium text-blue-900 dark:text-blue-300'>
