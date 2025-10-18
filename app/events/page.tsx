@@ -241,7 +241,7 @@ export default function EventsPage() {
               </p>
             </div>
             {isAdmin && (
-              <Button asChild className='w-full sm:w-auto'>
+              <Button asChild className='w-full sm:w-auto sm:max-w-fit'>
                 <Link href='/events/new'>
                   <Plus className='h-4 w-4 mr-2' />
                   Create Event

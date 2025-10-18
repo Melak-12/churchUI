@@ -298,7 +298,7 @@ export default function CommunicationsPage() {
             </div>
             <div className='flex flex-col sm:flex-row gap-2'>
               <TwilioTest />
-              <Button asChild className='w-full sm:w-auto'>
+              <Button asChild className='w-full sm:w-auto sm:max-w-fit'>
                 <Link href='/communications/new'>
                   <Plus className='h-4 w-4 mr-2' />
                   Create Campaign

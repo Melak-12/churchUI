@@ -58,7 +58,7 @@ export default function VotingPage() {
                 Manage community votes and elections democratically
               </p>
             </div>
-            <Button asChild className='w-full sm:w-auto'>
+            <Button asChild className='w-full sm:w-auto sm:max-w-fit'>
               <Link href='/voting/new'>
                 <Plus className='h-4 w-4 mr-2' />
                 New Vote

@@ -196,7 +196,7 @@ export default function CalendarPage() {
               </Button>
               <Button
                 size='sm'
-                className='bg-blue-600 hover:bg-blue-700 h-8 px-2 sm:px-3'
+                className='bg-blue-600 hover:bg-blue-700 h-8 px-2 sm:px-3 sm:max-w-fit'
                 asChild
               >
                 <Link href='/events/new'>
