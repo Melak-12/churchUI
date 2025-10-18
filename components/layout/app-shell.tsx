@@ -29,7 +29,14 @@ import { getCurrentUser, hasPermission, logout } from "@/lib/auth";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useFeatures } from "@/contexts/features-context";
 
-const getAdminNavItems = (features: any) => [
+interface NavItem {
+  href: string;
+  label: string;
+  mobileLabel?: string;
+  icon: React.ComponentType<any>;
+}
+
+const getAdminNavItems = (features: any): NavItem[] => [
   { href: "/dashboard", label: "Dashboard", icon: Home },
   ...(features.events
     ? [{ href: "/events", label: "Events", icon: Calendar }]
@@ -42,6 +49,7 @@ const getAdminNavItems = (features: any) => [
         {
           href: "/communications",
           label: "Communications",
+          mobileLabel: "SMS",
           icon: MessageSquare,
         },
       ]
@@ -64,7 +72,7 @@ const getAdminNavItems = (features: any) => [
   //   : []),
 ];
 
-const getMemberNavItems = (features: any) => [
+const getMemberNavItems = (features: any): NavItem[] => [
   // { href: "/profile", label: "My Profile", icon: User },
   // { href: "/eligibility", label: "My Eligibility", icon: CheckCircle },
   ...(features.events
@@ -216,7 +224,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   strokeWidth={isActive ? 2.5 : 2}
                 />
                 <span className='text-xs truncate max-w-full'>
-                  {item.label}
+                  {item.mobileLabel || item.label}
                 </span>
               </Link>
             );
@@ -278,7 +286,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         onClick={() => setSidebarOpen(false)}
                       >
                         <Icon className='h-5 w-5' />
-                        <span>{item.label}</span>
+                        <span>{item.mobileLabel || item.label}</span>
                       </Link>
                     </li>
                   );
