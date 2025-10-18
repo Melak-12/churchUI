@@ -46,20 +46,20 @@ export function DashboardCard({
 }: DashboardCardProps) {
   return (
     <Card className='border hover:shadow-sm transition-shadow'>
-      <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-1.5 sm:pb-2 p-3 sm:p-4 md:p-6'>
-        <CardTitle className='text-[11px] sm:text-xs md:text-sm font-medium text-muted-foreground'>
+      <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2 p-4 sm:p-6'>
+        <CardTitle className='text-sm font-medium text-muted-foreground'>
           {title}
         </CardTitle>
         {Icon && (
-          <div className={`p-1 sm:p-1.5 md:p-2 rounded-md sm:rounded-lg ${getIconColorClasses(iconColor)}`}>
-            <Icon className='h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4' />
+          <div className={`p-2 rounded-lg ${getIconColorClasses(iconColor)}`}>
+            <Icon className='h-5 w-5' />
           </div>
         )}
       </CardHeader>
-      <CardContent className='p-3 sm:p-4 md:p-6 pt-0'>
-        <div className='text-lg sm:text-xl md:text-2xl font-bold mb-0.5 sm:mb-1'>{value.toLocaleString()}</div>
+      <CardContent className='p-4 sm:p-6 pt-0'>
+        <div className='text-2xl font-bold mb-1'>{value.toLocaleString()}</div>
         {description && (
-          <p className='text-[10px] sm:text-xs text-muted-foreground'>{description}</p>
+          <p className='text-sm text-muted-foreground'>{description}</p>
         )}
       </CardContent>
     </Card>

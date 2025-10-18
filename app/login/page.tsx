@@ -69,41 +69,41 @@ export default function LoginPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-2 sm:p-4">
       <div className="w-full max-w-md">
         {/* Logo and Header */}
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
-            <Church className="h-8 w-8 text-white" />
+        <div className="text-center mb-4 sm:mb-6 md:mb-8">
+          <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3 md:mb-4 shadow-md">
+            <Church className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground mb-2">
+          <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground mb-1 sm:mb-2">
             Community Church
           </h1>
-          <p className="text-muted-foreground">Sign in to your account</p>
+          <p className="text-xs sm:text-sm text-muted-foreground">Sign in to your account</p>
         </div>
 
         <Card className="shadow-md border backdrop-blur-sm bg-card/95">
-          <CardHeader className="space-y-1 pb-6">
-            <CardTitle className="text-xl text-center">Welcome Back</CardTitle>
-            <CardDescription className="text-center">
+          <CardHeader className="space-y-1 pb-3 sm:pb-4 md:pb-6 px-4 sm:px-6">
+            <CardTitle className="text-lg sm:text-xl text-center">Welcome Back</CardTitle>
+            <CardDescription className="text-center text-xs sm:text-sm">
               Enter your credentials to access your account
             </CardDescription>
           </CardHeader>
 
-          <CardContent>
+          <CardContent className="px-4 sm:px-6">
             <div suppressHydrationWarning={true}>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
                 {error && (
-                  <Alert variant="destructive">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>{error}</AlertDescription>
+                  <Alert variant="destructive" className="py-2">
+                    <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <AlertDescription className="text-xs sm:text-sm">{error}</AlertDescription>
                   </Alert>
                 )}
 
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email Address</Label>
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label htmlFor="email" className="text-xs sm:text-sm">Email Address</Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                    <Mail className="absolute left-2.5 sm:left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     <Input
                       id="email"
                       type="email"
@@ -112,16 +112,16 @@ export default function LoginPage() {
                       onChange={(e) =>
                         setFormData({ ...formData, email: e.target.value })
                       }
-                      className="pl-10"
+                      className="pl-8 sm:pl-10 h-9 sm:h-10 text-sm"
                       required
                     />
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label htmlFor="password" className="text-xs sm:text-sm">Password</Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                    <Lock className="absolute left-2.5 sm:left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
@@ -130,27 +130,27 @@ export default function LoginPage() {
                       onChange={(e) =>
                         setFormData({ ...formData, password: e.target.value })
                       }
-                      className="pl-10 pr-10"
+                      className="pl-8 sm:pl-10 pr-8 sm:pr-10 h-9 sm:h-10 text-sm"
                       required
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                      className="absolute right-0 top-0 h-full px-2 sm:px-3 hover:bg-transparent"
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? (
-                        <EyeOff className="h-4 w-4 text-muted-foreground" />
+                        <EyeOff className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
                       ) : (
-                        <Eye className="h-4 w-4 text-muted-foreground" />
+                        <Eye className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
                       )}
                     </Button>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-1.5 sm:space-x-2">
                     <Checkbox
                       id="rememberMe"
                       checked={formData.rememberMe}
@@ -160,14 +160,15 @@ export default function LoginPage() {
                           rememberMe: checked as boolean,
                         })
                       }
+                      className="h-3.5 w-3.5 sm:h-4 sm:w-4"
                     />
-                    <Label htmlFor="rememberMe" className="text-sm">
+                    <Label htmlFor="rememberMe" className="text-xs sm:text-sm">
                       Remember me
                     </Label>
                   </div>
                   <Link
                     href="/forgot-password"
-                    className="text-sm text-primary hover:text-primary/80 transition-colors"
+                    className="text-xs sm:text-sm text-primary hover:text-primary/80 transition-colors"
                   >
                     Forgot password?
                   </Link>
@@ -175,13 +176,13 @@ export default function LoginPage() {
 
                 <Button
                   type="submit"
-                  className="w-full h-11"
+                  className="w-full h-9 sm:h-10 md:h-11 text-sm"
                   disabled={isLoading || !formData.email || !formData.password}
                 >
                   {isLoading ? (
-                    <div className="flex items-center space-x-2">
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      <span>Signing in...</span>
+                    <div className="flex items-center space-x-1.5 sm:space-x-2">
+                      <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span className="text-xs sm:text-sm">Signing in...</span>
                     </div>
                   ) : (
                     "Sign In"
@@ -189,11 +190,11 @@ export default function LoginPage() {
                 </Button>
 
                 {/* Quick Login Buttons - Integrated into form */}
-                <div className="mt-4 space-y-2">
-                  <div className="text-center text-xs text-muted-foreground mb-2">
+                <div className="mt-3 sm:mt-4 space-y-1.5 sm:space-y-2">
+                  <div className="text-center text-[10px] sm:text-xs text-muted-foreground mb-1 sm:mb-2">
                     Quick Login
                   </div>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
                     <Button
                       type="button"
                       variant="outline"
@@ -203,7 +204,7 @@ export default function LoginPage() {
                           demoCredentials[0].password
                         )
                       }
-                      className="text-xs py-2 h-8"
+                      className="text-[10px] sm:text-xs py-1.5 sm:py-2 h-7 sm:h-8"
                     >
                       {demoCredentials[0].role}
                     </Button>
@@ -216,7 +217,7 @@ export default function LoginPage() {
                           demoCredentials[1].password
                         )
                       }
-                      className="text-xs py-2 h-8"
+                      className="text-[10px] sm:text-xs py-1.5 sm:py-2 h-7 sm:h-8"
                     >
                       {demoCredentials[1].role}
                     </Button>
@@ -225,11 +226,11 @@ export default function LoginPage() {
               </form>
             </div>
 
-            <div className="mt-6">
-              <Separator className="my-4" />
+            <div className="mt-4 sm:mt-6">
+              <Separator className="my-3 sm:my-4" />
 
-              <div className="text-center space-y-2">
-                <p className="text-sm text-muted-foreground">
+              <div className="text-center space-y-1.5 sm:space-y-2">
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   Don&apos;t have an account?{" "}
                   <Link
                     href="/register"
@@ -238,7 +239,7 @@ export default function LoginPage() {
                     Register here
                   </Link>
                 </p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   New member?{" "}
                   <Link
                     href="/member-info"
@@ -253,8 +254,8 @@ export default function LoginPage() {
         </Card>
 
         {/* Footer */}
-        <div className="text-center mt-8">
-          <p className="text-xs text-muted-foreground">
+        <div className="text-center mt-4 sm:mt-6 md:mt-8">
+          <p className="text-[10px] sm:text-xs text-muted-foreground">
             © 2025 Community Church. All rights reserved.
           </p>
         </div>
