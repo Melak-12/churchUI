@@ -1,6 +1,6 @@
 export const content = {
   app: {
-    name: 'Community Church',
+    name: 'Worshiply',
     tagline: 'Building stronger communities together'
   },
   auth: {

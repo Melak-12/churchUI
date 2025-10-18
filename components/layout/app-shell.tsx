@@ -28,6 +28,7 @@ import { cn } from "@/lib/utils";
 import { getCurrentUser, hasPermission, logout } from "@/lib/auth";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useFeatures } from "@/contexts/features-context";
+import Image from "next/image";
 
 interface NavItem {
   href: string;
@@ -113,9 +114,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Desktop Sidebar */}
       <div className='hidden lg:block fixed top-0 left-0 h-full w-64 bg-card shadow-md z-50'>
         <div className='flex items-center justify-between p-4 border-b'>
-          <h1 className='text-xl font-bold text-foreground'>
-            Community Church
-          </h1>
+          <div className='w-56 h-16'>
+            <Image 
+              src="/worshiply-logo.png" 
+              alt="Worshiply" 
+              width={224}
+              height={64}
+              className="w-full h-full object-contain"
+            />
+          </div>
         </div>
 
         <nav
@@ -159,18 +166,24 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {/* Top bar */}
         <div className='bg-card shadow-sm border-b px-3 py-2 lg:px-6 lg:py-3'>
           <div className='flex items-center justify-between gap-2'>
-            {/* Desktop: Show full title and welcome */}
+            {/* Desktop: Show welcome text only */}
             <div className='hidden lg:block'>
-              <h1 className='text-lg font-bold text-foreground'>
-                Community Church
-              </h1>
+              <div className='text-sm text-muted-foreground font-light'>
+                Welcome to your dashboard
+              </div>
             </div>
 
             {/* Mobile: Minimal branding */}
-            <div className='lg:hidden flex-1 min-w-0'>
-              <h1 className='text-sm font-semibold text-foreground truncate'>
-                Community Church
-              </h1>
+            <div className='lg:hidden flex-1 min-w-0 flex items-center justify-start'>
+              <div className='w-36 h-14'>
+                <Image 
+                  src="/worshiply-logo.png" 
+                  alt="Worshiply" 
+                  width={144}
+                  height={56}
+                  className="w-full h-full object-contain"
+                />
+              </div>
             </div>
 
             <div className='flex items-center gap-1.5 lg:gap-3 lg:ml-auto flex-shrink-0'>

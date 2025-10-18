@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getCurrentUser, getDefaultRoute, isAuthenticated } from '@/lib/auth';
+import Image from 'next/image';
 
 export default function Home() {
   const router = useRouter();
@@ -20,7 +21,15 @@ export default function Home() {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">
-        <h1 className="text-2xl font-bold mb-2">Community Church</h1>
+        <div className="w-40 h-16 mx-auto mb-6">
+          <Image 
+            src="/worshiply-logo.png" 
+            alt="Worshiply" 
+            width={160}
+            height={64}
+            className="w-full h-full object-contain"
+          />
+        </div>
         <p className="text-gray-600">Redirecting...</p>
       </div>
     </div>

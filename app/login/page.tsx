@@ -18,6 +18,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { Church, Eye, EyeOff, Mail, Lock, AlertCircle } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { login } from "@/lib/auth";
 
 export default function LoginPage() {
@@ -73,12 +74,15 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         {/* Logo and Header */}
         <div className="text-center mb-4 sm:mb-6 md:mb-8">
-          <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3 md:mb-4 shadow-md">
-            <Church className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-white" />
+          <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 mx-auto mb-4 sm:mb-6 md:mb-8">
+            <Image 
+              src="/worshiply-logo.png" 
+              alt="Worshiply" 
+              width={192}
+              height={192}
+              className="w-full h-full object-contain"
+            />
           </div>
-          <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground mb-1 sm:mb-2">
-            Community Church
-          </h1>
           <p className="text-xs sm:text-sm text-muted-foreground">Sign in to your account</p>
         </div>
 
