@@ -39,13 +39,8 @@ interface NavItem {
 }
 
 const getAdminNavItems = (features: any): NavItem[] => [
-  { href: "/dashboard", label: "Dashboard", icon: Home },
-  ...(features.events
-    ? [{ href: "/events", label: "Events", icon: Calendar }]
-    : []),
-  ...(features.voting
-    ? [{ href: "/voting", label: "Voting", icon: Vote }]
-    : []),
+  { href: "/dashboard", label: "Home", icon: Home },
+  { href: "/members", label: "Members", icon: Users },
   ...(features.communications
     ? [
         {
@@ -56,22 +51,27 @@ const getAdminNavItems = (features: any): NavItem[] => [
         },
       ]
     : []),
+  ...(features.events
+    ? [{ href: "/events", label: "Events", icon: Calendar }]
+    : []),
+  ...(features.voting
+    ? [{ href: "/voting", label: "Voting", icon: Vote }]
+    : []),
+  ...(features.ministries
+    ? [{ href: "/ministries", label: "Ministries", icon: Building2 }]
+    : []),
+  ...(features.attendance
+    ? [{ href: "/attendance", label: "Attendance", icon: UserPlus }]
+    : []),
+  ...(features.dataCollection
+    ? [{ href: "/data-collection", label: "Data Collection", icon: FileText }]
+    : []),
+  ...(features.financial
+    ? [{ href: "/financial", label: "Financial", icon: DollarSign }]
+    : []),
+  { href: "/settings", label: "Settings", icon: Settings },
   // { href: "/profile", label: "Profile", icon: User },
-  // { href: "/settings", label: "Settings", icon: Settings },
   // { href: "/feedback", label: "Feedback", icon: MessageCircle },
-  // { href: "/members", label: "Members", icon: Users },
-  // ...(features.ministries
-  //   ? [{ href: "/ministries", label: "Ministries", icon: Building2 }]
-  //   : []),
-  // ...(features.attendance
-  //   ? [{ href: "/attendance", label: "Attendance", icon: UserPlus }]
-  //   : []),
-  // ...(features.dataCollection
-  //   ? [{ href: "/data-collection", label: "Data Collection", icon: FileText }]
-  //   : []),
-  // ...(features.financial
-  //   ? [{ href: "/financial", label: "Financial", icon: DollarSign }]
-  //   : []),
 ];
 
 const getMemberNavItems = (features: any): NavItem[] => [
@@ -217,6 +217,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {/* Page content */}
         <main className='p-4 lg:p-6'>{children}</main>
       </div>
+
 
       {/* Mobile Bottom Navigation (Instagram-style) */}
       <div className='lg:hidden fixed bottom-0 left-0 right-0 bg-card border-t shadow-lg z-40'>

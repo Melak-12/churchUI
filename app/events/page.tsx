@@ -229,161 +229,217 @@ export default function EventsPage() {
   return (
     <FeatureGuard feature='events'>
       <AppShell>
-        <div className='space-y-4 sm:space-y-6'>
-          {/* Header Section */}
-          <div className='flex flex-col gap-3 sm:gap-4'>
+        <div className='space-y-3'>
+          {/* Compact Header */}
+          <div className='flex items-center justify-between'>
             <div>
-              <h1 className='text-xl sm:text-2xl font-bold'>
-                Events
-              </h1>
-              <p className='text-sm text-muted-foreground'>
-                Discover and join upcoming community activities
+              <h1 className='text-lg font-semibold'>Events</h1>
+              <p className='text-xs text-muted-foreground'>
+                {upcomingEvents.length + pastEvents.length} event{(upcomingEvents.length + pastEvents.length) !== 1 ? 's' : ''}
               </p>
             </div>
             {isAdmin && (
-              <Button asChild className='w-full sm:w-auto sm:max-w-fit'>
+              <Button size='sm' asChild>
                 <Link href='/events/new'>
-                  <Plus className='h-4 w-4 mr-2' />
-                  Create Event
+                  <Plus className='h-4 w-4 mr-1' />
+                  New
                 </Link>
               </Button>
             )}
           </div>
 
+          {/* Compact Search and Filter */}
+          <div className='flex gap-2'>
+            <div className='relative flex-1'>
+              <Search className='absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground' />
+              <Input
+                placeholder='Search events...'
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className='pl-8 h-8 text-sm'
+              />
+            </div>
+            <Button variant='outline' size='sm' asChild>
+              <Link href='/events/calendar'>
+                <Calendar className='h-4 w-4' />
+              </Link>
+            </Button>
+            <Select value={filterType} onValueChange={setFilterType}>
+              <SelectTrigger className='w-24 h-8 text-xs'>
+                <SelectValue placeholder='Type' />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value='all'>All</SelectItem>
+                <SelectItem value='SERVICE'>Service</SelectItem>
+                <SelectItem value='MEETING'>Meeting</SelectItem>
+                <SelectItem value='SPECIAL_OCCASION'>Special</SelectItem>
+                <SelectItem value='CONFERENCE'>Conference</SelectItem>
+                <SelectItem value='SOCIAL'>Social</SelectItem>
+                <SelectItem value='OTHER'>Other</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
-          {/* Search and Filters */}
-          <Card>
-            <CardContent className='p-4'>
-              <div className='flex flex-col sm:flex-row gap-3'>
-                <div className='relative flex-1'>
-                  <Search className='h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground' />
-                  <Input
-                    placeholder='Search events...'
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className='pl-10'
-                  />
-                </div>
-                <div className='flex gap-2'>
-                  <Button variant='outline' asChild>
-                    <Link href='/events/calendar'>
-                      <Calendar className='h-4 w-4 mr-2' />
-                      Calendar
-                    </Link>
-                  </Button>
-                  <Select value={filterType} onValueChange={setFilterType}>
-                    <SelectTrigger className='w-32'>
-                      <SelectValue placeholder='Type' />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value='all'>All Types</SelectItem>
-                      <SelectItem value='SERVICE'>Service</SelectItem>
-                      <SelectItem value='MEETING'>Meeting</SelectItem>
-                      <SelectItem value='SPECIAL_OCCASION'>Special</SelectItem>
-                      <SelectItem value='CONFERENCE'>Conference</SelectItem>
-                      <SelectItem value='SOCIAL'>Social</SelectItem>
-                      <SelectItem value='OTHER'>Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Events List */}
-          <Tabs defaultValue='upcoming' className='space-y-4 sm:space-y-6'>
-            <TabsList className='grid w-full grid-cols-2'>
-              <TabsTrigger value='upcoming' className='text-sm sm:text-base'>
-                <span className='hidden sm:inline'>Upcoming</span>
-                <span className='sm:hidden'>Upcoming</span>
-                <span className='ml-1'>({upcomingEvents.length})</span>
+          {/* Compact Events List */}
+          <Tabs defaultValue='upcoming' className='space-y-3'>
+            <TabsList className='grid w-full grid-cols-2 h-8'>
+              <TabsTrigger value='upcoming' className='text-xs'>
+                Upcoming ({upcomingEvents.length})
               </TabsTrigger>
-              <TabsTrigger value='past' className='text-sm sm:text-base'>
-                <span className='hidden sm:inline'>Past</span>
-                <span className='sm:hidden'>Past</span>
-                <span className='ml-1'>({pastEvents.length})</span>
+              <TabsTrigger value='past' className='text-xs'>
+                Past ({pastEvents.length})
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value='upcoming' className='space-y-4'>
+            <TabsContent value='upcoming' className='space-y-2'>
               {upcomingEvents.length > 0 ? (
-                <div className='grid gap-4'>
+                <div className='space-y-2'>
                   {upcomingEvents.map((event) => (
-                    <EventCard
+                    <div
                       key={getDocumentId(event)}
-                      event={event}
-                      onDelete={isAdmin ? handleDeleteEvent : undefined}
-                      onRegister={!isAdmin ? handleRegisterForEvent : undefined}
-                      isDeleting={deletingEventId === getDocumentId(event)}
-                      isRegistering={
-                        registeringEventId === getDocumentId(event)
-                      }
-                      isAdmin={isAdmin}
-                    />
+                      className='bg-card border rounded-lg p-3 hover:bg-muted/50 transition-colors'
+                    >
+                      <div className='flex items-center justify-between'>
+                        <div className='flex-1 min-w-0'>
+                          <div className='flex items-center space-x-2 mb-1'>
+                            <h3 className='font-semibold text-sm truncate'>
+                              {event.title}
+                            </h3>
+                            <Badge
+                              variant={
+                                event.type === 'SERVICE' ? 'default' :
+                                event.type === 'MEETING' ? 'secondary' :
+                                event.type === 'SPECIAL_OCCASION' ? 'outline' : 'secondary'
+                              }
+                              className='text-xs px-1.5 py-0.5'
+                            >
+                              {event.type.replace('_', ' ')}
+                            </Badge>
+                          </div>
+                          <div className='flex items-center space-x-3 text-xs text-muted-foreground'>
+                            <span className='flex items-center gap-1'>
+                              <Calendar className='h-3 w-3' />
+                              {new Date(event.startDate).toLocaleDateString()}
+                            </span>
+                            <span className='flex items-center gap-1'>
+                              <Users className='h-3 w-3' />
+                              {event.registrations?.length || 0} registered
+                            </span>
+                          </div>
+                        </div>
+                        <div className='flex items-center space-x-1 ml-2'>
+                          <Button
+                            size='sm'
+                            variant='ghost'
+                            className='h-8 w-8 p-0'
+                            asChild
+                          >
+                            <Link href={`/events/${getDocumentId(event)}`}>
+                              <Calendar className='h-4 w-4' />
+                            </Link>
+                          </Button>
+                          {isAdmin && (
+                            <Button
+                              size='sm'
+                              variant='ghost'
+                              className='h-8 w-8 p-0'
+                              onClick={() => handleDeleteEvent(getDocumentId(event))}
+                              disabled={deletingEventId === getDocumentId(event)}
+                            >
+                              <Trash2 className='h-4 w-4' />
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   ))}
                 </div>
               ) : (
-                <Card className='border-dashed border-2 border-gray-200 dark:border-gray-700'>
-                  <CardContent className='flex flex-col items-center justify-center py-12 px-4'>
-                    <div className='p-3 bg-blue-50 dark:bg-blue-900/20 rounded-full mb-4'>
-                      <Calendar className='h-8 w-8 text-blue-500' />
-                    </div>
-                    <h3 className='text-lg font-medium text-foreground mb-2 text-center'>
-                      No upcoming events yet!
-                    </h3>
-                    <p className='text-muted-foreground text-center mb-6 max-w-md'>
-                      {isAdmin
-                        ? "Ready to bring the community together? Create your first event!"
-                        : "Check back soon for exciting community activities and gatherings."}
-                    </p>
-                    {isAdmin && (
-                      <Button className='shadow-sm' asChild>
-                        <Link href='/events/new'>
-                          <Plus className='h-4 w-4 mr-2' />
-                          Create Your First Event
-                        </Link>
-                      </Button>
-                    )}
-                  </CardContent>
-                </Card>
+                <div className='text-center py-8'>
+                  <Calendar className='h-12 w-12 text-muted-foreground mx-auto mb-3' />
+                  <h3 className='font-semibold text-foreground mb-1'>No upcoming events</h3>
+                  <p className='text-sm text-muted-foreground mb-4'>No events scheduled yet</p>
+                  {isAdmin && (
+                    <Button size='sm' asChild>
+                      <Link href='/events/new'>
+                        <Plus className='h-4 w-4 mr-2' />
+                        Create Event
+                      </Link>
+                    </Button>
+                  )}
+                </div>
               )}
             </TabsContent>
 
-            <TabsContent value='past' className='space-y-4'>
+            <TabsContent value='past' className='space-y-2'>
               {pastEvents.length > 0 ? (
-                <div className='grid gap-4'>
+                <div className='space-y-2'>
                   {pastEvents.map((event) => (
-                    <EventCard
+                    <div
                       key={getDocumentId(event)}
-                      event={event}
-                      onDelete={isAdmin ? handleDeleteEvent : undefined}
-                      onRegister={!isAdmin ? handleRegisterForEvent : undefined}
-                      isDeleting={deletingEventId === getDocumentId(event)}
-                      isRegistering={
-                        registeringEventId === getDocumentId(event)
-                      }
-                      isAdmin={isAdmin}
-                    />
+                      className='bg-card border rounded-lg p-3 hover:bg-muted/50 transition-colors opacity-75'
+                    >
+                      <div className='flex items-center justify-between'>
+                        <div className='flex-1 min-w-0'>
+                          <div className='flex items-center space-x-2 mb-1'>
+                            <h3 className='font-semibold text-sm truncate'>
+                              {event.title}
+                            </h3>
+                            <Badge
+                              variant='outline'
+                              className='text-xs px-1.5 py-0.5'
+                            >
+                              {event.type.replace('_', ' ')}
+                            </Badge>
+                          </div>
+                          <div className='flex items-center space-x-3 text-xs text-muted-foreground'>
+                            <span className='flex items-center gap-1'>
+                              <Calendar className='h-3 w-3' />
+                              {new Date(event.startDate).toLocaleDateString()}
+                            </span>
+                            <span className='flex items-center gap-1'>
+                              <Users className='h-3 w-3' />
+                              {event.registrations?.length || 0} attended
+                            </span>
+                          </div>
+                        </div>
+                        <div className='flex items-center space-x-1 ml-2'>
+                          <Button
+                            size='sm'
+                            variant='ghost'
+                            className='h-8 w-8 p-0'
+                            asChild
+                          >
+                            <Link href={`/events/${getDocumentId(event)}`}>
+                              <Calendar className='h-4 w-4' />
+                            </Link>
+                          </Button>
+                          {isAdmin && (
+                            <Button
+                              size='sm'
+                              variant='ghost'
+                              className='h-8 w-8 p-0'
+                              onClick={() => handleDeleteEvent(getDocumentId(event))}
+                              disabled={deletingEventId === getDocumentId(event)}
+                            >
+                              <Trash2 className='h-4 w-4' />
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   ))}
                 </div>
               ) : (
-                <Card className='border-dashed border-2 border-gray-200 dark:border-gray-700'>
-                  <CardContent className='flex flex-col items-center justify-center py-12 px-4'>
-                    <div className='p-3 bg-purple-50 dark:bg-purple-900/20 rounded-full mb-4'>
-                      <Calendar className='h-8 w-8 text-purple-500' />
-                    </div>
-                    <h3 className='text-lg font-medium text-foreground mb-2 text-center'>
-                      No past events yet
-                    </h3>
-                    <p className='text-muted-foreground text-center max-w-md'>
-                      Your event history will appear here as activities are
-                      completed.
-                    </p>
-                  </CardContent>
-                </Card>
+                <div className='text-center py-8'>
+                  <Calendar className='h-12 w-12 text-muted-foreground mx-auto mb-3' />
+                  <h3 className='font-semibold text-foreground mb-1'>No past events</h3>
+                  <p className='text-sm text-muted-foreground'>Past events will appear here</p>
+                </div>
               )}
             </TabsContent>
           </Tabs>
+
         </div>
       </AppShell>
     </FeatureGuard>

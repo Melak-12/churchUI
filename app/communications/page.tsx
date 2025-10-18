@@ -285,52 +285,40 @@ export default function CommunicationsPage() {
   return (
     <FeatureGuard feature='communications'>
       <AppShell>
-        <div className='space-y-4 sm:space-y-6'>
-          {/* Header Section */}
-          <div className='flex flex-col gap-3 sm:gap-4'>
+        <div className='space-y-3'>
+          {/* Compact Header */}
+          <div className='flex items-center justify-between'>
             <div>
-              <h1 className='text-xl sm:text-2xl font-bold'>
-                Communications
-              </h1>
-              <p className='text-sm text-muted-foreground'>
-                Stay connected with your community through SMS campaigns
+              <h1 className='text-lg font-semibold'>Communications</h1>
+              <p className='text-xs text-muted-foreground'>
+                {filteredCommunications.length} campaign{filteredCommunications.length !== 1 ? 's' : ''}
               </p>
             </div>
-            <div className='flex flex-col sm:flex-row gap-2'>
-              <TwilioTest />
-              <Button asChild className='w-full sm:w-auto sm:max-w-fit'>
-                <Link href='/communications/new'>
-                  <Plus className='h-4 w-4 mr-2' />
-                  Create Campaign
-                </Link>
-              </Button>
-            </div>
+            <Button size='sm' asChild>
+              <Link href='/communications/new'>
+                <Plus className='h-4 w-4 mr-1' />
+                New
+              </Link>
+            </Button>
           </div>
 
-          {/* Filters */}
-          <Card>
-            <CardContent className='p-4'>
-              <div className='flex items-center justify-between'>
-                <div className='flex items-center gap-3'>
-                  <Filter className='h-4 w-4 text-muted-foreground' />
-                  <span className='text-sm font-medium'>Filter by status:</span>
-                </div>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className='w-32'>
-                    <SelectValue placeholder='All' />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value='ALL'>All</SelectItem>
-                    <SelectItem value='DRAFT'>Draft</SelectItem>
-                    <SelectItem value='SCHEDULED'>Scheduled</SelectItem>
-                    <SelectItem value='SENDING'>Sending</SelectItem>
-                    <SelectItem value='SENT'>Sent</SelectItem>
-                    <SelectItem value='FAILED'>Failed</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Compact Filter */}
+          <div className='flex items-center gap-2'>
+            <Filter className='h-4 w-4 text-muted-foreground' />
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className='w-32 h-8 text-xs'>
+                <SelectValue placeholder='All' />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value='ALL'>All</SelectItem>
+                <SelectItem value='DRAFT'>Draft</SelectItem>
+                <SelectItem value='SCHEDULED'>Scheduled</SelectItem>
+                <SelectItem value='SENDING'>Sending</SelectItem>
+                <SelectItem value='SENT'>Sent</SelectItem>
+                <SelectItem value='FAILED'>Failed</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
           {error && (
             <Alert variant='destructive'>
@@ -346,48 +334,87 @@ export default function CommunicationsPage() {
             </Alert>
           )}
 
-          {/* Communications Grid */}
+          {/* Compact Communications List */}
           {filteredCommunications.length > 0 ? (
-            <div
-              key={`grid-${refreshKey}`}
-              className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'
-            >
+            <div className='space-y-2'>
               {filteredCommunications.map((communication, index) => (
-                <CommunicationCard
+                <div
                   key={`comm-${communication.id}-${communication.status}-${communication.createdAt}-${index}`}
-                  communication={communication}
-                  onSend={handleSend}
-                  onDelete={handleDeleteClick}
-                />
+                  className='bg-card border rounded-lg p-3 hover:bg-muted/50 transition-colors'
+                >
+                  <div className='flex items-center justify-between'>
+                    <div className='flex-1 min-w-0'>
+                      <div className='flex items-center space-x-2 mb-1'>
+                        <h3 className='font-semibold text-sm truncate'>
+                          {communication.name}
+                        </h3>
+                        <Badge
+                          variant={
+                            communication.status === 'SENT' ? 'default' :
+                            communication.status === 'SENDING' ? 'secondary' :
+                            communication.status === 'SCHEDULED' ? 'outline' :
+                            communication.status === 'FAILED' ? 'destructive' : 'secondary'
+                          }
+                          className='text-xs px-1.5 py-0.5'
+                        >
+                          {communication.status}
+                        </Badge>
+                      </div>
+                      <div className='flex items-center space-x-3 text-xs text-muted-foreground'>
+                        <span className='flex items-center gap-1'>
+                          <Users className='h-3 w-3' />
+                          {communication.recipients?.length || 0} recipients
+                        </span>
+                        <span className='flex items-center gap-1'>
+                          <Calendar className='h-3 w-3' />
+                          {communication.createdAt ? new Date(communication.createdAt).toLocaleDateString() : 'Unknown date'}
+                        </span>
+                      </div>
+                    </div>
+                    <div className='flex items-center space-x-1 ml-2'>
+                      {communication.status === 'DRAFT' && (
+                        <Button
+                          size='sm'
+                          variant='ghost'
+                          className='h-8 w-8 p-0'
+                          onClick={() => handleSend(communication.id)}
+                        >
+                          <Send className='h-4 w-4' />
+                        </Button>
+                      )}
+                      <Button
+                        size='sm'
+                        variant='ghost'
+                        className='h-8 w-8 p-0'
+                        asChild
+                      >
+                        <Link href={`/communications/${communication.id}`}>
+                          <MessageSquare className='h-4 w-4' />
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
           ) : (
-            <Card className='border-dashed border-2 border-gray-200 dark:border-gray-700'>
-              <CardContent className='flex flex-col items-center justify-center py-12'>
-                <div className='p-3 bg-purple-50 dark:bg-purple-900/20 rounded-full mb-4'>
-                  <MessageSquare className='h-8 w-8 text-purple-500' />
-                </div>
-                <h3 className='text-lg font-medium text-foreground mb-2'>
-                  {statusFilter === "ALL"
-                    ? "Ready to connect?"
-                    : `No ${statusFilter.toLowerCase()} campaigns found`}
-                </h3>
-                <p className='text-muted-foreground text-center mb-6 max-w-md'>
-                  {statusFilter === "ALL"
-                    ? "Start reaching your community with personalized SMS campaigns. From event reminders to prayer requests!"
-                    : `No campaigns found with "${statusFilter.toLowerCase()}" status. Try adjusting your filter or create a new campaign.`}
-                </p>
-                <Button className='shadow-sm' asChild>
-                  <Link href='/communications/new'>
-                    <Plus className='h-4 w-4 mr-2' />
-                    {statusFilter === "ALL"
-                      ? "Create Your First Campaign"
-                      : "Create New Campaign"}
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
+            <div className='text-center py-8'>
+              <MessageSquare className='h-12 w-12 text-muted-foreground mx-auto mb-3' />
+              <h3 className='font-semibold text-foreground mb-1'>
+                {statusFilter === "ALL" ? "No campaigns yet" : `No ${statusFilter.toLowerCase()} campaigns`}
+              </h3>
+              <p className='text-sm text-muted-foreground mb-4'>
+                {statusFilter === "ALL" ? "Start your first SMS campaign" : "Try adjusting your filter"}
+              </p>
+              <Button size='sm' asChild>
+                <Link href='/communications/new'>
+                  <Plus className='h-4 w-4 mr-2' />
+                  Create Campaign
+                </Link>
+              </Button>
+            </div>
           )}
+
 
           {/* Delete Confirmation Modal */}
           <ConfirmationModal
