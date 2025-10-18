@@ -47,66 +47,44 @@ export default function VotingPage() {
   return (
     <FeatureGuard feature='voting'>
       <AppShell>
-        <div className='space-y-3 sm:space-y-4'>
-          {/* Modern Header */}
-          <div className='bg-card rounded-lg sm:rounded-xl p-3 sm:p-4 md:p-6 border shadow-sm'>
-            <div className='flex flex-col gap-2 sm:gap-3'>
-              <div>
-                <div className='flex items-center space-x-2 sm:space-x-3 mb-1'>
-                  <div className='p-1.5 sm:p-2 bg-indigo-500 rounded-lg'>
-                    <VoteIcon className='h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-white' />
-                  </div>
-                  <h1 className='text-lg sm:text-xl md:text-2xl font-bold'>Voting & Decisions</h1>
-                </div>
-                <p className='text-xs sm:text-sm text-muted-foreground'>
-                  Manage community votes and elections democratically
-                </p>
-              </div>
-              <Button asChild className='shadow-sm w-full sm:w-auto h-9 text-sm'>
-                <Link href='/voting/new' className='flex items-center gap-2'>
-                  <Plus className='h-4 w-4' />
-                  <span>New Vote</span>
-                </Link>
-              </Button>
+        <div className='space-y-4 sm:space-y-6'>
+          {/* Header */}
+          <div className='flex flex-col gap-3 sm:gap-4'>
+            <div>
+              <h1 className='text-xl sm:text-2xl font-bold'>
+                Voting & Decisions
+              </h1>
+              <p className='text-sm text-muted-foreground'>
+                Manage community votes and elections democratically
+              </p>
             </div>
+            <Button asChild className='w-full sm:w-auto'>
+              <Link href='/voting/new'>
+                <Plus className='h-4 w-4 mr-2' />
+                New Vote
+              </Link>
+            </Button>
           </div>
 
-          {/* Filters and Stats */}
-          <Card className='border-none shadow-sm'>
-            <CardContent className='p-3 sm:p-4 md:p-6'>
-              <div className='flex items-center justify-between flex-wrap gap-4'>
+          {/* Filters */}
+          <Card>
+            <CardContent className='p-4'>
+              <div className='flex items-center justify-between'>
                 <div className='flex items-center gap-3'>
-                  <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className='w-40 bg-white dark:bg-gray-800 border-none shadow-sm'>
-                      <div className='flex items-center gap-2'>
-                        <Filter className='h-4 w-4 text-muted-foreground' />
-                        <SelectValue placeholder='All votes' />
-                      </div>
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value='ALL'>All Votes</SelectItem>
-                      <SelectItem value='SCHEDULED'>Scheduled</SelectItem>
-                      <SelectItem value='ACTIVE'>Active</SelectItem>
-                      <SelectItem value='CLOSED'>Closed</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Filter className='h-4 w-4 text-muted-foreground' />
+                  <span className='text-sm font-medium'>Filter by status:</span>
                 </div>
-
-                <div className='flex items-center gap-3'>
-                  <div className='text-sm bg-white dark:bg-gray-800 px-4 py-2 rounded-lg shadow-sm'>
-                    <span className='font-semibold text-indigo-600 dark:text-indigo-400'>
-                      {votes.length}
-                    </span>
-                    <span className='text-muted-foreground ml-1'>
-                      vote{votes.length !== 1 ? "s" : ""}
-                    </span>
-                  </div>
-                  {statusFilter !== "ALL" && (
-                    <Badge className='bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 px-3 py-1.5 text-xs font-medium'>
-                      {statusFilter.toLowerCase()}
-                    </Badge>
-                  )}
-                </div>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className='w-32'>
+                    <SelectValue placeholder='All' />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value='ALL'>All Votes</SelectItem>
+                    <SelectItem value='SCHEDULED'>Scheduled</SelectItem>
+                    <SelectItem value='ACTIVE'>Active</SelectItem>
+                    <SelectItem value='CLOSED'>Closed</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </CardContent>
           </Card>

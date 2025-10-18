@@ -229,137 +229,57 @@ export default function EventsPage() {
   return (
     <FeatureGuard feature='events'>
       <AppShell>
-        <div className='space-y-3 sm:space-y-4'>
+        <div className='space-y-4 sm:space-y-6'>
           {/* Header Section */}
-          <div className='bg-card rounded-lg sm:rounded-xl p-3 sm:p-4 md:p-6 border shadow-sm'>
-            <div className='flex flex-col gap-2 sm:gap-3'>
-              <div>
-                <div className='flex items-center space-x-2 sm:space-x-3 mb-1'>
-                  <div className='p-1.5 sm:p-2 bg-green-500 rounded-lg'>
-                    <Calendar className='h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-white' />
-                  </div>
-                  <h1 className='text-lg sm:text-xl md:text-2xl font-bold text-foreground'>
-                    Church Events
-                  </h1>
-                </div>
-                <p className='text-xs sm:text-sm text-muted-foreground'>
-                  Discover and join upcoming community activities
-                </p>
-              </div>
-              {isAdmin && (
-                <Button asChild className='shadow-sm w-full sm:w-auto h-9 text-sm'>
-                  <Link href='/events/new'>
-                    <Plus className='h-4 w-4 mr-2' />
-                    Create Event
-                  </Link>
-                </Button>
-              )}
+          <div className='flex flex-col gap-3 sm:gap-4'>
+            <div>
+              <h1 className='text-xl sm:text-2xl font-bold'>
+                Events
+              </h1>
+              <p className='text-sm text-muted-foreground'>
+                Discover and join upcoming community activities
+              </p>
             </div>
+            {isAdmin && (
+              <Button asChild className='w-full sm:w-auto'>
+                <Link href='/events/new'>
+                  <Plus className='h-4 w-4 mr-2' />
+                  Create Event
+                </Link>
+              </Button>
+            )}
           </div>
 
-          {/* Quick Stats */}
-          <div className='grid grid-cols-3 gap-2 sm:gap-3 md:gap-4'>
-            <Card>
-              <CardContent className='p-2 sm:p-3 md:p-4'>
-                <div className='flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-1'>
-                  <div className='flex-1 min-w-0'>
-                    <p className='text-[10px] sm:text-xs text-muted-foreground truncate'>
-                      Upcoming
-                    </p>
-                    <p className='text-lg sm:text-xl md:text-2xl font-bold text-blue-600'>
-                      {
-                        events.filter((e) => isFuture(new Date(e.startDate)))
-                          .length
-                      }
-                    </p>
-                  </div>
-                  <CalendarDays className='h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-blue-500 opacity-50 sm:opacity-100' />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className='p-2 sm:p-3 md:p-4'>
-                <div className='flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-1'>
-                  <div className='flex-1 min-w-0'>
-                    <p className='text-[10px] sm:text-xs text-muted-foreground truncate'>This Week</p>
-                    <p className='text-lg sm:text-xl md:text-2xl font-bold text-green-600'>
-                      {
-                        events.filter((e) => isThisWeek(new Date(e.startDate)))
-                          .length
-                      }
-                    </p>
-                  </div>
-                  <Zap className='h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-green-500 opacity-50 sm:opacity-100' />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className='p-2 sm:p-3 md:p-4'>
-                <div className='flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-1'>
-                  <div className='flex-1 min-w-0'>
-                    <p className='text-[10px] sm:text-xs text-muted-foreground truncate'>
-                      Total
-                    </p>
-                    <p className='text-lg sm:text-xl md:text-2xl font-bold text-purple-600'>
-                      {events.length}
-                    </p>
-                  </div>
-                  <PartyPopper className='h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-purple-500 opacity-50 sm:opacity-100' />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
 
           {/* Search and Filters */}
-          <Card className='border-none shadow-sm'>
-            <CardContent className='p-3 sm:p-4 md:p-6'>
-              <div className='flex flex-col sm:flex-row gap-2 sm:gap-3'>
+          <Card>
+            <CardContent className='p-4'>
+              <div className='flex flex-col sm:flex-row gap-3'>
                 <div className='relative flex-1'>
-                  <Search className='h-4 w-4 sm:h-5 sm:w-5 absolute left-2.5 sm:left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground' />
+                  <Search className='h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground' />
                   <Input
                     placeholder='Search events...'
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className='pl-8 sm:pl-10 h-9 text-sm bg-white dark:bg-gray-800 border-none shadow-sm'
+                    className='pl-10'
                   />
                 </div>
                 <div className='flex gap-2'>
-                  <Button
-                    variant='outline'
-                    size='sm'
-                    className='bg-white dark:bg-gray-800 shadow-sm h-9 px-3'
-                    asChild
-                  >
+                  <Button variant='outline' asChild>
                     <Link href='/events/calendar'>
-                      <CalendarDays className='h-4 w-4 sm:mr-2' />
-                      <span className='hidden sm:inline'>Calendar</span>
+                      <Calendar className='h-4 w-4 mr-2' />
+                      Calendar
                     </Link>
                   </Button>
-                  <Select value={filterStatus} onValueChange={setFilterStatus}>
-                    <SelectTrigger className='w-[110px] sm:w-[140px] h-9 text-xs sm:text-sm bg-white dark:bg-gray-800 border-none shadow-sm'>
-                      <SelectValue placeholder='Status' />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value='all'>All Status</SelectItem>
-                      <SelectItem value='DRAFT'>Draft</SelectItem>
-                      <SelectItem value='PUBLISHED'>Published</SelectItem>
-                      <SelectItem value='CANCELLED'>Cancelled</SelectItem>
-                      <SelectItem value='COMPLETED'>Completed</SelectItem>
-                    </SelectContent>
-                  </Select>
                   <Select value={filterType} onValueChange={setFilterType}>
-                    <SelectTrigger className='w-[110px] sm:w-[140px] h-9 text-xs sm:text-sm bg-white dark:bg-gray-800 border-none shadow-sm'>
+                    <SelectTrigger className='w-32'>
                       <SelectValue placeholder='Type' />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value='all'>All Types</SelectItem>
                       <SelectItem value='SERVICE'>Service</SelectItem>
                       <SelectItem value='MEETING'>Meeting</SelectItem>
-                      <SelectItem value='SPECIAL_OCCASION'>
-                        Special Occasion
-                      </SelectItem>
+                      <SelectItem value='SPECIAL_OCCASION'>Special</SelectItem>
                       <SelectItem value='CONFERENCE'>Conference</SelectItem>
                       <SelectItem value='SOCIAL'>Social</SelectItem>
                       <SelectItem value='OTHER'>Other</SelectItem>
