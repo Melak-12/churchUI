@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Scroll restoration and smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Ensure pages load at the top */
+html, body {
+  scroll-behavior: auto;
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;

@@ -6,6 +6,7 @@ import { useTheme } from "@/components/theme-provider";
 import { isAuthenticated, getCurrentUser, getDefaultRoute } from "@/lib/auth";
 import Image from "next/image";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import { 
   Users, 
   Calendar, 
@@ -20,6 +21,11 @@ import {
 
 export default function LandingPage() {
   const { theme } = useTheme();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const features = [
     {
@@ -84,7 +90,7 @@ export default function LandingPage() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-              {isAuthenticated() ? (
+              {isClient && isAuthenticated() ? (
                 <Button asChild size="lg" className="w-full sm:w-auto px-8 py-6 text-lg">
                   <Link href={getDefaultRoute(getCurrentUser().role)}>
                     <LayoutDashboard className="mr-2 h-5 w-5" />

@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { FeaturesProvider } from '@/contexts/features-context';
+import ScrollRestoration from '@/components/scroll-restoration';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -40,6 +41,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider defaultTheme="system">
           <FeaturesProvider>
+            <ScrollRestoration />
             {children}
           </FeaturesProvider>
         </ThemeProvider>
