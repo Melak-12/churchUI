@@ -99,14 +99,14 @@ export default function Dashboard() {
               size='sm'
               variant='outline'
               asChild
-              className='flex-1 sm:flex-none sm:w-auto'
+              className='flex-1 sm:flex-none sm:w-auto sm:max-w-fit'
             >
               <Link href='/communications/new'>
                 <MessageSquare className='h-4 w-4 mr-2' />
                 Send SMS
               </Link>
             </Button>
-            <Button size='sm' asChild className='flex-1 sm:flex-none sm:w-auto'>
+            <Button size='sm' asChild className='flex-1 sm:flex-none sm:w-auto sm:max-w-fit'>
               <Link href='/members/new'>
                 <UserPlus className='h-4 w-4 mr-2' />
                 Add Member
