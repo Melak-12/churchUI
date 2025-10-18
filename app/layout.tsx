@@ -15,6 +15,19 @@ export const metadata: Metadata = {
     maximumScale: 1,
     userScalable: false,
   },
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/worshiply-logo.png', type: 'image/png', media: '(prefers-color-scheme: light)' },
+      { url: '/worshiply-dark.png', type: 'image/png', media: '(prefers-color-scheme: dark)' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: [
+      { url: '/worshiply-logo.png', media: '(prefers-color-scheme: light)' },
+      { url: '/worshiply-dark.png', media: '(prefers-color-scheme: dark)' },
+    ],
+  },
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({

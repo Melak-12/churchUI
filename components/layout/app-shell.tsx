@@ -28,6 +28,7 @@ import { cn } from "@/lib/utils";
 import { getCurrentUser, hasPermission, logout } from "@/lib/auth";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useFeatures } from "@/contexts/features-context";
+import { useTheme } from "@/components/theme-provider";
 import Image from "next/image";
 
 interface NavItem {
@@ -95,6 +96,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const user = getCurrentUser();
   const { features } = useFeatures();
+  const { theme } = useTheme();
 
   const navItems = hasPermission(user.role, "ADMIN")
     ? getAdminNavItems(features)
@@ -116,7 +118,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className='flex items-center justify-between p-4 border-b'>
           <div className='w-56 h-16'>
             <Image 
-              src="/worshiply-logo.png" 
+              src={theme === "dark" ? "/worshiply-dark.png" : "/worshiply-logo.png"} 
               alt="Worshiply" 
               width={224}
               height={64}
@@ -177,7 +179,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <div className='lg:hidden flex-1 min-w-0 flex items-center justify-start'>
               <div className='w-20 h-6'>
                 <Image 
-                  src="/worshiply-logo.png" 
+                  src={theme === "dark" ? "/worshiply-dark.png" : "/worshiply-logo.png"} 
                   alt="Worshiply" 
                   width={80}
                   height={24}

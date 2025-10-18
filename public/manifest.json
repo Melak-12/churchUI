@@ -1,0 +1,28 @@
+{
+  "name": "Church Management App",
+  "short_name": "Worshiply",
+  "description": "Community church management and voting system",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "icons": [
+    {
+      "src": "/worshiply-logo.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/worshiply-dark.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "any",
+      "type": "image/png"
+    }
+  ]
+}
