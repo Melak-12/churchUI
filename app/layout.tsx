@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Church Management App',
-  description: 'Community church management and voting system',
+  description: 'Hex Soup management and voting system',
   viewport: {
     width: 'device-width',
     initialScale: 1,

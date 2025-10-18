@@ -20,10 +20,12 @@ import { Church, Eye, EyeOff, Mail, Lock, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { login } from "@/lib/auth";
+import { useTheme } from "@/components/theme-provider";
 
 export default function LoginPage() {
   const router = useRouter();
   const isClient = useSuppressHydration();
+  const { theme } = useTheme();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -73,13 +75,13 @@ export default function LoginPage() {
     <div className="min-h-screen bg-background flex items-center justify-center p-2 sm:p-4">
       <div className="w-full max-w-md">
         {/* Logo and Header */}
-        <div className="text-center mb-4 sm:mb-6 md:mb-8">
-          <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 mx-auto mb-4 sm:mb-6 md:mb-8">
+        <div className="text-center mb-4 sm:mb-6">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-3 sm:mb-4">
             <Image 
-              src="/worshiply-logo.png" 
+              src={theme === "dark" ? "/worshiply-dark.png" : "/worshiply-logo.png"} 
               alt="Worshiply" 
-              width={192}
-              height={192}
+              width={96}
+              height={96}
               className="w-full h-full object-contain"
             />
           </div>
@@ -260,7 +262,7 @@ export default function LoginPage() {
         {/* Footer */}
         <div className="text-center mt-4 sm:mt-6 md:mt-8">
           <p className="text-[10px] sm:text-xs text-muted-foreground">
-            © 2025 Community Church. All rights reserved.
+            © 2025 Hex Soup. All rights reserved.
           </p>
         </div>
       </div>

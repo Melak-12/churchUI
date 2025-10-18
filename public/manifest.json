@@ -1,7 +1,7 @@
 {
   "name": "Church Management App",
   "short_name": "Worshiply",
-  "description": "Community church management and voting system",
+  "description": "Hex Soup management and voting system",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

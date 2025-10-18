@@ -15,8 +15,10 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Church, Mail, ArrowLeft, CheckCircle } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { useTheme } from "@/components/theme-provider";
 
 export default function ForgotPasswordPage() {
+  const { theme } = useTheme();
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -94,13 +96,13 @@ export default function ForgotPasswordPage() {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo and Header */}
-          <div className="text-center mb-8">
-            <div className="w-32 h-32 mx-auto mb-6">
+          <div className="text-center mb-6">
+            <div className="w-20 h-20 mx-auto mb-4">
               <Image 
-                src="/worshiply-logo.png" 
+                src={theme === "dark" ? "/worshiply-dark.png" : "/worshiply-logo.png"} 
                 alt="Worshiply" 
-                width={128}
-                height={128}
+                width={80}
+                height={80}
                 className="w-full h-full object-contain"
               />
             </div>
@@ -167,7 +169,7 @@ export default function ForgotPasswordPage() {
         {/* Footer */}
         <div className="text-center mt-8">
           <p className="text-xs text-gray-500">
-            © 2025 Community Church. All rights reserved.
+            © 2025 Hex Soup. All rights reserved.
           </p>
         </div>
       </div>

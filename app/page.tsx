@@ -3,10 +3,12 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getCurrentUser, getDefaultRoute, isAuthenticated } from '@/lib/auth';
+import { useTheme } from '@/components/theme-provider';
 import Image from 'next/image';
 
 export default function Home() {
   const router = useRouter();
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (isAuthenticated()) {
@@ -21,12 +23,12 @@ export default function Home() {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">
-        <div className="w-40 h-16 mx-auto mb-6">
+        <div className="w-24 h-12 mx-auto mb-6">
           <Image 
-            src="/worshiply-logo.png" 
+            src={theme === "dark" ? "/worshiply-dark.png" : "/worshiply-logo.png"} 
             alt="Worshiply" 
-            width={160}
-            height={64}
+            width={96}
+            height={48}
             className="w-full h-full object-contain"
           />
         </div>
