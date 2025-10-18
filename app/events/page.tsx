@@ -229,25 +229,25 @@ export default function EventsPage() {
   return (
     <FeatureGuard feature='events'>
       <AppShell>
-        <div className='space-y-6'>
+        <div className='space-y-3 sm:space-y-4'>
           {/* Header Section */}
-          <div className='bg-card rounded-xl p-6 border shadow-sm'>
-            <div className='flex flex-col gap-4'>
+          <div className='bg-card rounded-lg sm:rounded-xl p-3 sm:p-4 md:p-6 border shadow-sm'>
+            <div className='flex flex-col gap-2 sm:gap-3'>
               <div>
-                <div className='flex items-center space-x-3 mb-2'>
-                  <div className='p-2 bg-green-500 rounded-lg'>
-                    <Calendar className='h-6 w-6 text-white' />
+                <div className='flex items-center space-x-2 sm:space-x-3 mb-1'>
+                  <div className='p-1.5 sm:p-2 bg-green-500 rounded-lg'>
+                    <Calendar className='h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-white' />
                   </div>
-                  <h1 className='text-2xl font-bold text-foreground'>
+                  <h1 className='text-lg sm:text-xl md:text-2xl font-bold text-foreground'>
                     Church Events
                   </h1>
                 </div>
-                <p className='text-muted-foreground'>
+                <p className='text-xs sm:text-sm text-muted-foreground'>
                   Discover and join upcoming community activities
                 </p>
               </div>
               {isAdmin && (
-                <Button asChild className='shadow-sm w-full sm:w-auto'>
+                <Button asChild className='shadow-sm w-full sm:w-auto h-9 text-sm'>
                   <Link href='/events/new'>
                     <Plus className='h-4 w-4 mr-2' />
                     Create Event
@@ -258,88 +258,87 @@ export default function EventsPage() {
           </div>
 
           {/* Quick Stats */}
-          <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+          <div className='grid grid-cols-3 gap-2 sm:gap-3 md:gap-4'>
             <Card>
-              <CardContent className='p-4'>
-                <div className='flex items-center justify-between'>
-                  <div>
-                    <p className='text-sm text-muted-foreground'>
-                      Upcoming Events
+              <CardContent className='p-2 sm:p-3 md:p-4'>
+                <div className='flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-1'>
+                  <div className='flex-1 min-w-0'>
+                    <p className='text-[10px] sm:text-xs text-muted-foreground truncate'>
+                      Upcoming
                     </p>
-                    <p className='text-2xl font-bold text-blue-600'>
+                    <p className='text-lg sm:text-xl md:text-2xl font-bold text-blue-600'>
                       {
                         events.filter((e) => isFuture(new Date(e.startDate)))
                           .length
                       }
                     </p>
                   </div>
-                  <CalendarDays className='h-8 w-8 text-blue-500' />
+                  <CalendarDays className='h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-blue-500 opacity-50 sm:opacity-100' />
                 </div>
               </CardContent>
             </Card>
 
             <Card>
-              <CardContent className='p-4'>
-                <div className='flex items-center justify-between'>
-                  <div>
-                    <p className='text-sm text-muted-foreground'>This Week</p>
-                    <p className='text-2xl font-bold text-green-600'>
+              <CardContent className='p-2 sm:p-3 md:p-4'>
+                <div className='flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-1'>
+                  <div className='flex-1 min-w-0'>
+                    <p className='text-[10px] sm:text-xs text-muted-foreground truncate'>This Week</p>
+                    <p className='text-lg sm:text-xl md:text-2xl font-bold text-green-600'>
                       {
                         events.filter((e) => isThisWeek(new Date(e.startDate)))
                           .length
                       }
                     </p>
                   </div>
-                  <Zap className='h-8 w-8 text-green-500' />
+                  <Zap className='h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-green-500 opacity-50 sm:opacity-100' />
                 </div>
               </CardContent>
             </Card>
 
             <Card>
-              <CardContent className='p-4'>
-                <div className='flex items-center justify-between'>
-                  <div>
-                    <p className='text-sm text-muted-foreground'>
-                      Total Events
+              <CardContent className='p-2 sm:p-3 md:p-4'>
+                <div className='flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-1'>
+                  <div className='flex-1 min-w-0'>
+                    <p className='text-[10px] sm:text-xs text-muted-foreground truncate'>
+                      Total
                     </p>
-                    <p className='text-2xl font-bold text-purple-600'>
+                    <p className='text-lg sm:text-xl md:text-2xl font-bold text-purple-600'>
                       {events.length}
                     </p>
                   </div>
-                  <PartyPopper className='h-8 w-8 text-purple-500' />
+                  <PartyPopper className='h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-purple-500 opacity-50 sm:opacity-100' />
                 </div>
               </CardContent>
             </Card>
           </div>
 
           {/* Search and Filters */}
-          {/* Filters */}
           <Card className='border-none shadow-sm'>
-            <CardContent className='p-6'>
-              <div className='flex flex-col lg:flex-row gap-4 lg:items-center'>
-                <div className='relative flex-1 max-w-md'>
-                  <Search className='h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground' />
+            <CardContent className='p-3 sm:p-4 md:p-6'>
+              <div className='flex flex-col sm:flex-row gap-2 sm:gap-3'>
+                <div className='relative flex-1'>
+                  <Search className='h-4 w-4 sm:h-5 sm:w-5 absolute left-2.5 sm:left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground' />
                   <Input
-                    placeholder='Search events by name...'
+                    placeholder='Search events...'
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className='pl-10 bg-white dark:bg-gray-800 border-none shadow-sm'
+                    className='pl-8 sm:pl-10 h-9 text-sm bg-white dark:bg-gray-800 border-none shadow-sm'
                   />
                 </div>
-                <div className='flex flex-col sm:flex-row gap-3'>
+                <div className='flex gap-2'>
                   <Button
                     variant='outline'
                     size='sm'
-                    className='justify-start bg-white dark:bg-gray-800 shadow-sm'
+                    className='bg-white dark:bg-gray-800 shadow-sm h-9 px-3'
                     asChild
                   >
                     <Link href='/events/calendar'>
-                      <Calendar className='h-4 w-4 mr-2' />
-                      Calendar View
+                      <CalendarDays className='h-4 w-4 sm:mr-2' />
+                      <span className='hidden sm:inline'>Calendar</span>
                     </Link>
                   </Button>
                   <Select value={filterStatus} onValueChange={setFilterStatus}>
-                    <SelectTrigger className='w-full sm:w-[160px] bg-white dark:bg-gray-800 border-none shadow-sm'>
+                    <SelectTrigger className='w-[110px] sm:w-[140px] h-9 text-xs sm:text-sm bg-white dark:bg-gray-800 border-none shadow-sm'>
                       <SelectValue placeholder='Status' />
                     </SelectTrigger>
                     <SelectContent>
@@ -351,8 +350,8 @@ export default function EventsPage() {
                     </SelectContent>
                   </Select>
                   <Select value={filterType} onValueChange={setFilterType}>
-                    <SelectTrigger className='w-full sm:w-[180px] bg-white dark:bg-gray-800 border-none shadow-sm'>
-                      <SelectValue placeholder='Event Type' />
+                    <SelectTrigger className='w-[110px] sm:w-[140px] h-9 text-xs sm:text-sm bg-white dark:bg-gray-800 border-none shadow-sm'>
+                      <SelectValue placeholder='Type' />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value='all'>All Types</SelectItem>
@@ -522,24 +521,24 @@ function EventCard({
 
   return (
     <Card className='hover:shadow-md transition-all duration-300'>
-      <CardContent className='p-6'>
-        <div className='flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-4 lg:space-y-0'>
+      <CardContent className='p-3 sm:p-4 md:p-6'>
+        <div className='flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-3 sm:space-y-4 lg:space-y-0'>
           <div className='flex-1 min-w-0'>
             {/* Title and Badges */}
-            <div className='flex flex-col sm:flex-row sm:items-center sm:space-x-3 mb-3 space-y-2 sm:space-y-0'>
-              <h3 className='text-xl font-semibold text-foreground truncate'>
+            <div className='flex flex-col sm:flex-row sm:items-center sm:space-x-2 mb-2 sm:mb-3 space-y-1.5 sm:space-y-0'>
+              <h3 className='text-base sm:text-lg md:text-xl font-semibold text-foreground truncate'>
                 {event.title}
               </h3>
-              <div className='flex flex-wrap gap-2'>
+              <div className='flex flex-wrap gap-1.5 sm:gap-2'>
                 <Badge
                   variant='secondary'
-                  className={`${getEventTypeColor(event.type)}`}
+                  className={`${getEventTypeColor(event.type)} text-xs px-1.5 py-0.5`}
                 >
                   {event.type.replace("_", " ")}
                 </Badge>
                 <Badge
                   variant='secondary'
-                  className={`${getStatusColor(event.status)}`}
+                  className={`${getStatusColor(event.status)} text-xs px-1.5 py-0.5`}
                 >
                   {event.status}
                 </Badge>
@@ -548,42 +547,42 @@ function EventCard({
 
             {/* Description */}
             {event.description && (
-              <p className='text-muted-foreground mb-4 line-clamp-2'>
+              <p className='text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-3 md:mb-4 line-clamp-2'>
                 {event.description}
               </p>
             )}
 
             {/* Event Details */}
-            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm text-muted-foreground'>
-              <div className='flex items-center space-x-2'>
-                <div className='p-1 bg-blue-50 dark:bg-blue-900/20 rounded'>
-                  <Clock className='h-4 w-4 text-blue-500' />
+            <div className='grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2 md:gap-3 text-xs sm:text-sm text-muted-foreground'>
+              <div className='flex items-center space-x-1.5 sm:space-x-2'>
+                <div className='p-0.5 sm:p-1 bg-blue-50 dark:bg-blue-900/20 rounded'>
+                  <Clock className='h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 text-blue-500' />
                 </div>
-                <span className='truncate'>
-                  {format(new Date(event.startDate), "MMM d, yyyy h:mm a")}
+                <span className='truncate text-[11px] sm:text-xs'>
+                  {format(new Date(event.startDate), "MMM d, h:mm a")}
                 </span>
               </div>
-              <div className='flex items-center space-x-2'>
-                <div className='p-1 bg-green-50 dark:bg-green-900/20 rounded'>
-                  <MapPin className='h-4 w-4 text-green-500' />
+              <div className='flex items-center space-x-1.5 sm:space-x-2'>
+                <div className='p-0.5 sm:p-1 bg-green-50 dark:bg-green-900/20 rounded'>
+                  <MapPin className='h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 text-green-500' />
                 </div>
-                <span className='truncate'>{event.location}</span>
+                <span className='truncate text-[11px] sm:text-xs'>{event.location}</span>
               </div>
               {event.capacity && (
-                <div className='flex items-center space-x-2'>
-                  <div className='p-1 bg-purple-50 dark:bg-purple-900/20 rounded'>
-                    <Users className='h-4 w-4 text-purple-500' />
+                <div className='flex items-center space-x-1.5 sm:space-x-2'>
+                  <div className='p-0.5 sm:p-1 bg-purple-50 dark:bg-purple-900/20 rounded'>
+                    <Users className='h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 text-purple-500' />
                   </div>
-                  <span>
-                    {event.registrationCount || 0}/{event.capacity} registered
+                  <span className='text-[11px] sm:text-xs'>
+                    {event.registrationCount || 0}/{event.capacity}
                   </span>
                 </div>
               )}
-              <div className='flex items-center space-x-2'>
-                <div className='p-1 bg-orange-50 dark:bg-orange-900/20 rounded'>
-                  <Calendar className='h-4 w-4 text-orange-500' />
+              <div className='flex items-center space-x-1.5 sm:space-x-2'>
+                <div className='p-0.5 sm:p-1 bg-orange-50 dark:bg-orange-900/20 rounded'>
+                  <Calendar className='h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 text-orange-500' />
                 </div>
-                <span className='font-medium text-orange-600'>
+                <span className='font-medium text-orange-600 text-[11px] sm:text-xs'>
                   {getRelativeTime(event.startDate)}
                 </span>
               </div>
@@ -591,18 +590,18 @@ function EventCard({
           </div>
 
           {/* Action Buttons */}
-          <div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 lg:ml-4 lg:flex-col lg:items-stretch lg:min-w-0'>
+          <div className='flex flex-row sm:flex-row items-stretch sm:items-center gap-1.5 sm:gap-2 lg:ml-4 lg:flex-col lg:items-stretch lg:min-w-0'>
             {/* View Button */}
             <Button
               variant='outline'
               size='sm'
-              className='w-full sm:w-auto lg:w-full'
+              className='flex-1 sm:flex-none sm:w-auto lg:w-full text-xs h-8 sm:h-9'
               asChild
             >
               <Link href={`/events/${eventId}`}>
-                <Eye className='h-4 w-4 mr-2' />
+                <Eye className='h-3 w-3 sm:h-4 sm:w-4 mr-1.5 sm:mr-2' />
                 <span className='hidden sm:inline lg:hidden'>View</span>
-                <span className='sm:hidden lg:inline'>View Details</span>
+                <span className='sm:hidden lg:inline'>View</span>
               </Link>
             </Button>
 

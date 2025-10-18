@@ -149,16 +149,25 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Main content */}
       <div className='lg:ml-64 pb-16 lg:pb-0'>
         {/* Top bar */}
-        <div className='bg-card shadow-sm border-b px-4 py-3 lg:px-6'>
-          <div className='flex items-center justify-between'>
-            <div className='lg:hidden px-2'>
-              <h1 className='sm:text-lg font-bold text-foreground'>
+        <div className='bg-card shadow-sm border-b px-3 py-2 lg:px-6 lg:py-3'>
+          <div className='flex items-center justify-between gap-2'>
+            {/* Desktop: Show full title and welcome */}
+            <div className='hidden lg:block'>
+              <h1 className='text-lg font-bold text-foreground'>
                 Community Church
               </h1>
             </div>
 
-            <div className='flex items-center justify-between flex-1 lg:flex-initial lg:ml-auto'>
-              <span className='text-xs sm:text-sm text-muted-foreground font-light truncate max-w-[120px] sm:max-w-none'>
+            {/* Mobile: Minimal branding */}
+            <div className='lg:hidden flex-1 min-w-0'>
+              <h1 className='text-sm font-semibold text-foreground truncate'>
+                Community Church
+              </h1>
+            </div>
+
+            <div className='flex items-center gap-1.5 lg:gap-3 lg:ml-auto flex-shrink-0'>
+              {/* Welcome text - desktop only */}
+              <span className='hidden lg:block text-sm text-muted-foreground font-light truncate'>
                 Welcome,{" "}
                 {user.firstName && user.lastName
                   ? `${user.firstName} ${user.lastName}`
@@ -166,18 +175,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   ? "Administrator"
                   : "Member"}
               </span>
-              <div className='flex items-center space-x-2 ml-auto'>
-                <ThemeToggle />
-                <Button
-                  variant='ghost'
-                  size='sm'
-                  onClick={handleLogout}
-                  className='text-muted-foreground hover:text-foreground'
-                >
-                  <LogOut className='h-4 w-4 lg:mr-2' />
-                  <span className='hidden lg:inline'>Sign Out</span>
-                </Button>
-              </div>
+              
+              <ThemeToggle />
+              
+              <Button
+                variant='ghost'
+                size='sm'
+                onClick={handleLogout}
+                className='text-muted-foreground hover:text-foreground h-8 w-8 lg:w-auto p-0 lg:px-3'
+              >
+                <LogOut className='h-4 w-4 lg:mr-2' />
+                <span className='hidden lg:inline'>Sign Out</span>
+              </Button>
             </div>
           </div>
         </div>

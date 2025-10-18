@@ -92,36 +92,38 @@ export default function Dashboard() {
 
   return (
     <AppShell>
-      <div className='space-y-6'>
+      <div className='space-y-3 sm:space-y-4'>
         {/* Header */}
-        <div className='flex flex-col gap-4'>
+        <div className='flex flex-col gap-2 sm:gap-3'>
           <div>
-            <h1 className='text-2xl font-bold'>Dashboard</h1>
-            <p className='text-muted-foreground'>Overview of your community</p>
+            <h1 className='text-lg sm:text-xl md:text-2xl font-bold'>Dashboard</h1>
+            <p className='text-xs sm:text-sm text-muted-foreground'>Overview of your community</p>
           </div>
-          <div className='flex flex-col sm:flex-row gap-2'>
+          <div className='flex flex-row gap-1.5 sm:gap-2'>
             <Button
               size='sm'
               variant='outline'
               asChild
-              className='w-full sm:w-auto'
+              className='flex-1 sm:flex-none sm:w-auto h-8 text-xs'
             >
               <Link href='/communications/new'>
-                <MessageSquare className='h-4 w-4 mr-2' />
-                Send SMS
+                <MessageSquare className='h-3.5 w-3.5 mr-1.5' />
+                <span className='hidden xs:inline'>Send SMS</span>
+                <span className='xs:hidden'>SMS</span>
               </Link>
             </Button>
-            <Button size='sm' asChild className='w-full sm:w-auto'>
+            <Button size='sm' asChild className='flex-1 sm:flex-none sm:w-auto h-8 text-xs'>
               <Link href='/members/new'>
-                <UserPlus className='h-4 w-4 mr-2' />
-                Add Member
+                <UserPlus className='h-3.5 w-3.5 mr-1.5' />
+                <span className='hidden xs:inline'>Add Member</span>
+                <span className='xs:hidden'>Add</span>
               </Link>
             </Button>
           </div>
         </div>
 
         {/* Stats Cards */}
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
+        <div className='grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4'>
           <DashboardCard
             title='Paid Members'
             value={paidMembers}
@@ -155,36 +157,36 @@ export default function Dashboard() {
         {/* Communication Statistics */}
         <CommunicationStats />
 
-        <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4'>
           {/* Upcoming Events */}
           <Card>
-            <CardHeader>
-              <CardTitle className='text-lg font-medium'>
+            <CardHeader className='p-3 sm:p-4 md:p-6'>
+              <CardTitle className='text-sm sm:text-base md:text-lg font-medium'>
                 Upcoming Events
               </CardTitle>
-              <CardDescription>Next 5 events</CardDescription>
+              <CardDescription className='text-xs sm:text-sm'>Next 5 events</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className='p-3 sm:p-4 md:p-6 pt-0'>
               {events.length > 0 ? (
-                <div className='space-y-2'>
+                <div className='space-y-1.5 sm:space-y-2'>
                   {events.map((event) => (
-                    <div key={event.id} className='p-3 border rounded-lg'>
+                    <div key={event.id} className='p-2 sm:p-3 border rounded-lg'>
                       <div className='flex items-start justify-between gap-2'>
                         <div className='flex-1 min-w-0'>
-                          <div className='font-medium truncate'>
+                          <div className='font-medium truncate text-sm sm:text-base'>
                             {event.title}
                           </div>
-                          <div className='text-sm text-muted-foreground mt-1 flex items-center gap-4'>
+                          <div className='text-xs sm:text-sm text-muted-foreground mt-0.5 sm:mt-1 flex items-center gap-2 sm:gap-4'>
                             <span className='flex items-center gap-1'>
                               <Calendar className='h-3 w-3' />
                               {new Date(event.startDate).toLocaleDateString()}
                             </span>
                             {event.location && (
-                              <span className='truncate'>{event.location}</span>
+                              <span className='truncate text-[11px] sm:text-xs'>{event.location}</span>
                             )}
                           </div>
                         </div>
-                        <Button variant='outline' size='sm' asChild>
+                        <Button variant='outline' size='sm' className='h-7 px-2 text-xs' asChild>
                           <Link href={`/events/${event.id}`}>View</Link>
                         </Button>
                       </div>
@@ -193,19 +195,19 @@ export default function Dashboard() {
                   <Button
                     variant='outline'
                     size='sm'
-                    className='w-full'
+                    className='w-full h-8 text-xs'
                     asChild
                   >
                     <Link href='/events'>View All</Link>
                   </Button>
                 </div>
               ) : (
-                <div className='text-center py-8'>
-                  <Calendar className='h-8 w-8 text-muted-foreground mx-auto mb-2' />
-                  <p className='text-sm text-muted-foreground mb-4'>
+                <div className='text-center py-6 sm:py-8'>
+                  <Calendar className='h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground mx-auto mb-2' />
+                  <p className='text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4'>
                     No upcoming events
                   </p>
-                  <Button size='sm' variant='outline' asChild>
+                  <Button size='sm' variant='outline' className='h-8 text-xs' asChild>
                     <Link href='/events/new'>Create Event</Link>
                   </Button>
                 </div>
@@ -215,40 +217,40 @@ export default function Dashboard() {
 
           {/* Critical Delinquent Members */}
           <Card>
-            <CardHeader>
-              <CardTitle className='text-lg font-medium'>
+            <CardHeader className='p-3 sm:p-4 md:p-6'>
+              <CardTitle className='text-sm sm:text-base md:text-lg font-medium'>
                 Need Attention
               </CardTitle>
-              <CardDescription>Members over 90 days behind</CardDescription>
+              <CardDescription className='text-xs sm:text-sm'>Members over 90 days behind</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className='p-3 sm:p-4 md:p-6 pt-0'>
               {criticalDelinquent.length > 0 ? (
-                <div className='space-y-2'>
+                <div className='space-y-1.5 sm:space-y-2'>
                   {criticalDelinquent.slice(0, 5).map((member) => (
                     <div
                       key={member.id}
-                      className='flex items-center justify-between p-3 border rounded-lg'
+                      className='flex items-center justify-between p-2 sm:p-3 border rounded-lg'
                     >
                       <div className='flex-1 min-w-0'>
-                        <div className='font-medium truncate'>
+                        <div className='font-medium truncate text-sm sm:text-base'>
                           {member.firstName} {member.lastName}
                         </div>
-                        <div className='text-sm text-muted-foreground'>
+                        <div className='text-xs sm:text-sm text-muted-foreground'>
                           {member.phone}
                         </div>
                       </div>
-                      <div className='text-sm text-muted-foreground'>
+                      <div className='text-xs sm:text-sm text-muted-foreground'>
                         {member.delinquencyDays} days
                       </div>
                     </div>
                   ))}
-                  <Button variant='outline' size='sm' className='w-full'>
+                  <Button variant='outline' size='sm' className='w-full h-8 text-xs'>
                     Send Reminder
                   </Button>
                 </div>
               ) : (
-                <div className='text-center py-8'>
-                  <p className='text-sm text-muted-foreground'>
+                <div className='text-center py-6 sm:py-8'>
+                  <p className='text-xs sm:text-sm text-muted-foreground'>
                     All members are current
                   </p>
                 </div>
@@ -260,27 +262,27 @@ export default function Dashboard() {
         {/* Active Votes */}
         {activeVotes.length > 0 && (
           <Card>
-            <CardHeader>
-              <CardTitle className='text-lg font-medium'>
+            <CardHeader className='p-3 sm:p-4 md:p-6'>
+              <CardTitle className='text-sm sm:text-base md:text-lg font-medium'>
                 Active Votes
               </CardTitle>
-              <CardDescription>
+              <CardDescription className='text-xs sm:text-sm'>
                 Votes currently accepting responses
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className='space-y-2'>
+            <CardContent className='p-3 sm:p-4 md:p-6 pt-0'>
+              <div className='space-y-1.5 sm:space-y-2'>
                 {activeVotes.map((vote) => (
-                  <div key={vote.id} className='p-3 border rounded-lg'>
+                  <div key={vote.id} className='p-2 sm:p-3 border rounded-lg'>
                     <div className='flex items-start justify-between gap-2'>
                       <div className='flex-1 min-w-0'>
-                        <div className='font-medium'>{vote.title}</div>
-                        <div className='text-sm text-muted-foreground mt-1'>
+                        <div className='font-medium text-sm sm:text-base'>{vote.title}</div>
+                        <div className='text-xs sm:text-sm text-muted-foreground mt-0.5 sm:mt-1'>
                           Ends {new Date(vote.endAt).toLocaleDateString()} •{" "}
                           {vote.participationPercent}% voted
                         </div>
                       </div>
-                      <Button variant='outline' size='sm' asChild>
+                      <Button variant='outline' size='sm' className='h-7 px-2 text-xs' asChild>
                         <Link href={`/voting/${vote.id}`}>View</Link>
                       </Button>
                     </div>

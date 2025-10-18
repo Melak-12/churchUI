@@ -160,54 +160,48 @@ export default function CalendarPage() {
   return (
     <AppShell>
       <div className='h-full flex flex-col'>
-        {/* Google Calendar-like Header */}
-        <div className='bg-white border-b border-gray-200 px-4 sm:px-6 py-3 sm:py-4'>
-          <div className='flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between'>
-            {/* Left side - Logo and Title */}
-            <div className='flex items-center space-x-4'>
+        {/* Compact Calendar Header */}
+        <div className='bg-white border-b border-gray-200 px-3 sm:px-6 py-2 sm:py-3'>
+          <div className='flex items-center justify-between gap-2'>
+            {/* Left side - Title and Navigation */}
+            <div className='flex items-center gap-2 sm:gap-3 flex-1 min-w-0'>
               <Button
                 variant='ghost'
                 size='sm'
-                className='lg:hidden'
+                className='lg:hidden h-8 w-8 p-0'
                 onClick={() => setShowSidebar(!showSidebar)}
               >
-                <Menu className='h-5 w-5' />
+                <Menu className='h-4 w-4' />
               </Button>
-              <div className='flex items-center space-x-3'>
-                <CalendarIcon className='h-6 w-6 sm:h-7 sm:w-7 text-blue-600' />
-                <div>
-                  <h1 className='text-xl sm:text-2xl font-semibold text-gray-900'>
-                    Calendar
-                  </h1>
-                  <p className='text-xs sm:text-sm text-gray-600 hidden sm:block'>
-                    Church Events
-                  </p>
-                </div>
+              <div className='flex items-center gap-2 min-w-0'>
+                <CalendarIcon className='h-5 w-5 sm:h-6 sm:w-6 text-blue-600 flex-shrink-0' />
+                <h1 className='text-base sm:text-lg md:text-xl font-semibold text-gray-900 truncate'>
+                  Calendar
+                </h1>
               </div>
             </div>
 
             {/* Right side - Actions */}
-            <div className='flex items-center space-x-2 sm:space-x-3'>
+            <div className='flex items-center gap-1.5 sm:gap-2 flex-shrink-0'>
               <Button
                 variant='outline'
                 size='sm'
-                className='hidden sm:flex'
+                className='h-8 px-2 sm:px-3'
                 asChild
               >
                 <Link href='/events'>
-                  <List className='h-4 w-4 mr-2' />
-                  List View
+                  <List className='h-4 w-4 sm:mr-1.5' />
+                  <span className='hidden sm:inline text-xs'>List</span>
                 </Link>
               </Button>
               <Button
                 size='sm'
-                className='bg-blue-600 hover:bg-blue-700'
+                className='bg-blue-600 hover:bg-blue-700 h-8 px-2 sm:px-3'
                 asChild
               >
                 <Link href='/events/new'>
-                  <Plus className='h-4 w-4 mr-2' />
-                  <span className='hidden sm:inline'>Create</span>
-                  <span className='sm:hidden'>New</span>
+                  <Plus className='h-4 w-4 sm:mr-1.5' />
+                  <span className='hidden sm:inline text-xs'>Create</span>
                 </Link>
               </Button>
             </div>
@@ -215,16 +209,16 @@ export default function CalendarPage() {
         </div>
 
         {/* Calendar Navigation Bar */}
-        <div className='bg-white border-b border-gray-200 px-4 sm:px-6 py-3'>
-          <div className='flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between'>
+        <div className='bg-white border-b border-gray-200 px-3 sm:px-6 py-2'>
+          <div className='flex items-center justify-between gap-2'>
             {/* Navigation Controls */}
-            <div className='flex items-center space-x-2 sm:space-x-4'>
-              <div className='flex items-center space-x-1'>
+            <div className='flex items-center gap-1.5 sm:gap-2'>
+              <div className='flex items-center'>
                 <Button
                   variant='ghost'
                   size='sm'
                   onClick={() => navigateMonth("prev")}
-                  className='h-8 w-8 p-0'
+                  className='h-7 w-7 p-0'
                 >
                   <ChevronLeft className='h-4 w-4' />
                 </Button>
@@ -232,48 +226,46 @@ export default function CalendarPage() {
                   variant='ghost'
                   size='sm'
                   onClick={() => navigateMonth("next")}
-                  className='h-8 w-8 p-0'
+                  className='h-7 w-7 p-0'
                 >
                   <ChevronRight className='h-4 w-4' />
                 </Button>
               </div>
 
-              <h2 className='text-lg sm:text-xl font-semibold text-gray-900'>
-                {format(currentDate, "MMMM yyyy")}
+              <h2 className='text-sm sm:text-base md:text-lg font-semibold text-gray-900'>
+                {format(currentDate, "MMM yyyy")}
               </h2>
 
               <Button
                 variant='outline'
                 size='sm'
                 onClick={goToToday}
-                className='text-xs sm:text-sm'
+                className='text-xs h-7 px-2 sm:px-3'
               >
                 Today
               </Button>
             </div>
 
             {/* View Mode Selector */}
-            <div className='flex items-center space-x-2'>
-              <div className='flex items-center border border-gray-300 rounded-lg p-1'>
-                <Button
-                  variant={viewMode === "month" ? "default" : "ghost"}
-                  size='sm'
-                  onClick={() => setViewMode("month")}
-                  className='h-7 px-3 text-xs'
-                >
-                  <Grid3x3 className='h-3 w-3 mr-1' />
-                  Month
-                </Button>
-                <Button
-                  variant={viewMode === "week" ? "default" : "ghost"}
-                  size='sm'
-                  onClick={() => setViewMode("week")}
-                  className='h-7 px-3 text-xs'
-                >
-                  <List className='h-3 w-3 mr-1' />
-                  Week
-                </Button>
-              </div>
+            <div className='flex items-center border border-gray-300 rounded-lg p-0.5'>
+              <Button
+                variant={viewMode === "month" ? "default" : "ghost"}
+                size='sm'
+                onClick={() => setViewMode("month")}
+                className='h-6 px-2 text-[10px] sm:text-xs'
+              >
+                <Grid3x3 className='h-3 w-3 sm:mr-1' />
+                <span className='hidden sm:inline'>Month</span>
+              </Button>
+              <Button
+                variant={viewMode === "week" ? "default" : "ghost"}
+                size='sm'
+                onClick={() => setViewMode("week")}
+                className='h-6 px-2 text-[10px] sm:text-xs'
+              >
+                <List className='h-3 w-3 sm:mr-1' />
+                <span className='hidden sm:inline'>Week</span>
+              </Button>
             </div>
           </div>
         </div>

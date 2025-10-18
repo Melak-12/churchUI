@@ -47,22 +47,22 @@ export default function VotingPage() {
   return (
     <FeatureGuard feature='voting'>
       <AppShell>
-        <div className='space-y-6'>
+        <div className='space-y-3 sm:space-y-4'>
           {/* Modern Header */}
-          <div className='bg-card rounded-xl p-6 border shadow-sm'>
-            <div className='flex flex-col gap-4'>
+          <div className='bg-card rounded-lg sm:rounded-xl p-3 sm:p-4 md:p-6 border shadow-sm'>
+            <div className='flex flex-col gap-2 sm:gap-3'>
               <div>
-                <div className='flex items-center space-x-3 mb-2'>
-                  <div className='p-2 bg-indigo-500 rounded-lg'>
-                    <VoteIcon className='h-6 w-6 text-white' />
+                <div className='flex items-center space-x-2 sm:space-x-3 mb-1'>
+                  <div className='p-1.5 sm:p-2 bg-indigo-500 rounded-lg'>
+                    <VoteIcon className='h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-white' />
                   </div>
-                  <h1 className='text-2xl font-bold'>Voting & Decisions</h1>
+                  <h1 className='text-lg sm:text-xl md:text-2xl font-bold'>Voting & Decisions</h1>
                 </div>
-                <p className='text-muted-foreground'>
+                <p className='text-xs sm:text-sm text-muted-foreground'>
                   Manage community votes and elections democratically
                 </p>
               </div>
-              <Button asChild className='shadow-sm w-full sm:w-auto'>
+              <Button asChild className='shadow-sm w-full sm:w-auto h-9 text-sm'>
                 <Link href='/voting/new' className='flex items-center gap-2'>
                   <Plus className='h-4 w-4' />
                   <span>New Vote</span>
@@ -73,7 +73,7 @@ export default function VotingPage() {
 
           {/* Filters and Stats */}
           <Card className='border-none shadow-sm'>
-            <CardContent className='p-6'>
+            <CardContent className='p-3 sm:p-4 md:p-6'>
               <div className='flex items-center justify-between flex-wrap gap-4'>
                 <div className='flex items-center gap-3'>
                   <Select value={statusFilter} onValueChange={setStatusFilter}>

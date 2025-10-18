@@ -285,26 +285,26 @@ export default function CommunicationsPage() {
   return (
     <FeatureGuard feature='communications'>
       <AppShell>
-        <div className='space-y-6'>
+        <div className='space-y-3 sm:space-y-4'>
           {/* Header Section */}
-          <div className='bg-card rounded-xl p-6 border shadow-sm'>
-            <div className='flex flex-col gap-4'>
+          <div className='bg-card rounded-lg sm:rounded-xl p-3 sm:p-4 md:p-6 border shadow-sm'>
+            <div className='flex flex-col gap-2 sm:gap-3'>
               <div>
-                <div className='flex items-center space-x-3 mb-2'>
-                  <div className='p-2 bg-purple-100 dark:bg-purple-950/50 rounded-lg'>
-                    <MessageSquare className='h-6 w-6 text-purple-600 dark:text-purple-400' />
+                <div className='flex items-center space-x-2 sm:space-x-3 mb-1'>
+                  <div className='p-1.5 sm:p-2 bg-purple-100 dark:bg-purple-950/50 rounded-lg'>
+                    <MessageSquare className='h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-purple-600 dark:text-purple-400' />
                   </div>
-                  <h1 className='text-2xl font-bold text-foreground'>
+                  <h1 className='text-lg sm:text-xl md:text-2xl font-bold text-foreground'>
                     Communications
                   </h1>
                 </div>
-                <p className='text-muted-foreground'>
+                <p className='text-xs sm:text-sm text-muted-foreground'>
                   Stay connected with your community through SMS campaigns
                 </p>
               </div>
-              <div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-2'>
+              <div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-1.5 sm:gap-2'>
                 <TwilioTest />
-                <Button className='shadow-sm w-full sm:w-auto' asChild>
+                <Button className='shadow-sm w-full sm:w-auto h-9 text-sm' asChild>
                   <Link href='/communications/new'>
                     <Plus className='h-4 w-4 mr-2' />
                     Create Campaign
@@ -315,72 +315,72 @@ export default function CommunicationsPage() {
           </div>
 
           {/* Quick Stats */}
-          <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
+          <div className='grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 md:gap-4'>
             <Card>
-              <CardContent className='p-4'>
-                <div className='flex items-center justify-between'>
-                  <div>
-                    <p className='text-sm text-muted-foreground'>Sent</p>
-                    <p className='text-2xl font-bold text-green-600 dark:text-green-400'>
+              <CardContent className='p-2 sm:p-3 md:p-4'>
+                <div className='flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-1'>
+                  <div className='flex-1 min-w-0'>
+                    <p className='text-[10px] sm:text-xs text-muted-foreground truncate'>Sent</p>
+                    <p className='text-lg sm:text-xl md:text-2xl font-bold text-green-600 dark:text-green-400'>
                       {communications.filter((c) => c.status === "SENT").length}
                     </p>
                   </div>
-                  <Send className='h-8 w-8 text-green-500 dark:text-green-400' />
+                  <Send className='h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-green-500 dark:text-green-400 opacity-50 sm:opacity-100' />
                 </div>
               </CardContent>
             </Card>
 
             <Card>
-              <CardContent className='p-4'>
-                <div className='flex items-center justify-between'>
-                  <div>
-                    <p className='text-sm text-muted-foreground'>Scheduled</p>
-                    <p className='text-2xl font-bold text-blue-600 dark:text-blue-400'>
+              <CardContent className='p-2 sm:p-3 md:p-4'>
+                <div className='flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-1'>
+                  <div className='flex-1 min-w-0'>
+                    <p className='text-[10px] sm:text-xs text-muted-foreground truncate'>Scheduled</p>
+                    <p className='text-lg sm:text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-400'>
                       {
                         communications.filter((c) => c.status === "SCHEDULED")
                           .length
                       }
                     </p>
                   </div>
-                  <Calendar className='h-8 w-8 text-blue-500 dark:text-blue-400' />
+                  <Calendar className='h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-blue-500 dark:text-blue-400 opacity-50 sm:opacity-100' />
                 </div>
               </CardContent>
             </Card>
 
             <Card>
-              <CardContent className='p-4'>
-                <div className='flex items-center justify-between'>
-                  <div>
-                    <p className='text-sm text-muted-foreground'>Draft</p>
-                    <p className='text-2xl font-bold text-yellow-600 dark:text-yellow-400'>
+              <CardContent className='p-2 sm:p-3 md:p-4'>
+                <div className='flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-1'>
+                  <div className='flex-1 min-w-0'>
+                    <p className='text-[10px] sm:text-xs text-muted-foreground truncate'>Draft</p>
+                    <p className='text-lg sm:text-xl md:text-2xl font-bold text-yellow-600 dark:text-yellow-400'>
                       {
                         communications.filter((c) => c.status === "DRAFT")
                           .length
                       }
                     </p>
                   </div>
-                  <MessageSquare className='h-8 w-8 text-yellow-500 dark:text-yellow-400' />
+                  <MessageSquare className='h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-yellow-500 dark:text-yellow-400 opacity-50 sm:opacity-100' />
                 </div>
               </CardContent>
             </Card>
 
             <Card>
-              <CardContent className='p-4'>
-                <div className='flex items-center justify-between'>
-                  <div>
-                    <p className='text-sm text-muted-foreground'>Total</p>
-                    <p className='text-2xl font-bold text-purple-600 dark:text-purple-400'>
+              <CardContent className='p-2 sm:p-3 md:p-4'>
+                <div className='flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-1'>
+                  <div className='flex-1 min-w-0'>
+                    <p className='text-[10px] sm:text-xs text-muted-foreground truncate'>Total</p>
+                    <p className='text-lg sm:text-xl md:text-2xl font-bold text-purple-600 dark:text-purple-400'>
                       {communications.length}
                     </p>
                   </div>
-                  <Users className='h-8 w-8 text-purple-500 dark:text-purple-400' />
+                  <Users className='h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-purple-500 dark:text-purple-400 opacity-50 sm:opacity-100' />
                 </div>
               </CardContent>
             </Card>
           </div>
 
           {/* Filters */}
-          <div className='bg-card rounded-xl p-4 border'>
+          <div className='bg-card rounded-lg sm:rounded-xl p-3 sm:p-4 border'>
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-3'>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
