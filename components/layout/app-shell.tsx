@@ -175,12 +175,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
             {/* Mobile: Minimal branding */}
             <div className='lg:hidden flex-1 min-w-0 flex items-center justify-start'>
-              <div className='w-36 h-14'>
+              <div className='w-20 h-6'>
                 <Image 
                   src="/worshiply-logo.png" 
                   alt="Worshiply" 
-                  width={144}
-                  height={56}
+                  width={80}
+                  height={24}
                   className="w-full h-full object-contain"
                 />
               </div>
