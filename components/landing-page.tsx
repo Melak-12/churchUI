@@ -207,7 +207,14 @@ export default function LandingPage() {
               />
             </div>
             <p className="text-sm text-muted-foreground">
-              © 2025 Hex Soup. All rights reserved.
+              <a 
+                href="https://www.hexsoup.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:text-primary transition-colors"
+              >
+                © 2025 Hex Soup. All rights reserved.
+              </a>
             </p>
           </div>
         </div>

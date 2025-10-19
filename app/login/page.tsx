@@ -256,7 +256,14 @@ export default function LoginPage() {
         {/* Footer */}
         <div className="text-center mt-6">
           <p className="text-xs text-muted-foreground">
-            © 2025 Hex Soup. All rights reserved.
+            <a 
+              href="https://www.hexsoup.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hover:text-primary transition-colors"
+            >
+              © 2025 Hex Soup. All rights reserved.
+            </a>
           </p>
         </div>
       </div>

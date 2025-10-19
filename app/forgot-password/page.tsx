@@ -169,7 +169,14 @@ export default function ForgotPasswordPage() {
         {/* Footer */}
         <div className="text-center mt-8">
           <p className="text-xs text-gray-500">
-            © 2025 Hex Soup. All rights reserved.
+            <a 
+              href="https://www.hexsoup.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hover:text-primary transition-colors"
+            >
+              © 2025 Hex Soup. All rights reserved.
+            </a>
           </p>
         </div>
       </div>
