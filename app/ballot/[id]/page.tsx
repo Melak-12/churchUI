@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -16,42 +16,48 @@ import { EligibilityBadge } from "@/components/ui/status-badge";
 import { Badge } from "@/components/ui/badge";
 import { apiClient } from "@/lib/api";
 import { getDocumentId } from "@/lib/utils";
+import { isAuthenticated } from "@/lib/auth";
 import {
   Vote as VoteIcon,
   Clock,
   AlertCircle,
   Check,
   Loader2,
+  CheckCircle2,
 } from "lucide-react";
 
 export default function BallotPage() {
   const params = useParams();
+  const router = useRouter();
   const [selectedOption, setSelectedOption] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [vote, setVote] = useState<any>(null);
   const [currentMember, setCurrentMember] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hasVoted, setHasVoted] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
 
-        // Fetch vote data
+        // Check if user is authenticated
+        if (!isAuthenticated()) {
+          setError("You must be logged in to vote");
+          return;
+        }
+
+        // Fetch vote data (includes hasVoted flag from backend)
         const voteData = await apiClient.getVote(params.id as string);
         setVote(voteData);
 
-        // For now, we'll use a mock member since we don't have user context
-        // In a real app, this would come from authentication context
-        const mockMember = {
-          id: "1",
-          firstName: "Demo",
-          lastName: "User",
-          eligibility: "ELIGIBLE",
-          eligibilityReason: "Member in good standing",
-        };
-        setCurrentMember(mockMember);
+        // Check if user has already voted
+        setHasVoted(voteData.hasVoted || false);
+
+        // Fetch current user/member data
+        const userData = await apiClient.getCurrentUser();
+        setCurrentMember(userData);
       } catch (err: any) {
         console.error("Failed to fetch vote:", err);
         setError(err.message || "Failed to load vote");
@@ -63,7 +69,7 @@ export default function BallotPage() {
     if (params.id) {
       fetchData();
     }
-  }, [params.id]);
+  }, [params.id, router]);
 
   if (loading) {
     return (
@@ -117,6 +123,51 @@ export default function BallotPage() {
     );
   }
 
+  // Show "Already Voted" message if user has already cast their vote
+  if (hasVoted && vote) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardContent className="text-center py-8">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle2 className="h-8 w-8 text-blue-600" />
+            </div>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">
+              You&apos;ve Already Voted
+            </h2>
+            <p className="text-gray-600 mb-4">
+              You have already cast your vote in: <strong>{vote.title}</strong>
+            </p>
+            <p className="text-sm text-gray-500 mb-6">
+              {vote.status === "CLOSED"
+                ? "The voting period has ended. Check the results below."
+                : "Your vote has been recorded. Results will be available after the voting period ends."}
+            </p>
+            <div className="space-y-3">
+              <Button
+                onClick={() => (window.location.href = "/votes")}
+                className="w-full"
+              >
+                Return to Votes
+              </Button>
+              {vote.status === "CLOSED" && (
+                <Button
+                  variant="outline"
+                  onClick={() =>
+                    (window.location.href = `/voting/${getDocumentId(vote)}`)
+                  }
+                  className="w-full"
+                >
+                  View Results
+                </Button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   if (submitted) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
@@ -131,9 +182,15 @@ export default function BallotPage() {
             <p className="text-gray-600 mb-4">
               Thank you for participating in: <strong>{vote.title}</strong>
             </p>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 mb-6">
               Results will be available after the voting period ends.
             </p>
+            <Button
+              onClick={() => (window.location.href = "/votes")}
+              className="w-full"
+            >
+              Return to Votes
+            </Button>
           </CardContent>
         </Card>
       </div>

@@ -33,8 +33,8 @@ import { getDocumentId } from "@/lib/utils";
 interface MemberFormProps {
   member?: {
     id: string;
-    firstName: string;
-    lastName: string;
+    firstName?: string;
+    lastName?: string;
     phone: string;
     email?: string;
     address?: string;
@@ -83,11 +83,11 @@ const EditableField = memo(
 
     if (isEditing) {
       return (
-        <div className="space-y-2">
+        <div className='space-y-2'>
           <Label htmlFor={field}>
             {label} {required && "*"}
           </Label>
-          <div className="flex space-x-2">
+          <div className='flex space-x-2'>
             {multiline ? (
               <Textarea
                 id={field}
@@ -102,7 +102,7 @@ const EditableField = memo(
                 }}
                 placeholder={placeholder}
                 rows={3}
-                className="flex-1"
+                className='flex-1'
                 autoFocus
               />
             ) : (
@@ -119,26 +119,26 @@ const EditableField = memo(
                   }
                 }}
                 placeholder={placeholder}
-                className="flex-1"
+                className='flex-1'
                 autoFocus
               />
             )}
             <Button
-              type="button"
-              size="sm"
+              type='button'
+              size='sm'
               onClick={() => onSaveEdit(field)}
-              className="px-3"
+              className='px-3'
             >
-              <Save className="h-4 w-4" />
+              <Save className='h-4 w-4' />
             </Button>
             <Button
-              type="button"
-              size="sm"
-              variant="outline"
+              type='button'
+              size='sm'
+              variant='outline'
               onClick={onCancelEditing}
-              className="px-3"
+              className='px-3'
             >
-              <X className="h-4 w-4" />
+              <X className='h-4 w-4' />
             </Button>
           </div>
         </div>
@@ -146,19 +146,19 @@ const EditableField = memo(
     }
 
     return (
-      <div className="space-y-2">
-        <Label className="text-sm font-medium text-gray-600">{label}</Label>
-        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border">
-          <span className="text-gray-900">{value || "Not provided"}</span>
+      <div className='space-y-2'>
+        <Label className='text-sm font-medium text-gray-600'>{label}</Label>
+        <div className='flex items-center justify-between p-3 bg-gray-50 rounded-lg border'>
+          <span className='text-gray-900'>{value || "Not provided"}</span>
           <Button
-            type="button"
-            size="sm"
-            variant="ghost"
+            type='button'
+            size='sm'
+            variant='ghost'
             onClick={() => onStartEditing(field)}
-            className="px-2"
-            title="Click to edit (Enter to save, Escape to cancel)"
+            className='px-2'
+            title='Click to edit (Enter to save, Escape to cancel)'
           >
-            <Edit2 className="h-4 w-4" />
+            <Edit2 className='h-4 w-4' />
           </Button>
         </div>
       </div>
@@ -331,19 +331,24 @@ export function MemberForm({ member, onSuccess }: MemberFormProps) {
         });
         setSuccess("Member updated successfully!");
       } else {
-        // Create new member
-        await apiClient.createMember({
-          firstName: formData.firstName,
-          lastName: formData.lastName,
+        // Create new member - only send non-empty fields
+        const memberData: any = {
           phone: formData.phone,
-          email: formData.email || undefined,
-          address: formData.address || undefined,
           consent: formData.consent,
           status: formData.status,
           delinquencyDays: formData.delinquencyDays,
           eligibility: "ELIGIBLE", // New members start as eligible
-          password: formData.password,
-        });
+        };
+
+        // Add optional fields only if they have values
+        if (formData.firstName.trim())
+          memberData.firstName = formData.firstName;
+        if (formData.lastName.trim()) memberData.lastName = formData.lastName;
+        if (formData.email.trim()) memberData.email = formData.email;
+        if (formData.address.trim()) memberData.address = formData.address;
+        if (formData.password.trim()) memberData.password = formData.password;
+
+        await apiClient.createMember(memberData);
         setSuccess("Member created successfully!");
       }
 
@@ -455,11 +460,11 @@ export function MemberForm({ member, onSuccess }: MemberFormProps) {
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className='max-w-2xl mx-auto'>
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <User className="h-5 w-5" />
+          <CardTitle className='flex items-center space-x-2'>
+            <User className='h-5 w-5' />
             <span>{isEdit ? "Member Information" : "Add New Member"}</span>
           </CardTitle>
           <CardDescription>
@@ -471,16 +476,16 @@ export function MemberForm({ member, onSuccess }: MemberFormProps) {
 
         <CardContent>
           {error && (
-            <Alert variant="destructive" className="mb-6">
-              <AlertCircle className="h-4 w-4" />
+            <Alert variant='destructive' className='mb-6'>
+              <AlertCircle className='h-4 w-4' />
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
           {success && (
-            <Alert className="border-green-200 bg-green-50 mb-6">
-              <CheckCircle className="h-4 w-4 text-green-600" />
-              <AlertDescription className="text-green-800">
+            <Alert className='border-green-200 bg-green-50 mb-6'>
+              <CheckCircle className='h-4 w-4 text-green-600' />
+              <AlertDescription className='text-green-800'>
                 {success}
               </AlertDescription>
             </Alert>
@@ -488,14 +493,13 @@ export function MemberForm({ member, onSuccess }: MemberFormProps) {
 
           {isEdit ? (
             // Edit mode - show editable fields
-            <div className="space-y-6 pb-20 md:pb-6">
+            <div className='space-y-6 pb-20 md:pb-6'>
               {/* Basic Information */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                 <EditableField
-                  field="firstName"
-                  label="First Name"
+                  field='firstName'
+                  label='First Name'
                   value={formData.firstName}
-                  required
                   editingField={editingField}
                   tempValue={tempValue}
                   onStartEditing={startEditing}
@@ -504,10 +508,9 @@ export function MemberForm({ member, onSuccess }: MemberFormProps) {
                   onTempValueChange={setTempValue}
                 />
                 <EditableField
-                  field="lastName"
-                  label="Last Name"
+                  field='lastName'
+                  label='Last Name'
                   value={formData.lastName}
-                  required
                   editingField={editingField}
                   tempValue={tempValue}
                   onStartEditing={startEditing}
@@ -518,12 +521,12 @@ export function MemberForm({ member, onSuccess }: MemberFormProps) {
               </div>
 
               {/* Contact Information */}
-              <div className="space-y-6">
+              <div className='space-y-6'>
                 <EditableField
-                  field="phone"
-                  label="Phone Number"
+                  field='phone'
+                  label='Phone Number'
                   value={formData.phone}
-                  type="tel"
+                  type='tel'
                   required
                   editingField={editingField}
                   tempValue={tempValue}
@@ -533,10 +536,10 @@ export function MemberForm({ member, onSuccess }: MemberFormProps) {
                   onTempValueChange={setTempValue}
                 />
                 <EditableField
-                  field="email"
-                  label="Email Address"
+                  field='email'
+                  label='Email Address'
                   value={formData.email}
-                  type="email"
+                  type='email'
                   editingField={editingField}
                   tempValue={tempValue}
                   onStartEditing={startEditing}
@@ -545,8 +548,8 @@ export function MemberForm({ member, onSuccess }: MemberFormProps) {
                   onTempValueChange={setTempValue}
                 />
                 <EditableField
-                  field="address"
-                  label="Address"
+                  field='address'
+                  label='Address'
                   value={formData.address}
                   multiline
                   editingField={editingField}
@@ -559,49 +562,49 @@ export function MemberForm({ member, onSuccess }: MemberFormProps) {
               </div>
 
               {/* Status and Payment Information */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-600">
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                <div className='space-y-2'>
+                  <Label className='text-sm font-medium text-gray-600'>
                     Payment Status
                   </Label>
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border">
-                    <span className="text-gray-900">{formData.status}</span>
+                  <div className='flex items-center justify-between p-3 bg-gray-50 rounded-lg border'>
+                    <span className='text-gray-900'>{formData.status}</span>
                     <Button
-                      type="button"
-                      size="sm"
-                      variant="ghost"
+                      type='button'
+                      size='sm'
+                      variant='ghost'
                       onClick={() => startEditing("status")}
-                      className="px-2"
+                      className='px-2'
                     >
-                      <Edit2 className="h-4 w-4" />
+                      <Edit2 className='h-4 w-4' />
                     </Button>
                   </div>
                   {editingField === "status" && (
-                    <div className="flex space-x-2">
+                    <div className='flex space-x-2'>
                       <select
                         value={tempValue}
                         onChange={(e) => setTempValue(e.target.value)}
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className='flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
                       >
-                        <option value="PAID">Paid</option>
-                        <option value="DELINQUENT">Delinquent</option>
+                        <option value='PAID'>Paid</option>
+                        <option value='DELINQUENT'>Delinquent</option>
                       </select>
                       <Button
-                        type="button"
-                        size="sm"
+                        type='button'
+                        size='sm'
                         onClick={() => saveFieldEdit("status")}
-                        className="px-3"
+                        className='px-3'
                       >
-                        <Save className="h-4 w-4" />
+                        <Save className='h-4 w-4' />
                       </Button>
                       <Button
-                        type="button"
-                        size="sm"
-                        variant="outline"
+                        type='button'
+                        size='sm'
+                        variant='outline'
                         onClick={cancelEditing}
-                        className="px-3"
+                        className='px-3'
                       >
-                        <X className="h-4 w-4" />
+                        <X className='h-4 w-4' />
                       </Button>
                     </div>
                   )}
@@ -609,10 +612,10 @@ export function MemberForm({ member, onSuccess }: MemberFormProps) {
 
                 {formData.status === "DELINQUENT" && (
                   <EditableField
-                    field="delinquencyDays"
-                    label="Days Delinquent"
+                    field='delinquencyDays'
+                    label='Days Delinquent'
                     value={formData.delinquencyDays.toString()}
-                    type="number"
+                    type='number'
                     editingField={editingField}
                     tempValue={tempValue}
                     onStartEditing={startEditing}
@@ -624,91 +627,91 @@ export function MemberForm({ member, onSuccess }: MemberFormProps) {
               </div>
 
               {/* Consent */}
-              <div className="space-y-2">
-                <Label className="text-sm font-medium text-gray-600">
+              <div className='space-y-2'>
+                <Label className='text-sm font-medium text-gray-600'>
                   Communication Consent
                 </Label>
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border">
-                  <span className="text-gray-900">
+                <div className='flex items-center justify-between p-3 bg-gray-50 rounded-lg border'>
+                  <span className='text-gray-900'>
                     {formData.consent ? "Yes" : "No"}
                   </span>
                   <Button
-                    type="button"
-                    size="sm"
-                    variant="ghost"
+                    type='button'
+                    size='sm'
+                    variant='ghost'
                     onClick={() => startEditing("consent")}
-                    className="px-2"
+                    className='px-2'
                   >
-                    <Edit2 className="h-4 w-4" />
+                    <Edit2 className='h-4 w-4' />
                   </Button>
                 </div>
                 {editingField === "consent" && (
-                  <div className="flex space-x-2">
-                    <div className="flex-1 flex items-center space-x-2">
+                  <div className='flex space-x-2'>
+                    <div className='flex-1 flex items-center space-x-2'>
                       <Checkbox
                         checked={tempValue === "true"}
                         onCheckedChange={(checked) =>
                           setTempValue(checked ? "true" : "false")
                         }
                       />
-                      <Label className="text-sm">
+                      <Label className='text-sm'>
                         Member consents to receive communications via SMS and
                         phone
                       </Label>
                     </div>
                     <Button
-                      type="button"
-                      size="sm"
+                      type='button'
+                      size='sm'
                       onClick={() => saveFieldEdit("consent")}
-                      className="px-3"
+                      className='px-3'
                     >
-                      <Save className="h-4 w-4" />
+                      <Save className='h-4 w-4' />
                     </Button>
                     <Button
-                      type="button"
-                      size="sm"
-                      variant="outline"
+                      type='button'
+                      size='sm'
+                      variant='outline'
                       onClick={cancelEditing}
-                      className="px-3"
+                      className='px-3'
                     >
-                      <X className="h-4 w-4" />
+                      <X className='h-4 w-4' />
                     </Button>
                   </div>
                 )}
               </div>
 
               {/* Actions */}
-              <div className="flex justify-between items-center pt-4 border-t">
-                <div className="flex items-center space-x-2">
+              <div className='flex justify-between items-center pt-4 border-t'>
+                <div className='flex items-center space-x-2'>
                   {hasUnsavedChanges && (
-                    <span className="text-sm text-amber-600 flex items-center space-x-1">
-                      <div className="w-1.5 h-1.5 bg-amber-500 rounded-full"></div>
+                    <span className='text-sm text-amber-600 flex items-center space-x-1'>
+                      <div className='w-1.5 h-1.5 bg-amber-500 rounded-full'></div>
                       <span>Unsaved changes</span>
                     </span>
                   )}
                 </div>
-                <div className="flex space-x-3">
+                <div className='flex space-x-3'>
                   <Button
-                    type="button"
-                    variant="outline"
+                    type='button'
+                    variant='outline'
                     onClick={() => router.back()}
                   >
                     Back
                   </Button>
                   <Button
-                    type="button"
+                    type='button'
                     onClick={handleSaveAllChanges}
                     disabled={!hasUnsavedChanges || isLoading}
-                    size="sm"
+                    size='sm'
                   >
                     {isLoading ? (
                       <>
-                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                        <Loader2 className='h-4 w-4 animate-spin mr-2' />
                         Saving...
                       </>
                     ) : (
                       <>
-                        <Save className="h-4 w-4 mr-2" />
+                        <Save className='h-4 w-4 mr-2' />
                         Save Changes
                       </>
                     )}
@@ -718,32 +721,32 @@ export function MemberForm({ member, onSuccess }: MemberFormProps) {
 
               {/* Mobile Sticky Save Button */}
               {hasUnsavedChanges && (
-                <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-gray-200 p-4 shadow-md md:hidden z-50 animate-in slide-in-from-bottom-2 duration-200">
-                  <div className="flex space-x-3 max-w-sm mx-auto">
+                <div className='fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-gray-200 p-4 shadow-md md:hidden z-50 animate-in slide-in-from-bottom-2 duration-200'>
+                  <div className='flex space-x-3 max-w-sm mx-auto'>
                     <Button
-                      type="button"
-                      variant="outline"
+                      type='button'
+                      variant='outline'
                       onClick={() => router.back()}
-                      className="flex-1"
-                      size="sm"
+                      className='flex-1'
+                      size='sm'
                     >
                       Back
                     </Button>
                     <Button
-                      type="button"
+                      type='button'
                       onClick={handleSaveAllChanges}
                       disabled={isLoading}
-                      className="flex-1"
-                      size="sm"
+                      className='flex-1'
+                      size='sm'
                     >
                       {isLoading ? (
                         <>
-                          <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                          <Loader2 className='h-4 w-4 animate-spin mr-2' />
                           Saving...
                         </>
                       ) : (
                         <>
-                          <Save className="h-4 w-4 mr-2" />
+                          <Save className='h-4 w-4 mr-2' />
                           Save Changes
                         </>
                       )}
@@ -754,45 +757,43 @@ export function MemberForm({ member, onSuccess }: MemberFormProps) {
             </div>
           ) : (
             // Create mode - show regular form
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className='space-y-6'>
               {/* Basic Information */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="firstName">First Name *</Label>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                <div className='space-y-2'>
+                  <Label htmlFor='firstName'>First Name</Label>
                   <Input
-                    id="firstName"
+                    id='firstName'
                     value={formData.firstName}
                     onChange={(e) =>
                       handleInputChange("firstName", e.target.value)
                     }
-                    placeholder="Enter first name"
-                    required
+                    placeholder='Enter first name (optional)'
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="lastName">Last Name *</Label>
+                <div className='space-y-2'>
+                  <Label htmlFor='lastName'>Last Name</Label>
                   <Input
-                    id="lastName"
+                    id='lastName'
                     value={formData.lastName}
                     onChange={(e) =>
                       handleInputChange("lastName", e.target.value)
                     }
-                    placeholder="Enter last name"
-                    required
+                    placeholder='Enter last name (optional)'
                   />
                 </div>
               </div>
 
               {/* Contact Information */}
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number *</Label>
+              <div className='space-y-4'>
+                <div className='space-y-2'>
+                  <Label htmlFor='phone'>Phone Number *</Label>
                   <Input
-                    id="phone"
-                    type="tel"
+                    id='phone'
+                    type='tel'
                     value={formData.phone}
                     onChange={(e) => handlePhoneChange(e.target.value)}
-                    placeholder="(651) 111-1111"
+                    placeholder='(651) 111-1111'
                     required
                     className={
                       formData.phone && !validatePhoneNumber(formData.phone)
@@ -813,70 +814,69 @@ export function MemberForm({ member, onSuccess }: MemberFormProps) {
                   </p>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email Address</Label>
+                <div className='space-y-2'>
+                  <Label htmlFor='email'>Email Address</Label>
                   <Input
-                    id="email"
-                    type="email"
+                    id='email'
+                    type='email'
                     value={formData.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
-                    placeholder="member@example.com"
+                    placeholder='member@example.com'
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="address">Address</Label>
+                <div className='space-y-2'>
+                  <Label htmlFor='address'>Address</Label>
                   <Textarea
-                    id="address"
+                    id='address'
                     value={formData.address}
                     onChange={(e) =>
                       handleInputChange("address", e.target.value)
                     }
-                    placeholder="Enter full address"
+                    placeholder='Enter full address'
                     rows={3}
                   />
                 </div>
               </div>
 
               {/* Password */}
-              <div className="space-y-2">
-                <Label htmlFor="password">Password *</Label>
+              <div className='space-y-2'>
+                <Label htmlFor='password'>Password</Label>
                 <Input
-                  id="password"
-                  type="password"
+                  id='password'
+                  type='password'
                   value={formData.password}
                   onChange={(e) =>
                     handleInputChange("password", e.target.value)
                   }
-                  placeholder="Enter password for member login"
-                  required
+                  placeholder='Enter password (optional - defaults to defaultPassword123)'
                 />
               </div>
 
               {/* Status and Payment Information */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="status">Payment Status</Label>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                <div className='space-y-2'>
+                  <Label htmlFor='status'>Payment Status</Label>
                   <select
-                    id="status"
+                    id='status'
                     value={formData.status}
                     onChange={(e) =>
                       handleInputChange("status", e.target.value)
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
                   >
-                    <option value="PAID">Paid</option>
-                    <option value="DELINQUENT">Delinquent</option>
+                    <option value='PAID'>Paid</option>
+                    <option value='DELINQUENT'>Delinquent</option>
                   </select>
                 </div>
 
                 {formData.status === "DELINQUENT" && (
-                  <div className="space-y-2">
-                    <Label htmlFor="delinquencyDays">Days Delinquent</Label>
+                  <div className='space-y-2'>
+                    <Label htmlFor='delinquencyDays'>Days Delinquent</Label>
                     <Input
-                      id="delinquencyDays"
-                      type="number"
-                      min="0"
+                      id='delinquencyDays'
+                      type='number'
+                      min='0'
                       value={formData.delinquencyDays}
                       onChange={(e) =>
                         handleInputChange(
@@ -884,51 +884,48 @@ export function MemberForm({ member, onSuccess }: MemberFormProps) {
                           parseInt(e.target.value) || 0
                         )
                       }
-                      placeholder="0"
+                      placeholder='0'
                     />
                   </div>
                 )}
               </div>
 
               {/* Consent */}
-              <div className="flex items-center space-x-2">
+              <div className='flex items-center space-x-2'>
                 <Checkbox
-                  id="consent"
+                  id='consent'
                   checked={formData.consent}
                   onCheckedChange={(checked) =>
                     handleInputChange("consent", checked)
                   }
                   required
                 />
-                <Label htmlFor="consent" className="text-sm">
+                <Label htmlFor='consent' className='text-sm'>
                   Member consents to receive communications via SMS and phone
                 </Label>
               </div>
 
               {/* Actions */}
-              <div className="flex justify-end space-x-3 pt-4">
+              <div className='flex justify-end space-x-3 pt-4'>
                 <Button
-                  type="button"
-                  variant="outline"
+                  type='button'
+                  variant='outline'
                   onClick={() => router.back()}
                   disabled={isLoading}
                 >
                   Cancel
                 </Button>
                 <Button
-                  type="submit"
+                  type='submit'
                   disabled={
                     isLoading ||
-                    !formData.firstName ||
-                    !formData.lastName ||
                     !formData.phone ||
-                    !validatePhoneNumber(formData.phone) ||
-                    !formData.password
+                    !validatePhoneNumber(formData.phone)
                   }
                 >
                   {isLoading ? (
-                    <div className="flex items-center space-x-2">
-                      <Loader2 className="h-4 w-4 animate-spin" />
+                    <div className='flex items-center space-x-2'>
+                      <Loader2 className='h-4 w-4 animate-spin' />
                       <span>Creating...</span>
                     </div>
                   ) : (

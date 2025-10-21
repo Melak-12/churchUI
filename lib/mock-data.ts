@@ -142,5 +142,6 @@ export const mockSettings: Settings = {
     memberPortal: true,
     ministries: true,
     attendance: true,
+    dataCollection: true,
   },
 };

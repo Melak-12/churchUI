@@ -1,8 +1,8 @@
 export interface Member {
   id: string;
   _id?: string; // For backward compatibility with API responses
-  firstName: string;
-  lastName: string;
+  firstName?: string;
+  lastName?: string;
   phone: string; // E.164 format
   email?: string;
   address?: string;
@@ -30,6 +30,7 @@ export interface Vote {
   participationCount?: number;
   participationPercent?: number;
   createdAt: string;
+  hasVoted?: boolean;
   results?: {
     [option: string]: number;
   };
@@ -88,6 +89,10 @@ export interface Settings {
   smsFooter: string;
   twilioSenderId: string;
   androidSenderId?: string;
+  androidApiKey?: string;
+  androidSecret?: string;
+  androidRateLimit?: number;
+  androidEndpoint?: string;
   privacyPolicyUrl?: string;
   features?: {
     events: boolean;
@@ -97,6 +102,7 @@ export interface Settings {
     memberPortal: boolean;
     ministries: boolean;
     attendance: boolean;
+    dataCollection: boolean;
   };
 }
 
@@ -106,6 +112,8 @@ export interface User {
   id: string;
   role: UserRole;
   memberId?: string; // if role is MEMBER
+  firstName?: string;
+  lastName?: string;
 }
 
 // Event Management Types
@@ -670,4 +678,65 @@ export interface AttendanceQuery {
   serviceType?: string;
   startDate?: string;
   endDate?: string;
+}
+
+// Feedback interfaces
+export interface Feedback {
+  id: string;
+  _id?: string;
+  member: {
+    id: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+  };
+  rating: number;
+  category:
+    | "general"
+    | "worship"
+    | "events"
+    | "facilities"
+    | "communication"
+    | "website"
+    | "suggestion"
+    | "complaint";
+  feedback: string;
+  status: "pending" | "reviewed" | "resolved" | "archived";
+  adminNotes?: string;
+  reviewedBy?: {
+    id: string;
+    firstName?: string;
+    lastName?: string;
+  };
+  reviewedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateFeedbackRequest {
+  rating: number;
+  category: string;
+  feedback: string;
+}
+
+export interface FeedbackQuery {
+  page?: number;
+  limit?: number;
+  status?: string;
+  category?: string;
+  rating?: number;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+}
+
+export interface FeedbackStats {
+  averageRating: number;
+  ratingDistribution: Record<number, number>;
+  categoryStats: Array<{
+    category: string;
+    count: number;
+    avgRating: number;
+  }>;
+  totalCount: number;
+  pendingCount: number;
 }

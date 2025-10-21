@@ -119,7 +119,7 @@ export function MinistryForm({
       goals: initialData?.goals || [],
       budget: {
         allocated: initialData?.budget?.allocated || 0,
-        currency: initialData?.budget?.currency || "USD",
+        currency: (initialData?.budget?.currency || "USD") as "USD" | "EUR" | "GBP" | "CAD" | "AUD",
       },
     },
   });

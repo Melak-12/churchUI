@@ -14,8 +14,11 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Church, Mail, ArrowLeft, CheckCircle } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
+import { useTheme } from "@/components/theme-provider";
 
 export default function ForgotPasswordPage() {
+  const { theme } = useTheme();
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -40,12 +43,15 @@ export default function ForgotPasswordPage() {
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
-              <Church className="h-8 w-8 text-white" />
+            <div className="w-32 h-32 mx-auto mb-6">
+              <Image 
+                src="/worshiply-logo.png" 
+                alt="Worshiply" 
+                width={128}
+                height={128}
+                className="w-full h-full object-contain"
+              />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              Community Church
-            </h1>
           </div>
 
           <Card className="shadow-md border-0">
@@ -90,15 +96,18 @@ export default function ForgotPasswordPage() {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo and Header */}
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
-            <Church className="h-8 w-8 text-white" />
+          <div className="text-center mb-6">
+            <div className="w-20 h-20 mx-auto mb-4">
+              <Image 
+                src={theme === "dark" ? "/worshiply-dark.png" : "/worshiply-logo.png"} 
+                alt="Worshiply" 
+                width={80}
+                height={80}
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <p className="text-gray-600">Reset your password</p>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            Community Church
-          </h1>
-          <p className="text-gray-600">Reset your password</p>
-        </div>
 
         <Card className="shadow-md border-0">
           <CardHeader className="space-y-1 pb-6">
@@ -160,7 +169,14 @@ export default function ForgotPasswordPage() {
         {/* Footer */}
         <div className="text-center mt-8">
           <p className="text-xs text-gray-500">
-            © 2025 Community Church. All rights reserved.
+            <a 
+              href="https://www.hexsoup.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hover:text-primary transition-colors"
+            >
+              © 2025 Hex Soup. All rights reserved.
+            </a>
           </p>
         </div>
       </div>

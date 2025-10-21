@@ -2,42 +2,19 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { AppShell } from "@/components/layout/app-shell";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { WizardContainer } from "@/components/layout/wizard-container";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
 import { apiClient } from "@/lib/api";
-import { Vote } from "@/types";
+import { CheckCircle, Users } from "lucide-react";
 import {
-  Save,
-  Plus,
-  Minus,
-  Users,
-  Info,
-  Eye,
-  Copy,
-  Calendar,
-  Loader2,
-} from "lucide-react";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { VotingWizard } from "@/components/voting/voting-wizard";
+import { useToast } from "@/hooks/use-toast";
 
 interface VoteFormData {
   title: string;
@@ -49,106 +26,84 @@ interface VoteFormData {
   anonymous: boolean;
 }
 
+const steps = [
+  { id: "title", title: "Vote Title", description: "What's the vote about?" },
+  { id: "description", title: "Description", description: "Add details" },
+  { id: "start", title: "Start Date", description: "When does it start?" },
+  { id: "end", title: "End Date", description: "When does it end?" },
+  { id: "type", title: "Vote Type", description: "Choose type" },
+  { id: "options", title: "Options", description: "Add choices" },
+  { id: "anonymous", title: "Privacy", description: "Anonymous?" },
+  { id: "review", title: "Review", description: "Confirm details" },
+];
+
 export default function NewVotePage() {
   const router = useRouter();
   const { toast } = useToast();
+  const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [eligibleMembersCount, setEligibleMembersCount] = useState(0);
-  const [isClient, setIsClient] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [successModalOpen, setSuccessModalOpen] = useState(false);
+  const [errors, setErrors] = useState<{ [key: string]: any }>({});
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    formState: { errors },
-    reset,
-    trigger,
-  } = useForm<VoteFormData>({
-    defaultValues: {
-      title: "",
-      description: "",
-      type: "SINGLE_CHOICE",
-      options: ["Option 1", "Option 2"],
-      startAt: "",
-      endAt: "",
-      anonymous: false,
-    },
-    mode: "onChange",
+  const [voteData, setVoteData] = useState<VoteFormData>({
+    title: "",
+    description: "",
+    type: "SINGLE_CHOICE",
+    options: ["Option 1", "Option 2"],
+    startAt: "",
+    endAt: "",
+    anonymous: false,
   });
 
-  const voteType = watch("type");
-  const options = watch("options");
-  const anonymous = watch("anonymous");
-
-  // Set client-side flag and load eligible members count
+  // Load eligible members count
   useEffect(() => {
-    setIsClient(true);
-
-    const checkApiHealth = async () => {
-      try {
-        console.log("Checking API health...");
-        const healthResponse = await fetch("http://localhost:3001/health");
-        const healthData = await healthResponse.json();
-        console.log("API health check:", healthData);
-      } catch (error) {
-        console.error("API health check failed:", error);
-      }
-    };
-
     const loadEligibleMembers = async () => {
       try {
-        // Add a small delay to ensure the component is fully mounted
-        await new Promise((resolve) => setTimeout(resolve, 100));
         const response = await apiClient.getMembers({
           eligibility: "ELIGIBLE",
           limit: 1,
         });
 
-        // Check if response has the expected structure
-        if (
-          response &&
-          response.pagination &&
-          typeof response.pagination.total === "number"
-        ) {
+        if (response && response.pagination && typeof response.pagination.total === "number") {
           setEligibleMembersCount(response.pagination.total);
         } else if (response && Array.isArray(response.members)) {
-          // Fallback: count the members array if pagination is not available
           setEligibleMembersCount(response.members.length);
         } else {
-          console.warn("Unexpected API response structure:", response);
           setEligibleMembersCount(0);
         }
       } catch (error) {
         console.error("Failed to load eligible members count:", error);
-        // Set a default count if API is not available
         setEligibleMembersCount(0);
       }
     };
 
-    checkApiHealth();
     loadEligibleMembers();
   }, []);
 
-  const addOption = () => {
-    const newOptions = [...options, `Option ${options.length + 1}`];
-    setValue("options", newOptions);
+  const updateVoteData = (updates: Partial<VoteFormData>) => {
+    setVoteData((prev) => ({ ...prev, ...updates }));
   };
 
-  const removeOption = (index: number) => {
-    if (options.length > 2) {
-      const newOptions = options.filter((_, i) => i !== index);
-      setValue("options", newOptions);
+  const nextStep = () => {
+    // Skip options step if YES_NO type
+    if (currentStep === 4 && voteData.type === "YES_NO") {
+      setCurrentStep(6); // Skip to anonymous step
+    } else if (currentStep < steps.length - 1) {
+      setCurrentStep((prev) => prev + 1);
     }
   };
 
-  const updateOption = (index: number, value: string) => {
-    const newOptions = [...options];
-    newOptions[index] = value;
-    setValue("options", newOptions, { shouldValidate: true });
+  const prevStep = () => {
+    // Skip options step backwards if YES_NO type
+    if (currentStep === 6 && voteData.type === "YES_NO") {
+      setCurrentStep(4); // Go back to type step
+    } else if (currentStep > 0) {
+      setCurrentStep((prev) => prev - 1);
+    }
   };
 
-  // Custom validation for options
   const validateOptions = (options: string[]) => {
     if (!options || options.length < 2) {
       return "At least 2 options are required";
@@ -159,457 +114,138 @@ export default function NewVotePage() {
     return true;
   };
 
-  const onSubmit = async (data: VoteFormData) => {
-    console.log("=== FORM SUBMIT HANDLER CALLED ===");
-    console.log("Form submitted with data:", data);
+  const canProceed = (): boolean => {
+    switch (currentStep) {
+      case 0: // Title
+        return voteData.title.trim().length > 0;
+      case 1: // Description
+        return true; // Optional
+      case 2: // Start Date
+        return voteData.startAt.length > 0;
+      case 3: // End Date
+        return voteData.endAt.length > 0;
+      case 4: // Type
+        return true;
+      case 5: // Options (SINGLE_CHOICE only)
+        return voteData.type === "YES_NO" || validateOptions(voteData.options) === true;
+      case 6: // Anonymous
+        return true;
+      case 7: // Review
+        return true;
+      default:
+        return false;
+    }
+  };
+
+  const handleSubmit = async () => {
+    // Validate dates
+    const startDate = new Date(voteData.startAt);
+    const endDate = new Date(voteData.endAt);
+
+    if (startDate >= endDate) {
+      setError("End date must be after start date");
+      return;
+    }
+
+    if (startDate <= new Date()) {
+      setError("Start date must be in the future");
+      return;
+    }
+
+    // Validate options
+    const optionsValidation = validateOptions(voteData.options);
+    if (optionsValidation !== true) {
+      setError(optionsValidation);
+      return;
+    }
+
     setIsSubmitting(true);
+    setError(null);
+
     try {
-      // Convert datetime-local to ISO string
-      const startDate = new Date(data.startAt);
-      const endDate = new Date(data.endAt);
-      const startAt = startDate.toISOString();
-      const endAt = endDate.toISOString();
-
-      console.log("Original dates:", {
-        startAt: data.startAt,
-        endAt: data.endAt,
-      });
-      console.log("Converted dates:", { startAt, endAt });
-      console.log("Date objects:", { startDate, endDate });
-
-      // Validate dates
-      if (startDate >= endDate) {
-        console.log("Date validation failed: start >= end");
-        toast({
-          title: "Invalid dates",
-          description: "End date must be after start date",
-          variant: "destructive",
-        });
-        setIsSubmitting(false);
-        return;
-      }
-
-      if (startDate <= new Date()) {
-        console.log("Date validation failed: start not in future");
-        console.log("Current date:", new Date());
-        console.log("Start date:", startDate);
-        toast({
-          title: "Invalid start date",
-          description: "Start date must be in the future",
-          variant: "destructive",
-        });
-        setIsSubmitting(false);
-        return;
-      }
-
-      console.log("Date validation passed");
-
-      // Validate options
-      const optionsValidation = validateOptions(data.options);
-      if (optionsValidation !== true) {
-        toast({
-          title: "Invalid options",
-          description: optionsValidation,
-          variant: "destructive",
-        });
-        setIsSubmitting(false);
-        return;
-      }
-
-      const voteData = {
-        ...data,
-        startAt,
-        endAt,
+      const votePayload = {
+        ...voteData,
+        startAt: startDate.toISOString(),
+        endAt: endDate.toISOString(),
         status: "SCHEDULED" as const,
       };
 
-      console.log("Vote data to send:", voteData);
-      console.log("About to call API...");
+      await apiClient.createVote(votePayload);
 
-      const createdVote = await apiClient.createVote(voteData);
-
-      console.log("API call successful, created vote:", createdVote);
-
-      toast({
-        title: "Vote created successfully",
-        description: `"${createdVote.title}" has been created and is ready to be scheduled.`,
-      });
-
-      router.push("/voting");
+      setSuccessModalOpen(true);
     } catch (error: any) {
-      console.error("Failed to create vote:", error);
-
-      let errorMessage = "An error occurred while creating the vote";
-      if (error.message) {
-        errorMessage = error.message;
-      } else if (error.response?.data?.message) {
-        errorMessage = error.response.data.message;
-      }
-
-      toast({
-        title: "Failed to create vote",
-        description: errorMessage,
-        variant: "destructive",
-      });
+      setError(error.message || "Failed to create vote");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handlePreview = () => {
-    // TODO: Implement preview functionality
-    toast({
-      title: "Preview coming soon",
-      description: "Preview functionality will be implemented soon",
-    });
+  const handleSuccessModalClose = () => {
+    setSuccessModalOpen(false);
+    router.push("/voting");
   };
 
-  const handleGenerateSMS = () => {
-    // TODO: Implement SMS link generation
-    toast({
-      title: "SMS generation coming soon",
-      description: "SMS link generation will be implemented soon",
-    });
+  const handleNext = () => {
+    if (currentStep === steps.length - 1) {
+      handleSubmit();
+    } else {
+      nextStep();
+    }
   };
-
-  // Show loading state during hydration
-  if (!isClient) {
-    return (
-      <AppShell>
-        <div className='space-y-6 max-w-4xl'>
-          <div>
-            <h1 className='text-2xl font-bold text-gray-900'>
-              Create New Vote
-            </h1>
-            <p className='text-gray-600'>
-              Set up a new vote or election for your community
-            </p>
-          </div>
-          <div className='flex items-center justify-center py-12'>
-            <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900'></div>
-          </div>
-        </div>
-      </AppShell>
-    );
-  }
 
   return (
-    <AppShell>
-      <div className='space-y-6 max-w-4xl'>
-        {/* Header */}
-        <div>
-          <h1 className='text-2xl font-bold text-gray-900'>Create New Vote</h1>
-          <p className='text-gray-600'>
-            Set up a new vote or election for your community
-          </p>
-        </div>
-
-        <form
-          onSubmit={handleSubmit(onSubmit, (errors) => {
-            console.log("Form validation errors:", errors);
-            toast({
-              title: "Validation Error",
-              description: "Please check the form for errors",
-              variant: "destructive",
-            });
-          })}
-        >
-          <div className='grid grid-cols-1 xl:grid-cols-3 gap-6'>
-            {/* Main Form */}
-            <div className='xl:col-span-2 space-y-6'>
-              {/* Basic Information */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Vote Details</CardTitle>
-                  <CardDescription>
-                    Basic information about the vote
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className='space-y-4'>
-                  <div>
-                    <Label htmlFor='title'>Title *</Label>
-                    <Input
-                      id='title'
-                      placeholder='e.g., Board Member Election 2024'
-                      {...register("title", { required: "Title is required" })}
-                    />
-                    {errors.title && (
-                      <p className='text-sm text-red-600 mt-1'>
-                        {errors.title.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <Label htmlFor='description'>Description (Optional)</Label>
-                    <Textarea
-                      id='description'
-                      placeholder='Provide context and instructions for voters...'
-                      rows={3}
-                      {...register("description")}
-                    />
-                  </div>
-
-                  <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                    <div>
-                      <Label htmlFor='startAt'>Start Date & Time *</Label>
-                      <Input
-                        id='startAt'
-                        type='datetime-local'
-                        {...register("startAt", {
-                          required: "Start date is required",
-                          validate: (value) => {
-                            const startDate = new Date(value);
-                            const now = new Date();
-                            if (startDate <= now) {
-                              return "Start date must be in the future";
-                            }
-                            return true;
-                          },
-                        })}
-                      />
-                      {errors.startAt && (
-                        <p className='text-sm text-red-600 mt-1'>
-                          {errors.startAt.message}
-                        </p>
-                      )}
-                    </div>
-                    <div>
-                      <Label htmlFor='endAt'>End Date & Time *</Label>
-                      <Input
-                        id='endAt'
-                        type='datetime-local'
-                        {...register("endAt", {
-                          required: "End date is required",
-                          validate: (value) => {
-                            const endDate = new Date(value);
-                            const startDate = new Date(watch("startAt"));
-                            if (endDate <= startDate) {
-                              return "End date must be after start date";
-                            }
-                            return true;
-                          },
-                        })}
-                      />
-                      {errors.endAt && (
-                        <p className='text-sm text-red-600 mt-1'>
-                          {errors.endAt.message}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Vote Configuration */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Vote Configuration</CardTitle>
-                  <CardDescription>
-                    Configure how the vote will work
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className='space-y-4'>
-                  <div>
-                    <Label htmlFor='type'>Vote Type *</Label>
-                    <Select
-                      value={voteType}
-                      onValueChange={(value: "SINGLE_CHOICE" | "YES_NO") => {
-                        setValue("type", value);
-                        if (value === "YES_NO") {
-                          setValue("options", ["Yes", "No"]);
-                        } else if (
-                          options.length === 2 &&
-                          options[0] === "Yes" &&
-                          options[1] === "No"
-                        ) {
-                          setValue("options", ["Option 1", "Option 2"]);
-                        }
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value='SINGLE_CHOICE'>
-                          Single Choice (Election)
-                        </SelectItem>
-                        <SelectItem value='YES_NO'>
-                          Yes/No (Approval)
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {voteType === "SINGLE_CHOICE" && (
-                    <div>
-                      <div className='flex items-center justify-between mb-3'>
-                        <Label>Options *</Label>
-                        <Button
-                          type='button'
-                          variant='outline'
-                          size='sm'
-                          onClick={addOption}
-                        >
-                          <Plus className='h-4 w-4 mr-1' />
-                          Add Option
-                        </Button>
-                      </div>
-                      <div className='space-y-3'>
-                        {options.map((option, index) => (
-                          <div
-                            key={index}
-                            className='flex items-center space-x-2'
-                          >
-                            <Input
-                              value={option}
-                              onChange={(e) =>
-                                updateOption(index, e.target.value)
-                              }
-                              placeholder={`Option ${index + 1}`}
-                            />
-                            {options.length > 2 && (
-                              <Button
-                                type='button'
-                                variant='outline'
-                                size='sm'
-                                onClick={() => removeOption(index)}
-                              >
-                                <Minus className='h-4 w-4' />
-                              </Button>
-                            )}
-                          </div>
-                        ))}
-                        {errors.options && (
-                          <p className='text-sm text-red-600'>
-                            {errors.options.message}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className='flex items-center space-x-2'>
-                    <Switch
-                      id='anonymous'
-                      checked={anonymous}
-                      onCheckedChange={(checked) =>
-                        setValue("anonymous", checked)
-                      }
-                    />
-                    <Label htmlFor='anonymous'>Anonymous voting</Label>
-                  </div>
-                </CardContent>
-              </Card>
+    <>
+      <WizardContainer
+        title="Create New Vote"
+        description="Set up a new vote or election for your community"
+        backHref="/voting"
+        steps={steps}
+        currentStep={currentStep}
+        onNext={handleNext}
+        onPrev={prevStep}
+        canProceed={canProceed()}
+        error={error}
+        isLastStep={currentStep === steps.length - 1}
+        isLoading={isSubmitting}
+        submitLabel="Create Vote"
+        submitIcon={<CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-2" />}
+        additionalInfo={
+          <>
+            <div className="flex items-center space-x-1">
+              <Users className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+              <span>{eligibleMembersCount} eligible voters</span>
             </div>
+          </>
+        }
+      >
+        <VotingWizard
+          step={currentStep}
+          data={voteData}
+          onUpdate={updateVoteData}
+          eligibleMembersCount={eligibleMembersCount}
+          errors={errors}
+        />
+      </WizardContainer>
 
-            {/* Sidebar */}
-            <div className='space-y-6'>
-              {/* Eligibility Info */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className='flex items-center space-x-2'>
-                    <Users className='h-5 w-5' />
-                    <span>Eligibility</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className='space-y-3'>
-                    <div className='flex items-start space-x-2'>
-                      <Info className='h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0' />
-                      <div className='text-sm text-gray-600'>
-                        Only members who are not delinquent for more than 90
-                        days can vote.
-                      </div>
-                    </div>
-
-                    <div className='flex items-center justify-between'>
-                      <span className='text-sm font-medium'>
-                        Eligible Members
-                      </span>
-                      <Badge variant='outline'>
-                        {isClient
-                          ? `${eligibleMembersCount} members`
-                          : "Loading..."}
-                      </Badge>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Actions */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Actions</CardTitle>
-                </CardHeader>
-                <CardContent className='space-y-3'>
-                  <Button
-                    type='button'
-                    variant='outline'
-                    size='sm'
-                    className='w-full'
-                    onClick={handlePreview}
-                  >
-                    <Eye className='h-4 w-4 mr-2' />
-                    Preview Ballot
-                  </Button>
-
-                  <Button
-                    type='button'
-                    variant='outline'
-                    size='sm'
-                    className='w-full'
-                    onClick={handleGenerateSMS}
-                  >
-                    <Copy className='h-4 w-4 mr-2' />
-                    Generate SMS Link
-                  </Button>
-
-                  <div className='pt-2 space-y-2'>
-                    <Button
-                      type='button'
-                      variant='outline'
-                      className='w-full'
-                      onClick={() => {
-                        console.log("Current form values:", watch());
-                        console.log("Form errors:", errors);
-                        console.log(
-                          "Is form valid:",
-                          Object.keys(errors).length === 0
-                        );
-                      }}
-                    >
-                      Debug Form
-                    </Button>
-                    <Button
-                      type='submit'
-                      className='w-full'
-                      disabled={isSubmitting}
-                      onClick={() => {
-                        console.log("=== SUBMIT BUTTON CLICKED ===");
-                        console.log("Form errors:", errors);
-                        console.log("Form values:", watch());
-                      }}
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <Loader2 className='h-4 w-4 mr-2 animate-spin' />
-                          Creating...
-                        </>
-                      ) : (
-                        <>
-                          <Save className='h-4 w-4 mr-2' />
-                          Create Vote
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+      {/* Success Modal */}
+      <Dialog open={successModalOpen} onOpenChange={setSuccessModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <CheckCircle className="h-6 w-6 text-green-500" />
+              Done!
+            </DialogTitle>
+            <DialogDescription className="text-center py-4">
+              Vote created successfully!
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-center">
+            <Button onClick={handleSuccessModalClose} className="w-full">
+              View Votes
+            </Button>
           </div>
-        </form>
-      </div>
-    </AppShell>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

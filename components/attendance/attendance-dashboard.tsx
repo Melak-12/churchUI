@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -8,8 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -18,472 +18,524 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Users,
-  Calendar,
-  TrendingUp,
-  Clock,
-  BarChart3,
-  Loader2,
-  CheckCircle,
-  XCircle,
-} from "lucide-react";
-import { Attendance } from "@/types";
-import apiClient from "@/lib/api";
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 import {
-  format,
-  subDays,
-  startOfWeek,
-  endOfWeek,
-  startOfMonth,
-  endOfMonth,
-} from "date-fns";
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Bar, Line } from "react-chartjs-2";
+import {
+  Calendar,
+  Users,
+  TrendingUp,
+  TrendingDown,
+  Download,
+  Filter,
+  RefreshCw,
+  BarChart3,
+  LineChart,
+  Clock,
+  MapPin,
+} from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import apiClient from "@/lib/api";
+import { Attendance } from "@/types";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 interface AttendanceStats {
   totalAttendance: number;
-  uniqueMemberCount: number;
-  byServiceType: Array<{
+  todayAttendance: number;
+  weeklyAverage: number;
+  monthlyAverage: number;
+  attendanceTrend: number;
+  topAttendees: Array<{
+    member: {
+      firstName: string;
+      lastName: string;
+      phone: string;
+    };
+    attendanceCount: number;
+  }>;
+  serviceBreakdown: Array<{
     serviceType: string;
     count: number;
   }>;
-  byMinistry: Array<{
-    ministry: string;
+  weeklyData: Array<{
+    date: string;
     count: number;
   }>;
-  bySmallGroup: Array<{
-    smallGroup: string;
+  monthlyData: Array<{
+    month: string;
     count: number;
   }>;
 }
 
 export function AttendanceDashboard() {
+  const [loading, setLoading] = useState(true);
   const [attendance, setAttendance] = useState<Attendance[]>([]);
   const [stats, setStats] = useState<AttendanceStats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [timeRange, setTimeRange] = useState<string>("week");
+  const [dateRange, setDateRange] = useState("week");
+  const [serviceFilter, setServiceFilter] = useState("all");
+  const [chartType, setChartType] = useState<"bar" | "line">("bar");
+  const { toast } = useToast();
 
-  const fetchData = useCallback(async () => {
+  useEffect(() => {
+    loadAttendanceData();
+  }, [dateRange, serviceFilter]);
+
+  const loadAttendanceData = async () => {
     try {
       setLoading(true);
 
-      // Calculate date range based on selection
-      let startDate: Date | undefined;
-      let endDate: Date | undefined;
-
-      switch (timeRange) {
-        case "today":
-          startDate = new Date();
-          startDate.setHours(0, 0, 0, 0);
-          endDate = new Date();
-          endDate.setHours(23, 59, 59, 999);
-          break;
+      const endDate = new Date();
+      const startDate = new Date();
+      
+      switch (dateRange) {
         case "week":
-          startDate = startOfWeek(new Date());
-          endDate = endOfWeek(new Date());
+          startDate.setDate(endDate.getDate() - 7);
           break;
         case "month":
-          startDate = startOfMonth(new Date());
-          endDate = endOfMonth(new Date());
+          startDate.setMonth(endDate.getMonth() - 1);
           break;
-        case "last30days":
-          endDate = new Date();
-          startDate = subDays(endDate, 30);
+        case "quarter":
+          startDate.setMonth(endDate.getMonth() - 3);
+          break;
+        case "year":
+          startDate.setFullYear(endDate.getFullYear() - 1);
           break;
       }
 
+      const params: any = {
+        startDate: startDate.toISOString().split('T')[0],
+        endDate: endDate.toISOString().split('T')[0],
+      };
+
+      if (serviceFilter !== "all") {
+        params.serviceType = serviceFilter;
+      }
+
       const [attendanceResponse, statsResponse] = await Promise.all([
-        apiClient.getAttendance({
-          startDate: startDate?.toISOString(),
-          endDate: endDate?.toISOString(),
-        }),
-        apiClient.getAttendanceStats(),
+        apiClient.getAttendance(params),
+        apiClient.getAttendanceStats(
+          startDate.toISOString().split('T')[0],
+          endDate.toISOString().split('T')[0]
+        ),
       ]);
 
-      setAttendance(attendanceResponse.attendance);
+      setAttendance(attendanceResponse.attendance || []);
       setStats(statsResponse);
     } catch (error) {
-      console.error("Error fetching attendance data:", error);
+      console.error("Error loading attendance data:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load attendance data",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
-  }, [timeRange]);
-
-  useEffect(() => {
-    fetchData();
-  }, [timeRange, fetchData]);
-
-  const getServiceTypeColor = (serviceType: string) => {
-    const colors = {
-      SUNDAY_SERVICE: "bg-blue-100 text-blue-800",
-      WEDNESDAY_SERVICE: "bg-green-100 text-green-800",
-      SPECIAL_SERVICE: "bg-purple-100 text-purple-800",
-      OTHER: "bg-gray-100 text-gray-800",
-    };
-    return (
-      colors[serviceType as keyof typeof colors] || "bg-gray-100 text-gray-800"
-    );
   };
 
-  const getMethodColor = (method: string) => {
-    const colors = {
-      MANUAL: "bg-gray-100 text-gray-800",
-      QR_CODE: "bg-blue-100 text-blue-800",
-      MOBILE_APP: "bg-green-100 text-green-800",
-      KIOSK: "bg-purple-100 text-purple-800",
-    };
-    return colors[method as keyof typeof colors] || "bg-gray-100 text-gray-800";
-  };
-
-  const formatDuration = (minutes: number | null) => {
-    if (!minutes) return "N/A";
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    if (hours > 0) {
-      return `${hours}h ${mins}m`;
+  const exportAttendance = async () => {
+    try {
+      // This would typically generate and download a CSV/Excel file
+      toast({
+        title: "Export Started",
+        description: "Attendance report is being generated...",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to export attendance data",
+        variant: "destructive",
+      });
     }
-    return `${mins}m`;
   };
 
-  const getTimeRangeLabel = () => {
-    switch (timeRange) {
-      case "today":
-        return "Today";
-      case "week":
-        return "This Week";
-      case "month":
-        return "This Month";
-      case "last30days":
-        return "Last 30 Days";
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  };
+
+  const formatTime = (timeString: string) => {
+    return new Date(timeString).toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  const getServiceTypeLabel = (type: string) => {
+    const labels = {
+      SUNDAY_SERVICE: "Sunday Service",
+      WEDNESDAY_SERVICE: "Wednesday Service",
+      SPECIAL_SERVICE: "Special Service",
+      OTHER: "Other",
+    };
+    return labels[type as keyof typeof labels] || type;
+  };
+
+  const getMethodIcon = (method: string) => {
+    switch (method) {
+      case "QR_CODE":
+        return "📱";
+      case "MOBILE_APP":
+        return "📲";
+      case "KIOSK":
+        return "🖥️";
       default:
-        return "This Week";
+        return "✋";
     }
+  };
+
+  // Chart data
+  const chartData = {
+    labels: stats?.weeklyData?.map(item => formatDate(item.date)) || [],
+    datasets: [
+      {
+        label: 'Attendance',
+        data: stats?.weeklyData?.map(item => item.count) || [],
+        backgroundColor: 'rgba(59, 130, 246, 0.5)',
+        borderColor: 'rgba(59, 130, 246, 1)',
+        borderWidth: 2,
+      },
+    ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+      },
+      title: {
+        display: true,
+        text: 'Attendance Over Time',
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+    },
   };
 
   if (loading) {
     return (
-      <div className='flex items-center justify-center py-8'>
-        <Loader2 className='h-8 w-8 animate-spin' />
-        <span className='ml-2'>Loading attendance dashboard...</span>
+      <div className="flex items-center justify-center py-12">
+        <div className="flex items-center space-x-2">
+          <RefreshCw className="h-6 w-6 animate-spin" />
+          <span>Loading attendance data...</span>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className='space-y-6'>
-      {/* Time Range Selector */}
-      <Card>
-        <CardHeader>
-          <div className='flex items-center justify-between'>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          <div className="p-2 bg-green-500 rounded-lg">
+            <BarChart3 className="h-6 w-6 text-white" />
+          </div>
             <div>
-              <CardTitle>Attendance Overview</CardTitle>
-              <CardDescription>
-                Statistics for {getTimeRangeLabel().toLowerCase()}
-              </CardDescription>
+            <h2 className="text-xl font-semibold">Attendance Dashboard</h2>
+            <p className="text-sm text-muted-foreground">
+              Track and analyze member attendance
+            </p>
+          </div>
             </div>
-            <div className='flex items-center gap-2'>
-              <Select value={timeRange} onValueChange={setTimeRange}>
-                <SelectTrigger className='w-48'>
-                  <SelectValue placeholder='Select time range' />
+        
+        <div className="flex items-center space-x-2">
+          <Select value={dateRange} onValueChange={setDateRange}>
+            <SelectTrigger className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="week">Last Week</SelectItem>
+              <SelectItem value="month">Last Month</SelectItem>
+              <SelectItem value="quarter">Last Quarter</SelectItem>
+              <SelectItem value="year">Last Year</SelectItem>
+            </SelectContent>
+          </Select>
+          
+          <Select value={serviceFilter} onValueChange={setServiceFilter}>
+            <SelectTrigger className="w-40">
+              <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='today'>Today</SelectItem>
-                  <SelectItem value='week'>This Week</SelectItem>
-                  <SelectItem value='month'>This Month</SelectItem>
-                  <SelectItem value='last30days'>Last 30 Days</SelectItem>
+              <SelectItem value="all">All Services</SelectItem>
+              <SelectItem value="SUNDAY_SERVICE">Sunday Service</SelectItem>
+              <SelectItem value="WEDNESDAY_SERVICE">Wednesday Service</SelectItem>
+              <SelectItem value="SPECIAL_SERVICE">Special Service</SelectItem>
                 </SelectContent>
               </Select>
-              <Button variant='outline' size='sm' onClick={fetchData}>
-                <BarChart3 className='h-4 w-4 mr-2' />
+          
+          <Button variant="outline" onClick={loadAttendanceData}>
+            <RefreshCw className="h-4 w-4 mr-2" />
                 Refresh
               </Button>
+          
+          <Button onClick={exportAttendance}>
+            <Download className="h-4 w-4 mr-2" />
+            Export
+          </Button>
             </div>
           </div>
-        </CardHeader>
-      </Card>
 
-      {/* Overview Stats */}
-      <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
+      {/* Stats Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
-          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-            <CardTitle className='text-sm font-medium'>
-              Total Check-ins
-            </CardTitle>
-            <Users className='h-4 w-4 text-muted-foreground' />
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Attendance</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className='text-2xl font-bold'>
-              {stats?.totalAttendance || 0}
-            </div>
-            <p className='text-xs text-muted-foreground'>
-              {getTimeRangeLabel().toLowerCase()}
+            <div className="text-2xl font-bold">{stats?.totalAttendance || 0}</div>
+            <p className="text-xs text-muted-foreground">
+              All time records
             </p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-            <CardTitle className='text-sm font-medium'>
-              Unique Members
-            </CardTitle>
-            <Users className='h-4 w-4 text-muted-foreground' />
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Todays Attendance</CardTitle>
+            <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className='text-2xl font-bold'>
-              {stats?.uniqueMemberCount || 0}
-            </div>
-            <p className='text-xs text-muted-foreground'>
-              Different members attended
+            <div className="text-2xl font-bold">{stats?.todayAttendance || 0}</div>
+            <p className="text-xs text-muted-foreground">
+              {formatDate(new Date().toISOString())}
             </p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-            <CardTitle className='text-sm font-medium'>Checked Out</CardTitle>
-            <CheckCircle className='h-4 w-4 text-muted-foreground' />
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Weekly Average</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className='text-2xl font-bold'>
-              {attendance.filter((a) => a.checkOutTime).length}
-            </div>
-            <p className='text-xs text-muted-foreground'>
-              {stats?.totalAttendance
-                ? `${Math.round(
-                    (attendance.filter((a) => a.checkOutTime).length /
-                      stats.totalAttendance) *
-                      100
-                  )}% of check-ins`
-                : "No check-ins"}
+            <div className="text-2xl font-bold">{stats?.weeklyAverage || 0}</div>
+            <p className="text-xs text-muted-foreground">
+              Last 7 days
             </p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-            <CardTitle className='text-sm font-medium'>Avg. Duration</CardTitle>
-            <Clock className='h-4 w-4 text-muted-foreground' />
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Monthly Average</CardTitle>
+            <BarChart3 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className='text-2xl font-bold'>
-              {(() => {
-                const checkedOut = attendance.filter((a) => a.duration);
-                if (checkedOut.length === 0) return "N/A";
-                const avgDuration =
-                  checkedOut.reduce((sum, a) => sum + (a.duration || 0), 0) /
-                  checkedOut.length;
-                return formatDuration(Math.round(avgDuration));
-              })()}
-            </div>
-            <p className='text-xs text-muted-foreground'>
-              For checked-out members
+            <div className="text-2xl font-bold">{stats?.monthlyAverage || 0}</div>
+            <p className="text-xs text-muted-foreground">
+              Last 30 days
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Breakdown by Service Type */}
-      {stats?.byServiceType && stats.byServiceType.length > 0 && (
+      {/* Charts */}
+      <div className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Attendance by Service Type</CardTitle>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Attendance Trend</CardTitle>
             <CardDescription>
-              Breakdown of attendance by different service types
+                  Attendance over the selected time period
+            </CardDescription>
+                  </div>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant={chartType === "bar" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setChartType("bar")}
+                >
+                  <BarChart3 className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={chartType === "line" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setChartType("line")}
+                >
+                  <LineChart className="h-4 w-4" />
+                </Button>
+                  </div>
+                </div>
+          </CardHeader>
+          <CardContent>
+            {chartType === "bar" ? (
+              <Bar data={chartData} options={chartOptions} />
+            ) : (
+              <Line data={chartData} options={chartOptions} />
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Service Breakdown</CardTitle>
+            <CardDescription>
+              Attendance by service type
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
-              {stats.byServiceType.map((service) => (
-                <div key={service.serviceType} className='space-y-2'>
-                  <div className='flex items-center justify-between'>
-                    <Badge className={getServiceTypeColor(service.serviceType)}>
-                      {service.serviceType.replace("_", " ")}
+            <div className="space-y-4">
+              {stats?.serviceBreakdown?.map((service) => (
+                <div key={service.serviceType} className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                    <span className="font-medium">
+                      {getServiceTypeLabel(service.serviceType)}
+                    </span>
+                    </div>
+                  <Badge variant="secondary">{service.count}</Badge>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Top Attendees */}
+        <Card>
+          <CardHeader>
+          <CardTitle>Top Attendees</CardTitle>
+            <CardDescription>
+            Members with highest attendance rates
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Member</TableHead>
+                <TableHead>Phone</TableHead>
+                <TableHead>Attendance Count</TableHead>
+                <TableHead>Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {stats?.topAttendees?.slice(0, 10).map((attendee, index) => (
+                <TableRow key={index}>
+                  <TableCell className="font-medium">
+                    {attendee.member.firstName} {attendee.member.lastName}
+                  </TableCell>
+                  <TableCell>{attendee.member.phone}</TableCell>
+                  <TableCell>
+                    <Badge variant="secondary">{attendee.attendanceCount}</Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="outline" className="flex items-center gap-1">
+                      <TrendingUp className="h-3 w-3" />
+                      Regular
                     </Badge>
-                    <span className='text-sm font-medium'>{service.count}</span>
-                  </div>
-                  <div className='w-full bg-gray-200 rounded-full h-2'>
-                    <div
-                      className='bg-blue-600 h-2 rounded-full'
-                      style={{
-                        width: `${
-                          stats.totalAttendance > 0
-                            ? (service.count / stats.totalAttendance) * 100
-                            : 0
-                        }%`,
-                      }}
-                    ></div>
-                  </div>
-                </div>
+                  </TableCell>
+                </TableRow>
               ))}
-            </div>
+            </TableBody>
+          </Table>
           </CardContent>
         </Card>
-      )}
 
-      {/* Breakdown by Ministry */}
-      {stats?.byMinistry && stats.byMinistry.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Attendance by Ministry</CardTitle>
-            <CardDescription>
-              Ministry meeting attendance breakdown
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className='space-y-4'>
-              {stats.byMinistry.map((ministry) => (
-                <div
-                  key={ministry.ministry}
-                  className='flex items-center justify-between'
-                >
-                  <div className='flex items-center gap-2'>
-                    <span className='font-medium'>{ministry.ministry}</span>
-                  </div>
-                  <div className='flex items-center gap-2'>
-                    <span className='text-sm text-muted-foreground'>
-                      {ministry.count} check-ins
-                    </span>
-                    <div className='w-24 bg-gray-200 rounded-full h-2'>
-                      <div
-                        className='bg-green-600 h-2 rounded-full'
-                        style={{
-                          width: `${
-                            stats.totalAttendance > 0
-                              ? (ministry.count / stats.totalAttendance) * 100
-                              : 0
-                          }%`,
-                        }}
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Breakdown by Small Group */}
-      {stats?.bySmallGroup && stats.bySmallGroup.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Attendance by Small Group</CardTitle>
-            <CardDescription>
-              Small group meeting attendance breakdown
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className='space-y-4'>
-              {stats.bySmallGroup.map((group) => (
-                <div
-                  key={group.smallGroup}
-                  className='flex items-center justify-between'
-                >
-                  <div className='flex items-center gap-2'>
-                    <span className='font-medium'>{group.smallGroup}</span>
-                  </div>
-                  <div className='flex items-center gap-2'>
-                    <span className='text-sm text-muted-foreground'>
-                      {group.count} check-ins
-                    </span>
-                    <div className='w-24 bg-gray-200 rounded-full h-2'>
-                      <div
-                        className='bg-purple-600 h-2 rounded-full'
-                        style={{
-                          width: `${
-                            stats.totalAttendance > 0
-                              ? (group.count / stats.totalAttendance) * 100
-                              : 0
-                          }%`,
-                        }}
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Recent Activity */}
+      {/* Recent Attendance */}
       <Card>
         <CardHeader>
-          <CardTitle>Recent Check-ins</CardTitle>
-          <CardDescription>Latest attendance activity</CardDescription>
+          <CardTitle>Recent Attendance</CardTitle>
+          <CardDescription>
+            Latest attendance records
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          {attendance.length === 0 ? (
-            <div className='text-center py-8'>
-              <p className='text-muted-foreground'>
-                No attendance records found for the selected time range.
-              </p>
-            </div>
-          ) : (
-            <div className='space-y-4'>
-              {attendance.slice(0, 10).map((record) => (
-                <div
-                  key={record.id}
-                  className='flex items-center justify-between p-4 border rounded-lg'
-                >
-                  <div className='space-y-1'>
-                    <div className='flex items-center gap-2'>
-                      <span className='font-medium'>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Member</TableHead>
+                <TableHead>Service</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Check-in Time</TableHead>
+                <TableHead>Method</TableHead>
+                <TableHead>Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {attendance.slice(0, 20).map((record) => (
+                <TableRow key={record.id}>
+                  <TableCell>
+                    <div>
+                      <div className="font-medium">
                         {record.member.firstName} {record.member.lastName}
-                      </span>
-                      {record.service && (
-                        <Badge
-                          className={getServiceTypeColor(record.service.type)}
-                        >
-                          {record.service.type.replace("_", " ")}
-                        </Badge>
-                      )}
-                      {record.event && (
-                        <Badge className='bg-green-100 text-green-800'>
-                          Event
-                        </Badge>
-                      )}
-                      {record.ministry && (
-                        <Badge className='bg-purple-100 text-purple-800'>
-                          Ministry
-                        </Badge>
-                      )}
-                      {record.smallGroup && (
-                        <Badge className='bg-orange-100 text-orange-800'>
-                          Small Group
-                        </Badge>
-                      )}
-                      <Badge className={getMethodColor(record.method)}>
-                        {record.method.replace("_", " ")}
-                      </Badge>
-                    </div>
-                    <div className='flex items-center gap-4 text-sm text-muted-foreground'>
-                      <span>
-                        {format(
-                          new Date(record.checkInTime),
-                          "MMM dd, yyyy 'at' h:mm a"
-                        )}
-                      </span>
-                      {record.duration && (
-                        <span>Duration: {formatDuration(record.duration)}</span>
-                      )}
-                    </div>
-                  </div>
-                  <div className='flex items-center gap-2'>
-                    {record.checkOutTime ? (
-                      <Badge variant='outline' className='text-green-600'>
-                        <CheckCircle className='h-3 w-3 mr-1' />
-                        Checked Out
-                      </Badge>
-                    ) : (
-                      <Badge variant='outline' className='text-blue-600'>
-                        <Clock className='h-3 w-3 mr-1' />
-                        Checked In
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-              ))}
             </div>
-          )}
+                      <div className="text-sm text-muted-foreground">
+                        {record.member.phone}
+                    </div>
+                  </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center space-x-2">
+                      <MapPin className="h-4 w-4 text-muted-foreground" />
+                      <span>{getServiceTypeLabel(record.service?.type || 'OTHER')}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center space-x-2">
+                      <Calendar className="h-4 w-4 text-muted-foreground" />
+                      <span>{formatDate(record.service?.date || record.checkInTime)}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center space-x-2">
+                      <Clock className="h-4 w-4 text-muted-foreground" />
+                      <span>{formatTime(record.checkInTime)}</span>
+                  </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center space-x-2">
+                      <span>{getMethodIcon(record.method)}</span>
+                      <span className="capitalize">{record.method.replace('_', ' ')}</span>
+                </div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="secondary" className="flex items-center gap-1">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      Present
+                    </Badge>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
     </div>

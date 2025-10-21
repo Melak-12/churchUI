@@ -121,11 +121,11 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
   const fetchBudgetCategories = async () => {
     try {
       setCategoriesLoading(true);
-      const response = await apiClient.get<
-        ApiResponse<BudgetCategoriesResponse>
-      >("/api/financial/budget-categories");
-      if (response.data?.success) {
-        setBudgetCategories(response.data.data?.categories || []);
+      const response = await apiClient.get<{ categories: any[] }>(
+        "/api/financial/budget-categories"
+      );
+      if (response.success && response.data) {
+        setBudgetCategories((response.data as { categories: any[] }).categories || []);
       }
     } catch (err: any) {
       console.error("❌ Budget categories fetch error:", err);
@@ -151,17 +151,17 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
         categories: data.categories,
       };
 
-      const response = await apiClient.post<ApiResponse<BudgetResponse>>(
+      const response = await apiClient.post<{ budget: any }>(
         "/api/financial/budgets",
         budgetData
       );
 
-      if (response.data?.success) {
+      if (response.success && response.data) {
         setSuccess(true);
         form.reset();
-        onSuccess?.(response.data.data?.budget);
+        onSuccess?.((response.data as { budget: any }).budget);
       } else {
-        setError(response.data?.message || "Failed to create budget");
+        setError(response.message || "Failed to create budget");
       }
     } catch (err: any) {
       console.error("❌ Budget creation error:", err);
