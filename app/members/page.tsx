@@ -560,8 +560,8 @@ export default function MembersPage() {
         {/* Search and Filters */}
         <Card className='border-none shadow-sm'>
           <CardContent className='p-6'>
-            <div className='flex flex-col md:flex-row gap-4 items-center justify-between'>
-              <div className='flex flex-1 items-center space-x-4 w-full md:w-auto'>
+            <div className='flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between'>
+              <div className='flex flex-1 items-center space-x-4 w-full lg:w-auto'>
                 <div className='relative flex-1 max-w-md'>
                   <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground' />
                   <Input
@@ -584,13 +584,13 @@ export default function MembersPage() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className='flex items-center space-x-2'>
+              <div className='flex items-center space-x-2 w-full lg:w-auto justify-between lg:justify-end'>
                 {/* Export/Import Buttons */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant='outline' size='sm' className='shadow-sm'>
                       <Download className='h-4 w-4 mr-2' />
-                      <span className='hidden sm:inline'>Export</span>
+                      <span className='hidden md:inline'>Export</span>
                       <ChevronDown className='h-3 w-3 ml-1' />
                     </Button>
                   </DropdownMenuTrigger>
@@ -621,7 +621,7 @@ export default function MembersPage() {
                   ) : (
                     <Upload className='h-4 w-4 mr-2' />
                   )}
-                  <span className='hidden sm:inline'>
+                  <span className='hidden md:inline'>
                     {importing ? "Importing..." : "Import"}
                   </span>
                 </Button>
@@ -634,7 +634,7 @@ export default function MembersPage() {
                 />
 
                 {/* View Mode Buttons */}
-                <div className='border-l pl-2 ml-2'>
+                <div className='border-l pl-2 ml-2 flex items-center space-x-1'>
                   <Button
                     variant={viewMode === "grid" ? "default" : "outline"}
                     size='sm'
@@ -642,16 +642,16 @@ export default function MembersPage() {
                     className='shadow-sm'
                   >
                     <Grid className='h-4 w-4 mr-2' />
-                    <span className='hidden sm:inline'>Grid</span>
+                    <span className='hidden md:inline'>Grid</span>
                   </Button>
                   <Button
                     variant={viewMode === "list" ? "default" : "outline"}
                     size='sm'
                     onClick={() => setViewMode("list")}
-                    className='shadow-sm ml-2'
+                    className='shadow-sm'
                   >
                     <List className='h-4 w-4 mr-2' />
-                    <span className='hidden sm:inline'>List</span>
+                    <span className='hidden md:inline'>List</span>
                   </Button>
                 </div>
               </div>
