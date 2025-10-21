@@ -2,47 +2,42 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { AppShell } from "@/components/layout/app-shell";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { WizardContainer } from "@/components/layout/wizard-container";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Checkbox } from "@/components/ui/checkbox";
-import { CreateEventRequest, Resource } from "@/types";
+import { CreateEventRequest } from "@/types";
 import apiClient from "@/lib/api";
-import {
-  ArrowLeft,
-  Plus,
-  Trash2,
-  Calendar,
-  Clock,
-  MapPin,
-  Users,
-  FileText,
-} from "lucide-react";
-import Link from "next/link";
+import { CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { EventWizard } from "@/components/events/event-wizard";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+
+const steps = [
+  { id: "title", title: "Event Name", description: "What's the event called?" },
+  { id: "description", title: "Description", description: "Tell us more" },
+  { id: "type", title: "Event Type", description: "What kind of event?" },
+  { id: "location", title: "Location", description: "Where is it?" },
+  { id: "start", title: "Start Time", description: "When does it start?" },
+  { id: "end", title: "End Time", description: "When does it end?" },
+  { id: "registration", title: "Registration", description: "Capacity settings" },
+  { id: "recurring", title: "Recurring", description: "Repeat pattern" },
+  { id: "resources", title: "Resources", description: "Equipment & rooms" },
+  { id: "review", title: "Review", description: "Confirm details" },
+];
 
 export default function NewEventPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [resources, setResources] = useState<Resource[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [successModalOpen, setSuccessModalOpen] = useState(false);
+
   const [eventData, setEventData] = useState<CreateEventRequest>({
     title: "",
     description: "",
@@ -62,134 +57,70 @@ export default function NewEventPage() {
     resources: [],
   });
 
-  const [showAdvanced, setShowAdvanced] = useState(false);
-
-  const handleInputChange = (field: keyof CreateEventRequest, value: any) => {
-    setEventData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+  const updateEventData = (updates: Partial<CreateEventRequest>) => {
+    setEventData((prev) => ({ ...prev, ...updates }));
   };
 
-  const handleResourceAdd = () => {
-    setEventData((prev) => ({
-      ...prev,
-      resources: [
-        ...(prev.resources || []),
-        {
-          resource: "",
-          startTime: "",
-          endTime: "",
-          notes: "",
-        },
-      ],
-    }));
+  const nextStep = () => {
+    if (currentStep < steps.length - 1) {
+      setCurrentStep((prev) => prev + 1);
+    }
   };
 
-  const handleResourceChange = (
-    index: number,
-    field: string,
-    value: string
-  ) => {
-    setEventData((prev) => ({
-      ...prev,
-      resources:
-        prev.resources?.map((resource, i) =>
-          i === index ? { ...resource, [field]: value } : resource
-        ) || [],
-    }));
+  const prevStep = () => {
+    if (currentStep > 0) {
+      setCurrentStep((prev) => prev - 1);
+    }
   };
 
-  const handleResourceRemove = (index: number) => {
-    setEventData((prev) => ({
-      ...prev,
-      resources: prev.resources?.filter((_, i) => i !== index) || [],
-    }));
+  const canProceed = (): boolean => {
+    switch (currentStep) {
+      case 0: // Title
+        return eventData.title.trim().length > 0;
+      case 1: // Description
+        return true; // Optional
+      case 2: // Type
+        return eventData.type.length > 0;
+      case 3: // Location
+        return eventData.location.trim().length > 0;
+      case 4: // Start Date
+        return eventData.startDate.length > 0;
+      case 5: // End Date
+        return eventData.endDate.length > 0;
+      case 6: // Registration
+        return true; // Optional
+      case 7: // Recurring
+        if (eventData.isRecurring) {
+          return !!eventData.recurrencePattern && !!eventData.recurrenceEndDate;
+        }
+        return true;
+      case 8: // Resources
+        return true; // Optional
+      case 9: // Review
+        return true;
+      default:
+        return false;
+    }
   };
 
-  const fillWithSampleData = () => {
-    const now = new Date();
-    const tomorrow = new Date(now);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(10, 0, 0, 0); // 10:00 AM tomorrow
-
-    const endTime = new Date(tomorrow);
-    endTime.setHours(12, 0, 0, 0); // 12:00 PM tomorrow
-
-    const registrationDeadline = new Date(tomorrow);
-    registrationDeadline.setDate(registrationDeadline.getDate() - 1);
-    registrationDeadline.setHours(18, 0, 0, 0); // 6:00 PM today
-
-    setEventData({
-      title: "Sunday Morning Service",
-      description:
-        "Join us for our weekly Sunday morning worship service. We'll have inspiring music, meaningful fellowship, and a powerful message from our pastor. All are welcome!",
-      type: "SERVICE",
-      startDate: tomorrow.toISOString().slice(0, 16), // Format for datetime-local input
-      endDate: endTime.toISOString().slice(0, 16),
-      location: "Main Sanctuary",
-      capacity: 150,
-      registrationRequired: true,
-      registrationDeadline: registrationDeadline.toISOString().slice(0, 16),
-      allowWaitlist: true,
-      maxWaitlist: 25,
-      isRecurring: true,
-      recurrencePattern: "WEEKLY",
-      recurrenceEndDate: new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000)
-        .toISOString()
-        .slice(0, 10), // 3 months from now
-      resources: [], // Temporarily remove resources to avoid validation error
-    });
-
-    toast({
-      title: "Sample Data Loaded",
-      description: "Form has been filled with sample church service data",
-    });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (
-      !eventData.title ||
-      !eventData.startDate ||
-      !eventData.endDate ||
-      !eventData.location
-    ) {
-      toast({
-        title: "Validation Error",
-        description: "Please fill in all required fields",
-        variant: "destructive",
-      });
+  const handleSubmit = async () => {
+    if (!canProceed()) {
+      setError("Please complete all required fields");
       return;
     }
 
     if (new Date(eventData.endDate) <= new Date(eventData.startDate)) {
-      toast({
-        title: "Validation Error",
-        description: "End date must be after start date",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Validate recurring event requirements
-    if (eventData.isRecurring && !eventData.recurrenceEndDate) {
-      toast({
-        title: "Validation Error",
-        description: "Recurrence end date is required for recurring events",
-        variant: "destructive",
-      });
+      setError("End date must be after start date");
       return;
     }
 
     try {
       setLoading(true);
+      setError(null);
 
       const eventDataToSend = {
         ...eventData,
-        resources: eventData.resources || [], // Include resources if they exist
-        // Fix recurrence end date validation - send undefined instead of empty string
+        resources: eventData.resources || [],
         recurrenceEndDate: eventData.recurrenceEndDate || undefined,
       };
 
@@ -200,499 +131,70 @@ export default function NewEventPage() {
         description: "Event created successfully",
       });
 
-      router.push("/events");
+      setSuccessModalOpen(true);
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to create event",
-        variant: "destructive",
-      });
+      setError(error.message || "Failed to create event");
     } finally {
       setLoading(false);
     }
   };
 
+  const handleSuccessModalClose = () => {
+    setSuccessModalOpen(false);
+    router.push("/events");
+  };
+
+  const handleNext = () => {
+    if (currentStep === steps.length - 1) {
+      handleSubmit();
+    } else {
+      nextStep();
+    }
+  };
+
   return (
-    <AppShell>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center space-x-4">
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/events">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Events
-            </Link>
-          </Button>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              Create New Event
-            </h1>
-            <p className="text-gray-600">
-              Add a new church event, service, or meeting
-            </p>
+    <>
+      <WizardContainer
+        title="Create New Event"
+        description="Add a new church event, service, or meeting"
+        backHref="/events"
+        steps={steps}
+        currentStep={currentStep}
+        onNext={handleNext}
+        onPrev={prevStep}
+        canProceed={canProceed()}
+        error={error}
+        isLastStep={currentStep === steps.length - 1}
+        isLoading={loading}
+        submitLabel="Create Event"
+        submitIcon={<CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-2" />}
+      >
+        <EventWizard
+          step={currentStep}
+          data={eventData}
+          onUpdate={updateEventData}
+        />
+      </WizardContainer>
+
+      {/* Success Modal */}
+      <Dialog open={successModalOpen} onOpenChange={setSuccessModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <CheckCircle className="h-6 w-6 text-green-500" />
+              Done!
+            </DialogTitle>
+            <DialogDescription className="text-center py-4">
+              Event created successfully!
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-center">
+            <Button onClick={handleSuccessModalClose} className="w-full">
+              View Events
+            </Button>
           </div>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Main Event Details */}
-            <div className="lg:col-span-2 space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Event Details</CardTitle>
-                  <CardDescription>
-                    Basic information about the event
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="title">Event Title *</Label>
-                    <Input
-                      id="title"
-                      value={eventData.title}
-                      onChange={(e) =>
-                        handleInputChange("title", e.target.value)
-                      }
-                      placeholder="Enter event title"
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="description">Description</Label>
-                    <Textarea
-                      id="description"
-                      value={eventData.description}
-                      onChange={(e) =>
-                        handleInputChange("description", e.target.value)
-                      }
-                      placeholder="Enter event description"
-                      rows={3}
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="type">Event Type *</Label>
-                      <Select
-                        value={eventData.type}
-                        onValueChange={(value) =>
-                          handleInputChange("type", value)
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="SERVICE">Service</SelectItem>
-                          <SelectItem value="MEETING">Meeting</SelectItem>
-                          <SelectItem value="SPECIAL_OCCASION">
-                            Special Occasion
-                          </SelectItem>
-                          <SelectItem value="CONFERENCE">Conference</SelectItem>
-                          <SelectItem value="SOCIAL">Social</SelectItem>
-                          <SelectItem value="OTHER">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="status">Status *</Label>
-                      <Select
-                        value={eventData.status || "DRAFT"}
-                        onValueChange={(value) =>
-                          handleInputChange("status", value)
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="DRAFT">Draft</SelectItem>
-                          <SelectItem value="PUBLISHED">Published</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="location">Location *</Label>
-                      <Input
-                        id="location"
-                        value={eventData.location}
-                        onChange={(e) =>
-                          handleInputChange("location", e.target.value)
-                        }
-                        placeholder="Enter location"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="startDate">Start Date & Time *</Label>
-                      <Input
-                        id="startDate"
-                        type="datetime-local"
-                        value={eventData.startDate}
-                        onChange={(e) =>
-                          handleInputChange("startDate", e.target.value)
-                        }
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="endDate">End Date & Time *</Label>
-                      <Input
-                        id="endDate"
-                        type="datetime-local"
-                        value={eventData.endDate}
-                        onChange={(e) =>
-                          handleInputChange("endDate", e.target.value)
-                        }
-                        required
-                      />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Registration Settings */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Registration Settings</CardTitle>
-                  <CardDescription>
-                    Configure event registration and capacity
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      id="registrationRequired"
-                      checked={eventData.registrationRequired}
-                      onCheckedChange={(checked) =>
-                        handleInputChange("registrationRequired", checked)
-                      }
-                    />
-                    <Label htmlFor="registrationRequired">
-                      Registration Required
-                    </Label>
-                  </div>
-
-                  {eventData.registrationRequired && (
-                    <>
-                      <div className="space-y-2">
-                        <Label htmlFor="capacity">Capacity</Label>
-                        <Input
-                          id="capacity"
-                          type="number"
-                          value={eventData.capacity || ""}
-                          onChange={(e) =>
-                            handleInputChange(
-                              "capacity",
-                              e.target.value
-                                ? parseInt(e.target.value)
-                                : undefined
-                            )
-                          }
-                          placeholder="Maximum number of attendees"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="registrationDeadline">
-                          Registration Deadline
-                        </Label>
-                        <Input
-                          id="registrationDeadline"
-                          type="datetime-local"
-                          value={eventData.registrationDeadline || ""}
-                          onChange={(e) =>
-                            handleInputChange(
-                              "registrationDeadline",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </div>
-
-                      <div className="flex items-center space-x-2">
-                        <Switch
-                          id="allowWaitlist"
-                          checked={eventData.allowWaitlist}
-                          onCheckedChange={(checked) =>
-                            handleInputChange("allowWaitlist", checked)
-                          }
-                        />
-                        <Label htmlFor="allowWaitlist">Allow Waitlist</Label>
-                      </div>
-
-                      {eventData.allowWaitlist && (
-                        <div className="space-y-2">
-                          <Label htmlFor="maxWaitlist">Max Waitlist Size</Label>
-                          <Input
-                            id="maxWaitlist"
-                            type="number"
-                            value={eventData.maxWaitlist || ""}
-                            onChange={(e) =>
-                              handleInputChange(
-                                "maxWaitlist",
-                                e.target.value
-                                  ? parseInt(e.target.value)
-                                  : undefined
-                              )
-                            }
-                            placeholder="Maximum waitlist size"
-                          />
-                        </div>
-                      )}
-                    </>
-                  )}
-                </CardContent>
-              </Card>
-
-              {/* Recurring Events */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Recurring Events</CardTitle>
-                  <CardDescription>Set up recurring events</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      id="isRecurring"
-                      checked={eventData.isRecurring}
-                      onCheckedChange={(checked) =>
-                        handleInputChange("isRecurring", checked)
-                      }
-                    />
-                    <Label htmlFor="isRecurring">
-                      This is a recurring event
-                    </Label>
-                  </div>
-
-                  {eventData.isRecurring && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="recurrencePattern">
-                          Recurrence Pattern
-                        </Label>
-                        <Select
-                          value={eventData.recurrencePattern || ""}
-                          onValueChange={(value) =>
-                            handleInputChange("recurrencePattern", value)
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select pattern" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="DAILY">Daily</SelectItem>
-                            <SelectItem value="WEEKLY">Weekly</SelectItem>
-                            <SelectItem value="MONTHLY">Monthly</SelectItem>
-                            <SelectItem value="YEARLY">Yearly</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="recurrenceEndDate">End Date</Label>
-                        <Input
-                          id="recurrenceEndDate"
-                          type="date"
-                          value={eventData.recurrenceEndDate || ""}
-                          onChange={(e) =>
-                            handleInputChange(
-                              "recurrenceEndDate",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-              {/* Resources Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Resources</CardTitle>
-                  <CardDescription>
-                    Add equipment, rooms, or other resources needed for this
-                    event
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {eventData.resources?.map((resource, index) => (
-                    <div
-                      key={index}
-                      className="p-4 border rounded-lg space-y-4"
-                    >
-                      <div className="flex items-center justify-between">
-                        <h4 className="font-medium">Resource {index + 1}</h4>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleResourceRemove(index)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor={`resource-${index}`}>
-                            Resource Name
-                          </Label>
-                          <Input
-                            id={`resource-${index}`}
-                            value={resource.resource}
-                            onChange={(e) =>
-                              handleResourceChange(
-                                index,
-                                "resource",
-                                e.target.value
-                              )
-                            }
-                            placeholder="e.g., Sound System, Projector"
-                          />
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor={`notes-${index}`}>Notes</Label>
-                          <Input
-                            id={`notes-${index}`}
-                            value={resource.notes || ""}
-                            onChange={(e) =>
-                              handleResourceChange(
-                                index,
-                                "notes",
-                                e.target.value
-                              )
-                            }
-                            placeholder="Additional details"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor={`startTime-${index}`}>
-                            Start Time
-                          </Label>
-                          <Input
-                            id={`startTime-${index}`}
-                            type="datetime-local"
-                            value={resource.startTime}
-                            onChange={(e) =>
-                              handleResourceChange(
-                                index,
-                                "startTime",
-                                e.target.value
-                              )
-                            }
-                          />
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor={`endTime-${index}`}>End Time</Label>
-                          <Input
-                            id={`endTime-${index}`}
-                            type="datetime-local"
-                            value={resource.endTime}
-                            onChange={(e) =>
-                              handleResourceChange(
-                                index,
-                                "endTime",
-                                e.target.value
-                              )
-                            }
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handleResourceAdd}
-                    className="w-full"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Resource
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Sidebar */}
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Actions</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? "Creating..." : "Create Event"}
-                  </Button>
-
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full"
-                    onClick={fillWithSampleData}
-                  >
-                    <FileText className="h-4 w-4 mr-2" />
-                    Fill with Sample Data
-                  </Button>
-
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full"
-                    asChild
-                  >
-                    <Link href="/events">Cancel</Link>
-                  </Button>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Quick Stats</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2 text-sm text-gray-600">
-                  <div className="flex items-center space-x-2">
-                    <Calendar className="h-4 w-4" />
-                    <span>
-                      Duration:{" "}
-                      {eventData.startDate && eventData.endDate
-                        ? Math.round(
-                            (new Date(eventData.endDate).getTime() -
-                              new Date(eventData.startDate).getTime()) /
-                              (1000 * 60 * 60)
-                          ) + " hours"
-                        : "Not set"}
-                    </span>
-                  </div>
-                  {eventData.capacity && (
-                    <div className="flex items-center space-x-2">
-                      <Users className="h-4 w-4" />
-                      <span>Capacity: {eventData.capacity} people</span>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </form>
-      </div>
-    </AppShell>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

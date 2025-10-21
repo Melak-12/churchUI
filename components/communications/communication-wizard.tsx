@@ -332,17 +332,17 @@ export function CommunicationWizard({
     switch (step) {
       case 0: // Campaign Details
         return (
-          <div className='space-y-6'>
+          <div className='space-y-3 w-full'>
             <div>
-              <Label htmlFor='campaignName' className='text-base font-medium'>
+              <Label htmlFor='campaignName' className='text-sm sm:text-base font-medium'>
                 Campaign Name
               </Label>
               <Input
                 id='campaignName'
                 value={data.name}
                 onChange={(e) => onUpdate({ name: e.target.value })}
-                placeholder='e.g., Monthly Newsletter, Payment Reminder'
-                className='mt-2 text-lg'
+                placeholder='e.g., Monthly Newsletter'
+                className='mt-1.5 text-base sm:text-lg w-full'
               />
             </div>
           </div>
@@ -350,8 +350,8 @@ export function CommunicationWizard({
 
       case 1: // Audience Selection
         return (
-          <div className='space-y-4'>
-            <Label className='text-base font-medium'>
+          <div className='space-y-2 sm:space-y-3 w-full'>
+            <Label className='text-sm sm:text-base font-medium'>
               Who should receive this message?
             </Label>
             <RadioGroup
@@ -359,7 +359,7 @@ export function CommunicationWizard({
               onValueChange={(value) =>
                 onUpdate({ audience: value as AudienceType })
               }
-              className='space-y-2'
+              className='space-y-1.5'
             >
               {audienceOptions.map((option) => {
                 const Icon = option.icon;
@@ -375,15 +375,15 @@ export function CommunicationWizard({
                     <Label
                       htmlFor={option.value}
                       className={cn(
-                        "flex items-center justify-between p-3 border rounded-lg cursor-pointer transition-all hover:bg-gray-50 dark:hover:bg-gray-800",
+                        "flex items-center justify-between p-2 sm:p-2.5 border rounded-lg cursor-pointer transition-all hover:bg-gray-50 dark:hover:bg-gray-800",
                         data.audience === option.value
                           ? "border-blue-500 bg-blue-50 dark:bg-blue-950/50"
                           : "border-gray-200 dark:border-gray-700"
                       )}
                     >
-                      <div className='flex items-center space-x-3'>
-                        <Icon className='h-4 w-4 text-gray-600' />
-                        <span className='font-medium'>{option.label}</span>
+                      <div className='flex items-center space-x-2 sm:space-x-3'>
+                        <Icon className='h-3.5 w-3.5 sm:h-4 sm:w-4 text-gray-600 flex-shrink-0' />
+                        <span className='font-medium text-xs sm:text-sm'>{option.label}</span>
                       </div>
                       <Badge variant='outline' className='text-xs'>
                         {memberCount}
@@ -397,47 +397,48 @@ export function CommunicationWizard({
             {data.audience === "CUSTOM" && (
               <div
                 ref={customSelectionRef}
-                className='mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg'
+                className='mt-2 p-2.5 sm:p-3 bg-gray-50 dark:bg-gray-800 rounded-lg'
               >
-                <div className='flex items-center justify-between mb-3'>
-                  <span className='font-medium text-sm'>Select Members</span>
+                <div className='flex items-center justify-between mb-2'>
+                  <span className='font-medium text-xs sm:text-sm'>Select Members</span>
                   <Badge variant='outline' className='text-xs'>
                     {selectedMembers.length} selected
                   </Badge>
                 </div>
 
                 {/* Search Bar */}
-                <div className='relative mb-3'>
-                  <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400' />
+                <div className='relative mb-2'>
+                  <Search className='absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-gray-400' />
                   <Input
-                    placeholder='Search members by name, phone, or email...'
+                    placeholder='Search members...'
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className='pl-10 text-sm'
+                    className='pl-8 text-xs sm:text-sm h-8 w-full'
                   />
                 </div>
 
-                <div className='h-48 overflow-y-auto space-y-2'>
+                <div className='max-h-32 sm:max-h-40 overflow-y-auto space-y-1'>
                   {filteredMembers.length > 0 ? (
-                    <div className='space-y-2'>
+                    <div className='space-y-1'>
                       {filteredMembers.map((member) => {
                         const memberId = getDocumentId(member);
                         return (
                           <div
                             key={memberId}
-                            className='flex items-center space-x-3 p-2 hover:bg-white rounded transition-colors'
+                            className='flex items-center space-x-2 p-1.5 hover:bg-white dark:hover:bg-gray-700 rounded transition-colors'
                           >
                             <Checkbox
                               checked={selectedMembers.includes(memberId)}
                               onCheckedChange={() =>
                                 toggleMemberSelection(memberId)
                               }
+                              className='h-3.5 w-3.5'
                             />
                             <div className='flex-1 min-w-0'>
-                              <div className='font-medium text-sm truncate'>
+                              <div className='font-medium text-xs truncate'>
                                 {member.firstName} {member.lastName}
                               </div>
-                              <div className='text-xs text-gray-500'>
+                              <div className='text-[10px] sm:text-xs text-gray-500 truncate'>
                                 {member.phone}
                               </div>
                             </div>
@@ -446,9 +447,9 @@ export function CommunicationWizard({
                       })}
                     </div>
                   ) : (
-                    <div className='flex items-center justify-center h-full text-sm text-gray-500'>
+                    <div className='flex items-center justify-center h-24 text-xs text-gray-500'>
                       {searchQuery
-                        ? "No members found matching your search"
+                        ? "No members found"
                         : "No members available"}
                     </div>
                   )}
@@ -460,9 +461,9 @@ export function CommunicationWizard({
 
       case 2: // Message Composition
         return (
-          <div className='space-y-4'>
+          <div className='space-y-2 sm:space-y-3 w-full'>
             <div>
-              <Label htmlFor='messageBody' className='text-base font-medium'>
+              <Label htmlFor='messageBody' className='text-sm sm:text-base font-medium'>
                 Your Message
               </Label>
               <Textarea
@@ -470,13 +471,13 @@ export function CommunicationWizard({
                 value={data.body}
                 onChange={(e) => onUpdate({ body: e.target.value })}
                 placeholder='Type your message here...'
-                className='mt-2 min-h-32 resize-none text-base'
+                className='mt-1.5 min-h-24 sm:min-h-28 resize-none text-sm sm:text-base w-full'
                 maxLength={1600}
               />
-              <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-2 text-sm text-gray-500'>
-                <span>{data.body.length}/1600 characters</span>
-                <div className='flex flex-wrap items-center gap-2'>
-                  <span className='whitespace-nowrap'>Variables:</span>
+              <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 sm:gap-2 mt-1.5 text-xs sm:text-sm text-gray-500'>
+                <span className='text-[10px] sm:text-xs'>{data.body.length}/1600</span>
+                <div className='flex flex-wrap items-center gap-1'>
+                  <span className='whitespace-nowrap text-[10px] sm:text-xs'>Variables:</span>
                   <div className='flex flex-wrap gap-1'>
                     {messageVariables.slice(0, 3).map((item) => (
                       <Button
@@ -484,7 +485,7 @@ export function CommunicationWizard({
                         variant='outline'
                         size='sm'
                         onClick={() => insertVariable(item.variable)}
-                        className='text-xs h-6 px-2'
+                        className='text-[10px] sm:text-xs h-5 sm:h-6 px-1.5 sm:px-2'
                       >
                         {item.variable}
                       </Button>
@@ -495,11 +496,11 @@ export function CommunicationWizard({
             </div>
 
             {data.body && (
-              <div className='p-3 bg-gray-50 dark:bg-gray-800 rounded-lg'>
-                <div className='text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>
+              <div className='p-2 sm:p-2.5 bg-gray-50 dark:bg-gray-800 rounded-lg'>
+                <div className='text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>
                   Preview:
                 </div>
-                <div className='text-sm whitespace-pre-wrap text-gray-600 dark:text-gray-400'>
+                <div className='text-xs sm:text-sm whitespace-pre-wrap text-gray-600 dark:text-gray-400 max-h-20 sm:max-h-24 overflow-y-auto'>
                   {messagePreview}
                 </div>
               </div>
@@ -509,8 +510,8 @@ export function CommunicationWizard({
 
       case 3: // Schedule & Send
         return (
-          <div className='space-y-4'>
-            <Label className='text-base font-medium'>
+          <div className='space-y-2 sm:space-y-3 w-full'>
+            <Label className='text-sm sm:text-base font-medium'>
               When should this be sent?
             </Label>
             <RadioGroup
@@ -529,21 +530,21 @@ export function CommunicationWizard({
                   }
                 }
               }}
-              className='space-y-3'
+              className='space-y-2'
             >
-              <div className='flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800'>
+              <div className='flex items-center space-x-2 sm:space-x-3 p-2 sm:p-2.5 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800'>
                 <RadioGroupItem value='now' id='now' />
                 <Label htmlFor='now' className='flex-1 cursor-pointer'>
-                  <div className='font-medium'>Send Now</div>
-                  <div className='text-sm text-gray-500'>Send immediately</div>
+                  <div className='font-medium text-xs sm:text-sm'>Send Now</div>
+                  <div className='text-[10px] sm:text-xs text-gray-500'>Send immediately</div>
                 </Label>
               </div>
 
-              <div className='flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800'>
+              <div className='flex items-center space-x-2 sm:space-x-3 p-2 sm:p-2.5 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800'>
                 <RadioGroupItem value='schedule' id='schedule' />
                 <Label htmlFor='schedule' className='flex-1 cursor-pointer'>
-                  <div className='font-medium'>Schedule for Later</div>
-                  <div className='text-sm text-gray-500'>
+                  <div className='font-medium text-xs sm:text-sm'>Schedule for Later</div>
+                  <div className='text-[10px] sm:text-xs text-gray-500'>
                     Choose date and time
                   </div>
                 </Label>
@@ -551,20 +552,20 @@ export function CommunicationWizard({
             </RadioGroup>
 
             {scheduleOption === "schedule" && (
-              <div className='p-4 bg-gray-50 dark:bg-gray-800 rounded-lg space-y-4'>
-                <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+              <div className='p-2.5 sm:p-3 bg-gray-50 dark:bg-gray-800 rounded-lg space-y-2 sm:space-y-3'>
+                <div className='grid grid-cols-2 gap-2 sm:gap-3'>
                   <div>
-                    <Label className='text-sm font-medium'>Date</Label>
+                    <Label className='text-xs sm:text-sm font-medium'>Date</Label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
                           variant='outline'
                           className={cn(
-                            "w-full justify-start text-left font-normal mt-1",
+                            "w-full justify-start text-left font-normal mt-1 h-8 sm:h-9 text-xs sm:text-sm",
                             !scheduledDate && "text-muted-foreground"
                           )}
                         >
-                          <CalendarIcon className='mr-2 h-4 w-4' />
+                          <CalendarIcon className='mr-1.5 h-3 w-3 sm:h-3.5 sm:w-3.5' />
                           {scheduledDate
                             ? format(scheduledDate, "MMM dd")
                             : "Pick date"}
@@ -583,17 +584,17 @@ export function CommunicationWizard({
                   </div>
 
                   <div>
-                    <Label className='text-sm font-medium'>Time</Label>
+                    <Label className='text-xs sm:text-sm font-medium'>Time</Label>
                     <Select
                       value={scheduledTime}
                       onValueChange={setScheduledTime}
                     >
-                      <SelectTrigger className='mt-1'>
+                      <SelectTrigger className='mt-1 h-8 sm:h-9 text-xs sm:text-sm'>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
                         {timeSlots.map((time) => (
-                          <SelectItem key={time} value={time}>
+                          <SelectItem key={time} value={time} className='text-xs sm:text-sm'>
                             {time}
                           </SelectItem>
                         ))}
@@ -603,8 +604,8 @@ export function CommunicationWizard({
                 </div>
 
                 {scheduledDate && (
-                  <div className='text-sm text-gray-600 dark:text-gray-400 flex items-center'>
-                    <Clock className='h-4 w-4 mr-1 flex-shrink-0' />
+                  <div className='text-[10px] sm:text-xs text-gray-600 dark:text-gray-400 flex items-center'>
+                    <Clock className='h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1 flex-shrink-0' />
                     <span className='break-words'>
                       {format(scheduledDate, "PPP")} at {scheduledTime}
                     </span>
@@ -617,14 +618,14 @@ export function CommunicationWizard({
 
       case 4: // Preview & Confirm
         return (
-          <div className='space-y-6'>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-              <div className='space-y-3'>
-                <h4 className='font-medium text-gray-900 dark:text-gray-100'>
+          <div className='space-y-3 sm:space-y-4 w-full'>
+            <div className='grid grid-cols-1 gap-3 sm:gap-4'>
+              <div className='space-y-2'>
+                <h4 className='font-medium text-sm sm:text-base text-gray-900 dark:text-gray-100'>
                   Campaign Summary
                 </h4>
-                <div className='space-y-2 text-sm'>
-                  <div className='flex justify-between gap-4'>
+                <div className='space-y-1.5 text-xs sm:text-sm'>
+                  <div className='flex justify-between gap-3'>
                     <span className='text-gray-500 dark:text-gray-400'>
                       Name:
                     </span>
@@ -632,7 +633,7 @@ export function CommunicationWizard({
                       {data.name}
                     </span>
                   </div>
-                  <div className='flex justify-between gap-4'>
+                  <div className='flex justify-between gap-3'>
                     <span className='text-gray-500 dark:text-gray-400'>
                       Audience:
                     </span>
@@ -644,7 +645,7 @@ export function CommunicationWizard({
                       }
                     </span>
                   </div>
-                  <div className='flex justify-between gap-4'>
+                  <div className='flex justify-between gap-3'>
                     <span className='text-gray-500 dark:text-gray-400'>
                       Recipients:
                     </span>
@@ -652,7 +653,7 @@ export function CommunicationWizard({
                       {getMemberCount(data.audience)} members
                     </span>
                   </div>
-                  <div className='flex justify-between gap-4'>
+                  <div className='flex justify-between gap-3'>
                     <span className='text-gray-500 dark:text-gray-400'>
                       Timing:
                     </span>
@@ -668,26 +669,26 @@ export function CommunicationWizard({
                 </div>
               </div>
 
-              <div className='space-y-3'>
-                <h4 className='font-medium text-gray-900 dark:text-gray-100'>
+              <div className='space-y-2'>
+                <h4 className='font-medium text-sm sm:text-base text-gray-900 dark:text-gray-100'>
                   Message Preview
                 </h4>
-                <div className='p-3 bg-gray-50 dark:bg-gray-800 rounded-lg'>
-                  <div className='text-sm whitespace-pre-wrap text-gray-700 dark:text-gray-300 break-words'>
+                <div className='p-2 sm:p-2.5 bg-gray-50 dark:bg-gray-800 rounded-lg max-h-28 sm:max-h-32 overflow-y-auto'>
+                  <div className='text-xs sm:text-sm whitespace-pre-wrap text-gray-700 dark:text-gray-300 break-words'>
                     {messagePreview || data.body}
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-blue-50 dark:bg-blue-950/50 rounded-lg'>
-              <div className='flex items-center space-x-2'>
-                <DollarSign className='h-4 w-4 text-blue-600 dark:text-blue-400' />
-                <span className='text-sm font-medium text-blue-900 dark:text-blue-300'>
+            <div className='flex items-center justify-between gap-2 p-2.5 sm:p-3 bg-blue-50 dark:bg-blue-950/50 rounded-lg'>
+              <div className='flex items-center space-x-1.5 sm:space-x-2'>
+                <DollarSign className='h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-600 dark:text-blue-400' />
+                <span className='text-xs sm:text-sm font-medium text-blue-900 dark:text-blue-300'>
                   Total Cost
                 </span>
               </div>
-              <span className='text-lg font-bold text-blue-900 dark:text-blue-300'>
+              <span className='text-base sm:text-lg font-bold text-blue-900 dark:text-blue-300'>
                 ${(getMemberCount(data.audience) * 0.0075).toFixed(2)}
               </span>
             </div>

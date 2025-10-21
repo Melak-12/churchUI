@@ -37,20 +37,20 @@ export default function RegisterPage() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardContent className="text-center py-8">
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 flex items-center justify-center p-4">
+        <Card className="w-full max-w-sm shadow-lg border-0 bg-card/80 backdrop-blur-sm">
+          <CardContent className="text-center py-8 px-6">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Check className="h-8 w-8 text-green-600" />
             </div>
-            <h2 className="text-xl font-bold text-gray-900 mb-2">
+            <h2 className="text-xl font-semibold text-foreground mb-3">
               Registration Complete!
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-sm text-muted-foreground mb-4">
               Thank you for registering. Your profile has been created and
               you&apos;ll receive updates based on your preferences.
             </p>
-            <p className="text-sm text-gray-500">
+            <p className="text-xs text-muted-foreground">
               You can update your information anytime by clicking the link in
               future messages.
             </p>
@@ -61,132 +61,141 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-2xl">
-        <CardHeader className="text-center">
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 flex items-center justify-center p-4">
+      <div className="w-full max-w-sm">
+        {/* Header */}
+        <div className="text-center mb-8">
           <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <UserPlus className="h-8 w-8 text-blue-600" />
           </div>
-          <CardTitle className="text-2xl">
+          <h1 className="text-2xl font-semibold text-foreground mb-2">
             {mockSettings.organizationName}
-          </CardTitle>
-          <CardDescription>
-            Complete your member registration to stay connected with our
-            community
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Basic Information */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="firstName">First Name *</Label>
-                <Input
-                  id="firstName"
-                  required
-                  value={formData.firstName}
-                  onChange={(e) =>
-                    setFormData({ ...formData, firstName: e.target.value })
-                  }
-                />
-              </div>
-              <div>
-                <Label htmlFor="lastName">Last Name *</Label>
-                <Input
-                  id="lastName"
-                  required
-                  value={formData.lastName}
-                  onChange={(e) =>
-                    setFormData({ ...formData, lastName: e.target.value })
-                  }
-                />
-              </div>
-            </div>
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Complete your member registration to stay connected with our community
+          </p>
+        </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="phone">Mobile Phone *</Label>
-                <PhoneInput
-                  id="phone"
-                  required
-                  value={formData.phone}
-                  onValueChange={(value) =>
-                    setFormData({ ...formData, phone: value })
-                  }
-                />
-              </div>
-              <div>
-                <Label htmlFor="email">Email (Optional)</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                />
-              </div>
-            </div>
-
-            <div>
-              <Label htmlFor="address">Address (Optional)</Label>
-              <Textarea
-                id="address"
-                value={formData.address}
-                onChange={(e) =>
-                  setFormData({ ...formData, address: e.target.value })
-                }
-                rows={3}
-                placeholder="Street address, city, state, zip code"
-              />
-            </div>
-
-            {/* Consent */}
-            <Card className="border-blue-200 bg-blue-50">
-              <CardContent className="p-4">
-                <div className="flex items-start space-x-3">
-                  <Checkbox
-                    id="consent"
-                    checked={formData.consent}
-                    onCheckedChange={(checked) =>
-                      setFormData({ ...formData, consent: checked as boolean })
-                    }
+        <Card className="shadow-lg border-0 bg-card/80 backdrop-blur-sm">
+          <CardContent className="p-6">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Basic Information */}
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="firstName" className="text-sm font-medium">First Name *</Label>
+                  <Input
+                    id="firstName"
                     required
+                    value={formData.firstName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, firstName: e.target.value })
+                    }
+                    className="h-11 text-base"
                   />
-                  <div className="grid gap-1.5 leading-none">
-                    <Label
-                      htmlFor="consent"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      Communication Consent *
-                    </Label>
-                    <p className="text-xs text-blue-700">
-                      {mockSettings.consentText}
-                    </p>
-                  </div>
                 </div>
-              </CardContent>
-            </Card>
+                <div>
+                  <Label htmlFor="lastName" className="text-sm font-medium">Last Name *</Label>
+                  <Input
+                    id="lastName"
+                    required
+                    value={formData.lastName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, lastName: e.target.value })
+                    }
+                    className="h-11 text-base"
+                  />
+                </div>
+              </div>
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={
-                !formData.firstName ||
-                !formData.lastName ||
-                !formData.phone ||
-                !formData.consent
-              }
-            >
-              Complete Registration
-            </Button>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="phone" className="text-sm font-medium">Mobile Phone *</Label>
+                  <PhoneInput
+                    id="phone"
+                    required
+                    value={formData.phone}
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, phone: value })
+                    }
+                    className="h-11 text-base"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="email" className="text-sm font-medium">Email (Optional)</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
+                    className="h-11 text-base"
+                  />
+                </div>
+              </div>
 
-            <div className="text-center">
-              <p className="text-xs text-gray-500">{mockSettings.smsFooter}</p>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+              <div>
+                <Label htmlFor="address" className="text-sm font-medium">Address (Optional)</Label>
+                <Textarea
+                  id="address"
+                  value={formData.address}
+                  onChange={(e) =>
+                    setFormData({ ...formData, address: e.target.value })
+                  }
+                  rows={3}
+                  placeholder="Street address, city, state, zip code"
+                  className="text-base"
+                />
+              </div>
+
+              {/* Consent */}
+              <Card className="border-blue-200 bg-blue-50">
+                <CardContent className="p-4">
+                  <div className="flex items-start space-x-3">
+                    <Checkbox
+                      id="consent"
+                      checked={formData.consent}
+                      onCheckedChange={(checked) =>
+                        setFormData({ ...formData, consent: checked as boolean })
+                      }
+                      required
+                      className="h-4 w-4 mt-0.5"
+                    />
+                    <div className="space-y-2 leading-none">
+                      <Label
+                        htmlFor="consent"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Communication Consent *
+                      </Label>
+                      <p className="text-xs text-blue-700">
+                        {mockSettings.consentText}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Button
+                type="submit"
+                className="w-full h-11 text-base font-medium"
+                disabled={
+                  !formData.firstName ||
+                  !formData.lastName ||
+                  !formData.phone ||
+                  !formData.consent
+                }
+              >
+                Complete Registration
+              </Button>
+
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground">{mockSettings.smsFooter}</p>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

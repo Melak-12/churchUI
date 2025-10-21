@@ -18,11 +18,14 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { Church, Eye, EyeOff, Mail, Lock, AlertCircle } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { login } from "@/lib/auth";
+import { useTheme } from "@/components/theme-provider";
 
 export default function LoginPage() {
   const router = useRouter();
   const isClient = useSuppressHydration();
+  const { theme } = useTheme();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -69,39 +72,36 @@ export default function LoginPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 flex items-center justify-center p-4">
+      <div className="w-full max-w-sm">
         {/* Logo and Header */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
-            <Church className="h-8 w-8 text-white" />
+          <div className="w-16 h-16 mx-auto mb-4">
+            <Image 
+              src={theme === "dark" ? "/worshiply-dark.png" : "/worshiply-logo.png"} 
+              alt="Worshiply" 
+              width={64}
+              height={64}
+              className="w-full h-full object-contain"
+            />
           </div>
-          <h1 className="text-2xl font-bold text-foreground mb-2">
-            Community Church
-          </h1>
-          <p className="text-muted-foreground">Sign in to your account</p>
+          <h1 className="text-2xl font-semibold text-foreground mb-2">Welcome Back</h1>
+          <p className="text-sm text-muted-foreground">Sign in to your account</p>
         </div>
 
-        <Card className="shadow-md border backdrop-blur-sm bg-card/95">
-          <CardHeader className="space-y-1 pb-6">
-            <CardTitle className="text-xl text-center">Welcome Back</CardTitle>
-            <CardDescription className="text-center">
-              Enter your credentials to access your account
-            </CardDescription>
-          </CardHeader>
-
-          <CardContent>
+        <Card className="shadow-lg border-0 bg-card/80 backdrop-blur-sm">
+          <CardContent className="p-6">
             <div suppressHydrationWarning={true}>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-5">
                 {error && (
-                  <Alert variant="destructive">
+                  <Alert variant="destructive" className="py-3">
                     <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>{error}</AlertDescription>
+                    <AlertDescription className="text-sm">{error}</AlertDescription>
                   </Alert>
                 )}
 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email Address</Label>
+                  <Label htmlFor="email" className="text-sm font-medium">Email Address</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                     <Input
@@ -112,14 +112,14 @@ export default function LoginPage() {
                       onChange={(e) =>
                         setFormData({ ...formData, email: e.target.value })
                       }
-                      className="pl-10"
+                      className="pl-10 h-11 text-base"
                       required
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password" className="text-sm font-medium">Password</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                     <Input
@@ -130,7 +130,7 @@ export default function LoginPage() {
                       onChange={(e) =>
                         setFormData({ ...formData, password: e.target.value })
                       }
-                      className="pl-10 pr-10"
+                      className="pl-10 pr-10 h-11 text-base"
                       required
                     />
                     <Button
@@ -160,6 +160,7 @@ export default function LoginPage() {
                           rememberMe: checked as boolean,
                         })
                       }
+                      className="h-4 w-4"
                     />
                     <Label htmlFor="rememberMe" className="text-sm">
                       Remember me
@@ -175,7 +176,7 @@ export default function LoginPage() {
 
                 <Button
                   type="submit"
-                  className="w-full h-11"
+                  className="w-full h-11 text-base font-medium"
                   disabled={isLoading || !formData.email || !formData.password}
                 >
                   {isLoading ? (
@@ -188,9 +189,9 @@ export default function LoginPage() {
                   )}
                 </Button>
 
-                {/* Quick Login Buttons - Integrated into form */}
-                <div className="mt-4 space-y-2">
-                  <div className="text-center text-xs text-muted-foreground mb-2">
+                {/* Quick Login Buttons */}
+                <div className="mt-6 space-y-3">
+                  <div className="text-center text-xs text-muted-foreground">
                     Quick Login
                   </div>
                   <div className="grid grid-cols-2 gap-2">
@@ -203,7 +204,7 @@ export default function LoginPage() {
                           demoCredentials[0].password
                         )
                       }
-                      className="text-xs py-2 h-8"
+                      className="text-xs h-9"
                     >
                       {demoCredentials[0].role}
                     </Button>
@@ -216,7 +217,7 @@ export default function LoginPage() {
                           demoCredentials[1].password
                         )
                       }
-                      className="text-xs py-2 h-8"
+                      className="text-xs h-9"
                     >
                       {demoCredentials[1].role}
                     </Button>
@@ -253,9 +254,16 @@ export default function LoginPage() {
         </Card>
 
         {/* Footer */}
-        <div className="text-center mt-8">
+        <div className="text-center mt-6">
           <p className="text-xs text-muted-foreground">
-            © 2025 Community Church. All rights reserved.
+            <a 
+              href="https://www.hexsoup.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hover:text-primary transition-colors"
+            >
+              © 2025 Hex Soup. All rights reserved.
+            </a>
           </p>
         </div>
       </div>

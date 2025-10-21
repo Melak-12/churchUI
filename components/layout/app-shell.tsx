@@ -28,43 +28,53 @@ import { cn } from "@/lib/utils";
 import { getCurrentUser, hasPermission, logout } from "@/lib/auth";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useFeatures } from "@/contexts/features-context";
+import { useTheme } from "@/components/theme-provider";
+import Image from "next/image";
 
-const getAdminNavItems = (features: any) => [
-  { href: "/dashboard", label: "Dashboard", icon: Home },
+interface NavItem {
+  href: string;
+  label: string;
+  mobileLabel?: string;
+  icon: React.ComponentType<any>;
+}
+
+const getAdminNavItems = (features: any): NavItem[] => [
+  { href: "/dashboard", label: "Home", icon: Home },
+  { href: "/members", label: "Members", icon: Users },
+  ...(features.communications
+    ? [
+        {
+          href: "/communications",
+          label: "Communications",
+          mobileLabel: "SMS",
+          icon: MessageSquare,
+        },
+      ]
+    : []),
   ...(features.events
     ? [{ href: "/events", label: "Events", icon: Calendar }]
     : []),
   ...(features.voting
     ? [{ href: "/voting", label: "Voting", icon: Vote }]
     : []),
-  ...(features.communications
-    ? [
-        {
-          href: "/communications",
-          label: "Communications",
-          icon: MessageSquare,
-        },
-      ]
+  ...(features.ministries
+    ? [{ href: "/ministries", label: "Ministries", icon: Building2 }]
     : []),
+  ...(features.attendance
+    ? [{ href: "/attendance", label: "Attendance", icon: UserPlus }]
+    : []),
+  ...(features.dataCollection
+    ? [{ href: "/data-collection", label: "Data Collection", icon: FileText }]
+    : []),
+  ...(features.financial
+    ? [{ href: "/financial", label: "Financial", icon: DollarSign }]
+    : []),
+  { href: "/settings", label: "Settings", icon: Settings },
   // { href: "/profile", label: "Profile", icon: User },
-  // { href: "/settings", label: "Settings", icon: Settings },
   // { href: "/feedback", label: "Feedback", icon: MessageCircle },
-  // { href: "/members", label: "Members", icon: Users },
-  // ...(features.ministries
-  //   ? [{ href: "/ministries", label: "Ministries", icon: Building2 }]
-  //   : []),
-  // ...(features.attendance
-  //   ? [{ href: "/attendance", label: "Attendance", icon: UserPlus }]
-  //   : []),
-  // ...(features.dataCollection
-  //   ? [{ href: "/data-collection", label: "Data Collection", icon: FileText }]
-  //   : []),
-  // ...(features.financial
-  //   ? [{ href: "/financial", label: "Financial", icon: DollarSign }]
-  //   : []),
 ];
 
-const getMemberNavItems = (features: any) => [
+const getMemberNavItems = (features: any): NavItem[] => [
   // { href: "/profile", label: "My Profile", icon: User },
   // { href: "/eligibility", label: "My Eligibility", icon: CheckCircle },
   ...(features.events
@@ -86,6 +96,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const user = getCurrentUser();
   const { features } = useFeatures();
+  const { theme } = useTheme();
 
   const navItems = hasPermission(user.role, "ADMIN")
     ? getAdminNavItems(features)
@@ -105,9 +116,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Desktop Sidebar */}
       <div className='hidden lg:block fixed top-0 left-0 h-full w-64 bg-card shadow-md z-50'>
         <div className='flex items-center justify-between p-4 border-b'>
-          <h1 className='text-xl font-bold text-foreground'>
-            Community Church
-          </h1>
+          <div className='w-56 h-16'>
+            <Image 
+              src={theme === "dark" ? "/worshiply-dark.png" : "/worshiply-logo.png"} 
+              alt="Worshiply" 
+              width={224}
+              height={64}
+              className="w-full h-full object-contain"
+            />
+          </div>
         </div>
 
         <nav
@@ -149,16 +166,31 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Main content */}
       <div className='lg:ml-64 pb-16 lg:pb-0'>
         {/* Top bar */}
-        <div className='bg-card shadow-sm border-b px-4 py-3 lg:px-6'>
-          <div className='flex items-center justify-between'>
-            <div className='lg:hidden px-2'>
-              <h1 className='sm:text-lg font-bold text-foreground'>
-                Community Church
-              </h1>
+        <div className='bg-card shadow-sm border-b px-3 py-2 lg:px-6 lg:py-3'>
+          <div className='flex items-center justify-between gap-2'>
+            {/* Desktop: Show welcome text only */}
+            <div className='hidden lg:block'>
+              <div className='text-sm text-muted-foreground font-light'>
+                Welcome to your dashboard
+              </div>
             </div>
 
-            <div className='flex items-center justify-between flex-1 lg:flex-initial lg:ml-auto'>
-              <span className='text-xs sm:text-sm text-muted-foreground font-light truncate max-w-[120px] sm:max-w-none'>
+            {/* Mobile: Minimal branding */}
+            <div className='lg:hidden flex-1 min-w-0 flex items-center justify-start'>
+              <div className='w-20 h-6'>
+                <Image 
+                  src={theme === "dark" ? "/worshiply-dark.png" : "/worshiply-logo.png"} 
+                  alt="Worshiply" 
+                  width={80}
+                  height={24}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+            </div>
+
+            <div className='flex items-center gap-1.5 lg:gap-3 lg:ml-auto flex-shrink-0'>
+              {/* Welcome text - desktop only */}
+              <span className='hidden lg:block text-sm text-muted-foreground font-light truncate'>
                 Welcome,{" "}
                 {user.firstName && user.lastName
                   ? `${user.firstName} ${user.lastName}`
@@ -166,18 +198,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   ? "Administrator"
                   : "Member"}
               </span>
-              <div className='flex items-center space-x-2 ml-auto'>
-                <ThemeToggle />
-                <Button
-                  variant='ghost'
-                  size='sm'
-                  onClick={handleLogout}
-                  className='text-muted-foreground hover:text-foreground'
-                >
-                  <LogOut className='h-4 w-4 lg:mr-2' />
-                  <span className='hidden lg:inline'>Sign Out</span>
-                </Button>
-              </div>
+              
+              <ThemeToggle />
+              
+              <Button
+                variant='ghost'
+                size='sm'
+                onClick={handleLogout}
+                className='text-muted-foreground hover:text-foreground h-8 w-8 lg:w-auto p-0 lg:px-3'
+              >
+                <LogOut className='h-4 w-4 lg:mr-2' />
+                <span className='hidden lg:inline'>Sign Out</span>
+              </Button>
             </div>
           </div>
         </div>
@@ -185,6 +217,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {/* Page content */}
         <main className='p-4 lg:p-6'>{children}</main>
       </div>
+
 
       {/* Mobile Bottom Navigation (Instagram-style) */}
       <div className='lg:hidden fixed bottom-0 left-0 right-0 bg-card border-t shadow-lg z-40'>
@@ -207,7 +240,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   strokeWidth={isActive ? 2.5 : 2}
                 />
                 <span className='text-xs truncate max-w-full'>
-                  {item.label}
+                  {item.mobileLabel || item.label}
                 </span>
               </Link>
             );
@@ -269,7 +302,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         onClick={() => setSidebarOpen(false)}
                       >
                         <Icon className='h-5 w-5' />
-                        <span>{item.label}</span>
+                        <span>{item.mobileLabel || item.label}</span>
                       </Link>
                     </li>
                   );
