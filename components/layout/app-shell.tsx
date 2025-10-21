@@ -71,7 +71,7 @@ const getAdminNavItems = (features: any): NavItem[] => [
   //   : []),
   // { href: "/settings", label: "Settings", icon: Settings },
   // { href: "/profile", label: "Profile", icon: User },
-  // { href: "/feedback", label: "Feedback", icon: MessageCircle },
+  { href: "/feedback", label: "Feedback", icon: MessageCircle },
 ];
 
 const getMemberNavItems = (features: any): NavItem[] => [
@@ -86,7 +86,7 @@ const getMemberNavItems = (features: any): NavItem[] => [
   // ...(features.memberPortal
   //   ? [{ href: "/member-portal", label: "Family & Documents", icon: FileText }]
   //   : []),
-  // { href: "/feedback", label: "Feedback", icon: MessageCircle },
+  { href: "/feedback", label: "Feedback", icon: MessageCircle },
   // { href: "/support", label: "Support", icon: HelpCircle },
 ];
 
